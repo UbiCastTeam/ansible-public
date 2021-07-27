@@ -1,0 +1,8 @@
+---
+
+- name: restart ferm
+  systemd:
+    name: ferm
+    state: restarted
+
+...

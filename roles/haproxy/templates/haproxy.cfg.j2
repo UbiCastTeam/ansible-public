@@ -1,0 +1,15 @@
+global
+{{ hap_config_global }}
+
+defaults
+{{ hap_config_defaults }}
+{% if hap_stats_enabled %}
+
+listen stats
+{{ hap_config_stats }}
+{% endif %}
+{% for listen in hap_config_listen %}
+
+listen {{ listen.name }}
+{{ listen.content }}
+{% endfor %}

@@ -1,0 +1,73 @@
+---
+
+repos_prefix: "{{ envsetup_apt_cache_url | d('http://', true) }}"
+repos_deb: deb.debian.org
+repos_deb_sec: security.debian.org
+repos_release: "{{ ansible_distribution_release }}"
+
+repos_skyreach_token: "{{ envsetup_skyreach_apt_token }}"
+repos_skyreach_host: "{{ envsetup_skyreach_host }}"
+
+
+sysconfig_packages:
+  - bash-completion
+  - curl
+  - git
+  - host
+  - htop
+  - ifupdown
+  - iotop
+  - iftop
+  - ipython3
+  - lm-sensors
+  - make
+  - net-tools
+  - netcat
+  - nfs-client
+  - openssh-server
+  - pciutils
+  - python3-psutil
+  - python3-openssl
+  - python3-requests
+  - python3-spf
+  - python3-packaging
+  - python3-lxml
+  - pwgen
+  - rsync
+  - smartmontools
+  - sudo
+  - unattended-upgrades
+  - vim
+  - man
+  - git-man
+
+sysconfig_firewall_enabled: true
+sysconfig_ferm_rules_filename: sysutils
+sysconfig_ferm_input_rules:
+  # munin
+  - proto:
+      - tcp
+    dport:
+      - 4949
+  # cockpit
+  - proto:
+      - tcp
+    dport:
+      - 9090
+sysconfig_ferm_output_rules: []
+sysconfig_ferm_global_settings:
+
+locale_packages:
+  - locales
+  - tzdata
+
+init_locale: "{{ envsetup_locale | d('C.UTF-8', true) }}"
+
+init_timezone: "{{ envsetup_timezone | d('Etc/UTC', true) }}"
+
+sysconfig_logs_packages:
+  - rsyslog
+
+ntp_servers: "{{ envsetup_ntp_server }}"
+
+...

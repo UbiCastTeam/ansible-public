@@ -1,0 +1,24 @@
+---
+
+celerity_signing_key: "{{ envsetup_celerity_signing_key }}"
+celerity_server: "{{ envsetup_celerity_server | d(envsetup_ms_server_name, true) }}"
+
+celerity_ms_id: "{{ envsetup_ms_id }}"
+celerity_ms_api_key: "{{ envsetup_ms_api_key }}"
+celerity_ms_hostname: "{{ envsetup_ms_server_name }}"
+celerity_ms_instances:
+  - ms_id: "{{ celerity_ms_id }}"
+    ms_api_key: "{{ celerity_ms_api_key }}"
+    ms_server_name: "{{ celerity_ms_hostname }}"
+
+celerity_firewall_enabled: true
+celerity_ferm_rules_filename: celerity
+celerity_ferm_input_rules:
+  - proto:
+      - tcp
+    dport:
+      - 6200
+celerity_ferm_output_rules: []
+celerity_ferm_global_settings:
+
+...

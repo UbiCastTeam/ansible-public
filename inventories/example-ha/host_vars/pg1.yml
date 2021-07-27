@@ -1,0 +1,8 @@
+---
+
+skyreach_system_key: changeme
+
+db_role: primary
+repmgr_node_id: 1
+
+...

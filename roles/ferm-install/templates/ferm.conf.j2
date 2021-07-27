@@ -1,0 +1,73 @@
+# -*- shell-script -*-
+
+# include global rules
+@include 'ferm.d/';
+
+domain (ip ip6) {
+  table filter {
+    chain INPUT {
+        policy {{ ferm_input_policy | upper }};
+
+        # connection tracking
+        mod state state INVALID DROP;
+        mod state state (ESTABLISHED RELATED) ACCEPT;
+
+        # allow local connections
+        interface lo ACCEPT;
+
+        # allow ping
+        proto icmp ACCEPT;
+    {% if ferm_antilockout_enabled %}
+
+        # allow ssh, anti-lockout rule
+        proto tcp dport 22 ACCEPT;
+    {% endif %}
+
+        # include input rules
+        @include 'input.d/';
+    {% if ferm_input_log %}
+
+        # logging
+        LOG log-level warning log-prefix "{{ ferm_input_log_prefix }}";
+    {% endif %}
+    }
+
+    chain OUTPUT {
+        policy {{ ferm_output_policy | upper }};
+
+        # connection tracking
+        mod state state INVALID DROP;
+        mod state state (ESTABLISHED RELATED) ACCEPT;
+
+        # allow local connections
+        outerface lo ACCEPT;
+
+        # allow ping
+        proto icmp ACCEPT;
+
+        # include output rules
+        @include 'output.d/';
+    {% if ferm_output_log %}
+
+        # logging
+        LOG log-level warning log-prefix "{{ ferm_output_log_prefix }}";
+    {% endif %}
+    }
+
+    chain FORWARD {
+        policy {{ ferm_forward_policy | upper }};
+
+        # connection tracking
+        mod state state INVALID DROP;
+        mod state state (ESTABLISHED RELATED) ACCEPT;
+
+        # include forward rules
+        @include 'forward.d/';
+    {% if ferm_forward_log %}
+
+        # logging
+        LOG log-level warning log-prefix "{{ ferm_forward_log_prefix }}";
+    {% endif %}
+    }
+  }
+}

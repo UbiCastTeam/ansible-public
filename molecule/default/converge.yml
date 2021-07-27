@@ -1,0 +1,68 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: PYTHON
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: ensure python3 is installed
+      register: python_install
+      changed_when: "'es_pyinstall' in python_install.stdout_lines"
+      raw: command -v python3 || echo es_pyinstall && apt update && apt install -y python3-minimal python3-apt
+
+- name: Converge
+  hosts: all
+  environment:
+    HOSTALIASES: /etc/hosts.aliases
+
+  pre_tasks:
+    - name:
+      stat: "path=/etc/hosts.aliases"
+      register: etc_hosts_debian
+
+    - debug:
+        msg: "{{ etc_hosts_debian }}"
+
+    - name: add all hosts to hostaliases
+      loop: "{{ query('inventory_hostnames', 'all:!localhost') }}"
+      lineinfile:
+        path: /etc/hosts.aliases
+        line: "{{ hostvars[item]['ansible_default_ipv4']['address'] }} {{ item }}"
+        backup: true
+        create: true
+      tags: always
+      when: not etc_hosts_debian.stat.exists
+
+    - name: add all hosts to hostfile
+      shell: "/bin/cat /etc/hosts.aliases >> /etc/hosts"
+      when: not etc_hosts_debian.stat.exists
+      tags: always
+
+    - name: check running in a docker container
+      register: check_if_docker
+      stat:
+        path: /.dockerenv
+
+    - name: set docker flag variable
+      set_fact:
+        in_docker: "{{ check_if_docker.stat.exists | d(false) }}"
+
+  post_tasks:
+    - name: deploy letsencrypt certificate
+      when: letsencrypt_enabled | d(false)
+      include_role:
+        name: letsencrypt
+
+    - name: configure network
+      when: network_apply | d(false)
+      include_role:
+        name: network
+
+    - name: configure proxy
+      when: proxy_apply | d(false)
+      include_role:
+        name: proxy
+
+- import_playbook: ../../playbooks/site.yml
+
+...

@@ -1,0 +1,9 @@
+---
+
+init_packages:
+  - apt-utils
+  - gnupg
+  - ssh-client
+  - sudo
+
+...

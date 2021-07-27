@@ -1,0 +1,12 @@
+---
+- name: restart kibana
+  service:
+    name: kibana
+    state: restarted
+
+- name: restart apm-server
+  service:
+    name: apm-server
+    state: restarted
+
+...

@@ -1,0 +1,13 @@
+---
+
+dependencies:
+  - role: conf
+  - role: init
+  - role: sysconfig
+  - role: users
+  - role: postfix
+  - role: ferm-install
+  - role: ferm-configure
+  - role: fail2ban
+
+...

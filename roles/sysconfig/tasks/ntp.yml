@@ -1,0 +1,50 @@
+---
+- name: create systemd-timesync service config directory
+  file:
+    path: /lib/systemd/system/systemd-timesyncd.service.d
+    state: directory
+    mode: 0755
+
+- name: ntp add condition to systemd-timesyncd service
+  notify: systemd daemon reload
+  copy:
+    dest: /lib/systemd/system/systemd-timesyncd.service.d/disable-with-time-daemon.conf
+    content: |
+      [Unit]
+      # don't run timesyncd if we have another NTP daemon installed
+      ConditionFileIsExecutable=!/usr/sbin/ntpd
+      ConditionFileIsExecutable=!/usr/sbin/openntpd
+      ConditionFileIsExecutable=!/usr/sbin/chronyd
+      ConditionFileIsExecutable=!/usr/sbin/VBoxService
+
+- name: ntp disable systemd-timesyncd service
+  notify: restart ntp
+  systemd:
+    name: systemd-timesyncd
+    enabled: false
+    state: stopped
+
+- name: ntp install
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: ntp
+    state: present
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: ntp config
+  notify: restart ntp
+  template:
+    backup: true
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+
+- name: ensure ntp is running
+  service:
+    name: ntp
+    enabled: true
+    state: started
+
+...

@@ -1,0 +1,89 @@
+---
+
+- name: create postfix dir
+  file:
+    path: /etc/postfix
+    state: directory
+
+- name: postfix main config
+  notify: restart postfix
+  template:
+    backup: true
+    src: main.cf.j2
+    dest: /etc/postfix/main.cf
+
+- name: postfix mailname
+  notify: restart postfix
+  copy:
+    backup: true
+    dest: /etc/mailname
+    content: "{{ postfix_mailname }}"
+
+- name: postfix local aliases
+  notify:
+    - newaliases
+    - restart postfix
+  copy:
+    backup: true
+    dest: /etc/aliases
+    content: |
+      devnull: /dev/null
+      clamav: root
+      root: {{ postfix_admin }}
+
+- name: postfix virtual aliases
+  notify:
+    - postmap virtual
+    - restart postfix
+  copy:
+    backup: true
+    dest: /etc/postfix/virtual
+    content: |
+      postmaster@{{ postfix_mailname }} root
+      bounces@{{ postfix_mailname }} root
+      noreply@{{ postfix_mailname }} devnull
+
+- name: postfix generic aliases, sender rewriting
+  notify:
+    - postmap generic
+    - restart postfix
+  copy:
+    backup: true
+    dest: /etc/postfix/generic
+    content: |
+      root@localhost {{ postfix_email_sender }}
+      root@{{ postfix_mailname }} {{ postfix_email_sender }}
+      root@{{ ansible_hostname }} {{ postfix_email_sender }}
+      @{{ postfix_mailname }} {{ postfix_email_sender }}
+      @{{ ansible_hostname }} {{ postfix_email_sender }}
+
+- name: postfix authentication
+  when:
+    - postfix_relay_host | d(false)
+    - postfix_relay_user | d(false)
+    - postfix_relay_pass | d(false)
+  notify:
+    - postmap sasl
+    - restart postfix
+  copy:
+    backup: true
+    dest: /etc/postfix/sasl-passwords
+    content: "{{ postfix_relay_host }} {{ postfix_relay_user }}:{{ postfix_relay_pass }}"
+
+- name: install postfix
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ postfix_packages }}"
+    state: present
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: ensure postfix is running
+  service:
+    name: postfix
+    enabled: true
+    state: started
+
+...

@@ -1,0 +1,31 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: DEPLOY ELASTIC KIBANA SERVER
+  hosts: elastic
+  tags: [ 'never', 'monbench' ]
+  vars:
+    - es_heap_size: 2g
+    - es_config:
+        network.host: "{{ hostvars[groups['elastic'][0]]['ansible_default_ipv4']['address'] }}"
+        node.data: true
+        node.master: true
+        cluster.initial_master_nodes: "{{ hostvars[groups['elastic'][0]].ansible_hostname }}"
+    - kibana_server_host: "{{ hostvars[groups['elastic'][0]]['ansible_default_ipv4']['address'] }}"
+    - elastic_host: "{{ es_config['network.host'] }}"
+    - es_api_host: "{{ es_config['network.host'] }}"
+  roles:
+    - elastic.elasticsearch
+    - elastic
+
+- name: DEPLOY METRICBEAT WORKERS
+  hosts: mediaserver,postgres
+  tags: [ 'never', 'monbench' ]
+  vars:
+    - kibana_server_host: "{{ hostvars[groups['elastic'][0]]['ansible_default_ipv4']['address'] }}"
+    - elastic_host: "{{ es_config['network.host'] }}"
+    - es_api_host: "{{ es_config['network.host'] }}"
+  roles:
+    - metricbeat
+
+...

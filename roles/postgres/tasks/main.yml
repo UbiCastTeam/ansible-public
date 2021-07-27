@@ -1,0 +1,129 @@
+---
+
+- name: ansible postgresql requirements install
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: python3-psycopg2
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: install packages
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ pg_packages }}"
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+# CONFIGURATION
+
+- name: ensure conf directory exists
+  file:
+    path: "{{ pg_conf_dir }}/conf.d"
+    owner: postgres
+    group: postgres
+    state: directory
+
+- name: ensure conf directory is included
+  replace:
+    path: "{{ pg_conf_dir }}/postgresql.conf"
+    backup: true
+    regexp: "^#?include_dir = '[A-Za-z\\.]+'(\\s+.*)$"
+    replace: "include_dir = 'conf.d'\\1"
+
+- name: change max connections value
+  replace:
+    path: "{{ pg_conf_dir }}/postgresql.conf"
+    backup: true
+    regexp: "^#?max_connections = [0-9]+"
+    replace: "max_connections = {{ pg_conf_max_connections }}"
+  when: pg_conf_max_connections is defined
+
+- name: configure custom settings
+  notify: restart postgresql
+  loop: "{{ pg_conf }}"
+  when: item.content | d(false)
+  copy:
+    dest: "{{ pg_conf_dir }}/conf.d/{{ item.name }}.conf"
+    owner: postgres
+    group: postgres
+    backup: true
+    content: "{{ item.content }}"
+
+- name: configure authentication
+  notify: restart postgresql
+  template:
+    src: pg_hba.conf.j2
+    dest: "{{ pg_conf_dir }}/pg_hba.conf"
+    owner: postgres
+    group: postgres
+    mode: 0640
+    backup: true
+
+- name: ensure service is enabled and running
+  systemd:
+    name: postgresql@{{ pg_version }}-{{ pg_cluster }}
+    enabled: true
+    state: started
+
+# USERS
+
+- name: set superuser password
+  become: true
+  become_user: postgres
+  no_log: true
+  postgresql_user:
+    name: postgres
+    password: "{{ pg_password | d(omit) }}"
+
+- name: manage users
+  become: true
+  become_user: postgres
+  no_log: true
+  loop: "{{ pg_users }}"
+  postgresql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password | d(omit) }}"
+    db: "{{ item.db | d(omit) }}"
+    priv: "{{ item.priv | d(omit) }}"
+    role_attr_flags: "{{ item.roles | d(omit) }}"
+
+- name: set .pgpass to allow passwordless connection
+  loop: "{{ query('nested', ['root', 'postgres'], pg_users) }}"
+  blockinfile:
+    path: "~{{ item.0 }}/.pgpass"
+    block: "*:*:*:{{ item.1.name }}:{{ item.1.password }}"
+    marker: "# {mark} {{ item.1.name }}"
+    create: true
+    owner: "{{ item.0 }}"
+    group: "{{ item.0 }}"
+    mode: 0600
+
+# DATABASES
+
+- name: create databases
+  become: true
+  become_user: postgres
+  loop: "{{ pg_databases }}"
+  postgresql_db:
+    name: "{{ item.name }}"
+    owner: "{{ item.owner | d(omit) }}"
+
+# FIREWALL
+
+- name: firewall
+  when: pg_firewall_enabled
+  vars:
+    ferm_rules_filename: "{{ pg_ferm_rules_filename }}"
+    ferm_input_rules: "{{ pg_ferm_input_rules }}"
+    ferm_output_rules: "{{ pg_ferm_output_rules }}"
+    ferm_global_settings: "{{ pg_ferm_global_settings }}"
+  include_role:
+    name: ferm-configure
+
+- meta: flush_handlers
+
+...

@@ -1,0 +1,25 @@
+---
+
+- name: "install required packages for munin-server"
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    state: latest
+    name:
+      - munin
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: "copy munin-server configuration"
+  notify: restart munin-server
+  template:
+    src: munin.conf.j2
+    dest: /etc/munin/munin.conf
+
+- name: "remove default localdomain files"
+  file:
+    path: /var/cache/munin/www/localdomain
+    state: absent
+
+...

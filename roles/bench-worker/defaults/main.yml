@@ -1,0 +1,15 @@
+---
+
+bench_worker_packages:
+  - ubicast-benchmark
+
+bench_server: "{{ hostvars[groups['bench_server'][0]]['ansible_default_ipv4']['address'] }}"
+bench_time_stat: 15000
+
+bench_host: "{{ envsetup_ms_server_name | d() }}"
+bench_user: admin
+bench_password: "{{ envsetup_ms_admin_pwd | d() }}"
+bench_oid:
+bench_dl_streams: false
+
+...

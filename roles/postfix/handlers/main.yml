@@ -1,0 +1,20 @@
+---
+
+- name: postmap sasl
+  command: postmap hash:/etc/postfix/sasl-passwords
+
+- name: postmap generic
+  command: postmap hash:/etc/postfix/generic
+
+- name: postmap virtual
+  command: postmap hash:/etc/postfix/virtual
+
+- name: newaliases
+  command: newaliases
+
+- name: restart postfix
+  service:
+    name: postfix
+    state: restarted
+
+...

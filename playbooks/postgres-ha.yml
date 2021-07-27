@@ -1,0 +1,38 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: POSTGRES HA
+  hosts: postgres
+  tags: postgres
+  pre_tasks:
+    - name: check that repmgr_node_id is set
+      assert:
+        that: repmgr_node_id != ""
+        quiet: true
+    - name: check that repmgr_primary_node is set
+      assert:
+        that: repmgr_primary_node != ""
+        quiet: true
+    - name: install psycopg2
+      apt:
+        force_apt_get: true
+        install_recommends: false
+        name: python3-psycopg2
+      register: apt_status
+      retries: 60
+      until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+  roles:
+    - postgres-ha
+
+- name: POSTGRES HA CLIENTS
+  hosts: mediaserver
+  tags: [ 'postgres', 'mediaserver' ]
+  pre_tasks:
+    - name: check that haproxy is configured
+      assert:
+        that: hap_config_listen != ""
+        quiet: true
+  roles:
+    - haproxy
+
+...

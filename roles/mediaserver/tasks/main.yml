@@ -1,0 +1,212 @@
+---
+
+- name: mediaserver install
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ server_packages }}"
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: fetch ssh public key
+  register: root_ssh_pubkey
+  slurp:
+    path: /root/.ssh/id_ed25519.pub
+  tags: always
+
+- name: register ssh public key as an ansible fact
+  set_fact:
+    pubkey: "{{ root_ssh_pubkey['content'] | b64decode }}"
+  tags: always
+
+- name: share ssh public key between cluster members
+  loop: "{{ groups['mediaserver'] }}"
+  authorized_key:
+    user: root
+    key: "{{ hostvars[item]['pubkey'] }}"
+  tags: always
+
+- name: resolve domain name to localhost
+  when: not in_docker
+  notify: restart nginx
+  loop: "{{ server_instances }}"
+  lineinfile:
+    path: /etc/hosts
+    line: '127.0.1.1 {{ item.ms_server_name }}'
+    backup: true
+
+# - name: synchronize configuration
+#   when: groups['mediaserver'] | length > 1
+#   loop:
+#     - /etc/passwd
+#     - /etc/shadow
+#     - /etc/group
+#   synchronize:
+#     src: "{{ item }}"
+#     dest: "{{ item }}"
+#     mode: push
+#     copy_links: yes
+#     set_remote_user: no
+#   delegate_to: "{{ groups['mediaserver'][0] }}"
+#   tags: always
+
+- name: create celerity-config
+  notify: restart celerity-server
+  template:
+    src: celerity-config.py.j2
+    dest: /etc/celerity/config.py
+    mode: 0644
+    owner: root
+    group: root
+  when:
+    - inventory_hostname not in groups['celerity']
+  changed_when: "'molecule-idempotence-notest' not in ansible_skip_tags"
+
+- name: create instances
+  when: inventory_hostname == groups['mediaserver'][0]
+  loop: "{{ server_instances }}"
+  environment:
+    MS_ID: "{{ item.ms_id }}"
+    MS_SERVER_NAME: "{{ item.ms_server_name }}"
+    MS_API_KEY: "{{ item.ms_api_key }}"
+    CM_SERVER_NAME: "{{ item.cm_server_name }}"
+    MS_SUPERUSER_PWD: "{{ item.ms_superuser_pwd }}"
+    MS_ADMIN_PWD: "{{ item.ms_admin_pwd }}"
+  command:
+    cmd: msinstaller.py {{ item.name }} --no-input
+    creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
+
+- name: create instances for secondary servers
+  when:
+    - groups['mediaserver'] | length > 1
+    - inventory_hostname != groups['mediaserver'][0]
+  loop: "{{ server_instances }}"
+  environment:
+    MS_ID: "{{ item.ms_id }}"
+    MS_SERVER_NAME: "{{ item.ms_server_name }}"
+    MS_API_KEY: "{{ item.ms_api_key }}"
+    CM_SERVER_NAME: "{{ item.cm_server_name }}"
+    MS_SUPERUSER_PWD: "{{ item.ms_superuser_pwd }}"
+    MS_ADMIN_PWD: "{{ item.ms_admin_pwd }}"
+  command:
+    cmd: msinstaller.py {{ item.name }} --no-input
+    creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
+  throttle: 1
+
+- name: synchronize configuration between servers
+  ignore_errors: true
+  when:
+    - groups['mediaserver'] | length > 1
+    - inventory_hostname != groups['mediaserver'][0]
+  loop:
+    - /etc/mediaserver
+    - /etc/nginx
+    - /etc/celerity
+    - /etc/sysusers.d
+    - /var/www
+  synchronize:
+    src: "{{ item }}"
+    dest: "{{ item }}"
+    mode: push
+    copy_links: true
+    delete: true
+    recursive: true
+    set_remote_user: false
+    existing_only: true
+  notify:
+    - restart mediaserver
+    - restart nginx
+    - restart systemd-sysusers
+  delegate_to: "{{ groups['mediaserver'][0] }}"
+  tags: mediaserver-synchronize
+
+- name: synchronize letsencrypt configuration between servers
+  ignore_errors: true
+  when:
+    - groups['mediaserver'] | length > 1
+    - inventory_hostname != groups['mediaserver'][0]
+    - letsencrypt_enabled | d(false)
+  loop:
+    - /etc/letsencrypt
+  synchronize:
+    src: "{{ item }}"
+    dest: "{{ item }}"
+    mode: push
+    copy_links: true
+    delete: true
+    recursive: true
+    set_remote_user: false
+    existing_only: true
+  notify:
+    - restart nginx
+  delegate_to: "{{ groups['mediaserver'][0] }}"
+  tags: mediaserver-synchronize
+
+- name: configure email sender address
+  notify: mscontroller restart
+  lineinfile:
+    path: /etc/mediaserver/msconf.py
+    backup: true
+    create: true
+    regexp: '^#? ?DEFAULT_FROM_EMAIL.*'
+    line: "DEFAULT_FROM_EMAIL = '{{ server_email_sender }}'"
+    validate: python3 -m py_compile %s
+
+- name: configure domain name in nginx conf
+  notify: restart nginx
+  loop: "{{ server_instances }}"
+  replace:
+    path: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
+    regexp: '^(\s*server_name).*;$'
+    replace: '\1 {{ item.ms_server_name }};'
+    backup: true
+
+- name: configure domain name in database
+  loop: "{{ server_instances }}"
+  shell:
+    cmd: |
+      python3 /usr/lib/python3/dist-packages/mediaserver/scripts/mssiteconfig.py {{ item.name }} site_url=https://{{ item.ms_server_name }} ;
+      mscontroller.py restart -u {{ item.name }} ;
+      touch /etc/mediaserver/.{{ item.ms_server_name }}.mssiteconfig.log ;
+    creates: /etc/mediaserver/.{{ item.ms_server_name }}.mssiteconfig.log
+
+- name: reset service resources
+  loop: "{{ server_instances }}"
+  shell:
+    cmd: |
+      python3 /usr/lib/python3/dist-packages/mediaserver/scripts/reset_service_resources.py {{ item.name }} local ;
+      mscontroller.py restart -u {{ item.name }} ;
+      touch /etc/mediaserver/.{{ item.ms_server_name }}.reset_service_resources.log ;
+    creates: /etc/mediaserver/.{{ item.ms_server_name }}.reset_service_resources.log
+
+- name: add realip configuration for LoadBalancer in HA configuration
+  notify: restart nginx
+  when:
+    - groups['mediaserver'] | length > 1
+    - real_ip_from | length > 0
+  template:
+    src: realip.conf.j2
+    dest: /etc/nginx/conf.d/realip.conf
+
+- name: ensure mediaserver is running
+  service:
+    name: mediaserver
+    enabled: true
+    state: started
+
+# FIREWALL
+
+- name: firewall
+  when: server_firewall_enabled
+  vars:
+    ferm_rules_filename: "{{ server_ferm_rules_filename }}"
+    ferm_input_rules: "{{ server_ferm_input_rules }}"
+    ferm_output_rules: "{{ server_ferm_output_rules }}"
+    ferm_global_settings: "{{ server_ferm_global_settings }}"
+  include_role:
+    name: ferm-configure
+
+- meta: flush_handlers
+
+...

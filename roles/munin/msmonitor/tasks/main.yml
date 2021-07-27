@@ -1,0 +1,60 @@
+---
+
+- name: install ubicast msmonitor
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    state: latest
+    name:
+      - ubicast-monitor
+      - ubicast-monitor-runtime
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: set msmonitor account password
+  user:
+    name: msmonitor
+    password: "{{ monitor_shell_pwd | password_hash('sha512', 'monitor') }}"
+
+- name: configure domain name in nginx
+  notify: restart nginx
+  replace:
+    path: /etc/nginx/sites-available/msmonitor.conf
+    regexp: '^(\s*server_name).*;$'
+    replace: '\1 {{ monitor_hostname }};'
+    backup: true
+
+- name: resolve domain name to localhost ipv4
+  when: not in_docker or in_docker is not defined
+  notify: restart nginx
+  lineinfile:
+    path: /etc/hosts
+    line: '127.0.1.1 {{ monitor_hostname }}'
+    backup: true
+
+- name: ensure msmonitor is running
+  service:
+    name: msmonitor
+    enabled: true
+    state: started
+
+- name: set directory permissions
+  file:
+    path: /home/msmonitor/msmonitor
+    mode: 0755
+    state: directory
+
+# FIREWALL
+
+- name: firewall
+  when: monitor_firewall_enabled
+  vars:
+    ferm_rules_filename: "{{ monitor_ferm_rules_filename }}"
+    ferm_input_rules: "{{ monitor_ferm_input_rules }}"
+    ferm_output_rules: "{{ monitor_ferm_output_rules }}"
+    ferm_global_settings: "{{ monitor_ferm_global_settings }}"
+  include_role:
+    name: ferm-configure
+
+...

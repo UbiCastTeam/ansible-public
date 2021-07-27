@@ -1,0 +1,11 @@
+---
+
+- debug:
+    msg: "On {{ outer_item.groupname }} server(s) put {{ outer_item.ports }} port(s) in listen mode"
+
+- shell: "nohup timeout 300 nc -lp {{ item }} >/dev/null 2>&1 &"
+  ignore_errors: true
+  loop: "{{ outer_item.ports }}"
+  changed_when: false
+
+...

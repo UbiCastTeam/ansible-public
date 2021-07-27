@@ -1,0 +1,11 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- import_playbook: msmonitor.yml
+  tags: monitor
+- import_playbook: munin-node.yml
+  tags: monitor
+- import_playbook: munin-server.yml
+  tags: monitor
+
+...

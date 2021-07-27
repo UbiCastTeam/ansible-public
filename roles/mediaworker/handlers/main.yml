@@ -1,0 +1,8 @@
+---
+
+- name: restart celerity-workers
+  service:
+    name: celerity-workers
+    state: restarted
+
+...

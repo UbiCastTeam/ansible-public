@@ -1,0 +1,8 @@
+---
+
+debian_packages:
+  - ubicast-live
+
+role_tmpfs_size: "{{ tmpfs_size | d('2048m') }}"
+
+...

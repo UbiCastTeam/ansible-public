@@ -1,0 +1,37 @@
+# virtualenv
+.venv/
+
+# python
+__pycache__/
+*.pyc
+
+# ansible
+inventories/_*
+inventories/local*/host_vars/localhost.yml
+inventories/offline*/host_vars/localhost.yml
+playbooks/_*
+roles/_*
+roles/elastic.elasticsearch
+
+# logs
+*.log
+
+# packer
+packer_cache/
+output/
+packer/*.json
+!packer/example.json
+
+# ide
+.vscode/
+*.code-workspace
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# secrets
+.env/*
+!.env/_reset
+!.env/_config
+!.env/*example
+!.env/example

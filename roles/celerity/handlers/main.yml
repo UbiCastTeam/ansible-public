@@ -1,0 +1,8 @@
+---
+
+- name: restart celerity-server
+  service:
+    name: celerity-server
+    state: restarted
+
+...

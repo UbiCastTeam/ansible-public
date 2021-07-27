@@ -1,0 +1,53 @@
+---
+- name: stop master node
+  hosts: postgres[0]
+  tasks:
+  - name: stop postgresql
+    service:
+      name: postgresql@11-main
+      state: stopped
+
+- name: pause for 45 seconds
+  hosts: localhost
+  tasks:
+    - pause:
+        seconds: 45
+
+- name: set correct host to correct groups
+  hosts: postgres
+  tasks:
+    - name: add db0 to fenced group
+      add_host:
+        name: "{{ groups['postgres'][0] }}"
+        groups: [ 'postgres_fenced', 'postgres_standby' ]
+
+    - name: add db1 to primary group
+      add_host:
+        name: "{{ groups['postgres'][1] }}"
+        groups: postgres_primary
+
+# db0 is now fenced, import playbook to switch it back to standby
+- import_playbook: ../../playbooks/postgres-maintenance/rephacheck_status.yml
+- import_playbook: ../../playbooks/postgres-maintenance/fenced_to_standby.yml
+
+- name: pause for 45 seconds
+  hosts: localhost
+  tasks:
+    - pause:
+        seconds: 45
+
+# db0 is now standby, import playbook to switch it back as primary
+- import_playbook: ../../playbooks/postgres-maintenance/rephacheck_status.yml
+- import_playbook: ../../playbooks/postgres-maintenance/standby_to_primary.yml
+
+- name: pause for 45 seconds
+  hosts: localhost
+  tasks:
+    - pause:
+        seconds: 45
+
+# db0 is now primary, restart repmgrd
+- import_playbook: ../../playbooks/postgres-maintenance/rephacheck_status.yml
+- import_playbook: ../../playbooks/postgres-maintenance/restart_repmgrd.yml
+
+...

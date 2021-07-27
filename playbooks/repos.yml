@@ -1,0 +1,11 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: REPOSITORY
+  hosts: all
+  tags: all
+  roles:
+    - conf
+    - repos
+
+...

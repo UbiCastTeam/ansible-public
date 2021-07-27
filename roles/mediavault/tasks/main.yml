@@ -1,0 +1,33 @@
+---
+
+- name: install packages
+  package:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ mvt_packages }}"
+    state: present
+
+- name: generate ssh keys pair
+  user:
+    name: root
+    generate_ssh_key: true
+    ssh_key_type: ed25519
+    ssh_key_file: .ssh/id_ed25519
+
+# MAILER
+- include: mailer.yml
+
+# FIREWALL
+- name: firewall
+  when: mvt_firewall_enabled
+  vars:
+    ferm_rules_filename: "{{ mvt_ferm_rules_filename }}"
+    ferm_input_rules: "{{ mvt_ferm_input_rules }}"
+    ferm_output_rules: "{{ mvt_ferm_output_rules }}"
+    ferm_global_settings: "{{ mvt_ferm_global_settings }}"
+  include_role:
+    name: ferm-configure
+
+- meta: flush_handlers
+
+...

@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+SIGNING_KEY = '{{ worker_celerity_signing_key }}'
+SERVER_URL = 'https://{{ worker_celerity_server }}:6200'
+
+# Queues count, default: min(round(thread_count/2)-1,2)
+#QUEUES_PER_WORKER = 2
+
+# MediaServer interactions
+MEDIASERVERS = {
+{% for instance in worker_ms_instances %}
+    '{{ instance.ms_id }}': {'url': 'https://{{ instance.ms_server_name }}', 'api_key': '{{ instance.ms_api_key }}'},
+{% endfor %}
+}

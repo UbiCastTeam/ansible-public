@@ -1,0 +1,15 @@
+{
+  "email_to": "support-team@ubicast.eu",
+  "users": [{% for user in mediaimport_users %}
+    {
+      "enabled": true,
+      "mediaserver_api_key": "{{ mediaimport_ms_api_key }}",
+      "mediaserver_url": "https://{{ mediaimport_ms_server_name }}",
+      "folders": [
+        {
+          "path": "/home/ftp/storage/watchfolder/{{ user.name }}"
+        }
+      ]
+    }{% if not loop.last %},{% endif %}
+  {% endfor %}]
+}

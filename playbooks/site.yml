@@ -1,0 +1,51 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: PYTHON
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: ensure python3 is installed
+      register: python_install
+      changed_when: "'es_pyinstall' in python_install.stdout_lines"
+      raw: command -v python3 || echo es_pyinstall && apt update && apt install -y python3-minimal python3-apt iproute2
+      tags: always
+
+- import_playbook: "{{ 'postgres-ha' if groups['postgres']|d('') | length > 1 else 'postgres' }}.yml"
+  tags: postgres
+
+- import_playbook: mirismanager.yml
+  tags: manager
+
+- import_playbook: celerity.yml
+  tags: celerity
+
+- import_playbook: mediaworker.yml
+  tags: worker
+
+- import_playbook: mediaserver.yml
+  tags: server
+
+- import_playbook: live/deploy-standalone.yml
+  tags: live
+
+- import_playbook: mediacache/deploy-standalone.yml
+  tags: mediacache
+
+- import_playbook: mediavault/deploy.yml
+  tags: vault
+
+- import_playbook: mediaimport.yml
+  tags: import
+
+- import_playbook: netcapture.yml
+  tags: netcapture
+
+- import_playbook: bench.yml
+  tags: bench
+
+- import_playbook: munin/all.yml
+  tags: monitor
+
+...

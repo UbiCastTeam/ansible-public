@@ -1,0 +1,73 @@
+---
+
+- name: create users groups
+  loop: "{{ users }}"
+  group:
+    name: "{{ item.name }}"
+    state: present
+
+- name: create users
+  loop: "{{ users }}"
+  user:
+    name: "{{ item.name }}"
+    group: "{{ item.name }}"
+    shell: /bin/bash
+    generate_ssh_key: true
+    ssh_key_type: ed25519
+    ssh_key_file: .ssh/id_ed25519
+    append: true
+    groups:
+      - sudo
+    state: present
+
+- name: set users passwords
+  loop: "{{ users }}"
+  user:
+    name: "{{ item.name }}"
+    password: "{{ item.passwd }}"
+    update_password: always
+
+- name: copy .bashrc
+  loop: "{{ users }}"
+  copy:
+    src: .bashrc
+    dest: ~{{ item.name }}/.bashrc
+
+- name: copy .vimrc
+  loop: "{{ users }}"
+  copy:
+    src: .vimrc
+    dest: ~{{ item.name }}/.vimrc
+
+- name: copy .bashrc for root
+  when: users_root_change
+  copy:
+    src: .bashrc
+    dest: ~root/.bashrc
+
+- name: copy .vimrc for root
+  when: users_root_change
+  copy:
+    src: .vimrc
+    dest: ~root/.vimrc
+
+- name: set users allowed ssh keys
+  loop: "{{ users | product(users_ssh_authorized_keys) | list }}"
+  authorized_key:
+    user: "{{ item[0].name }}"
+    key: "{{ item[1] }}"
+
+- name: set root allowed ssh keys
+  loop: "{{ users_ssh_authorized_keys }}"
+  authorized_key:
+    user: root
+    key: "{{ item }}"
+
+- name: sudoers without password
+  copy:
+    dest: /etc/sudoers.d/nopasswd
+    validate: visudo -cf %s
+    content: |
+      %sudo ALL=(ALL) NOPASSWD: ALL
+
+...

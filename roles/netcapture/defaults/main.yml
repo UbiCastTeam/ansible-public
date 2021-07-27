@@ -1,0 +1,20 @@
+---
+
+netcapture_registry_host: registry.ubicast.eu
+netcapture_registry_login: "{{ envsetup_netcapture_docker_login }}"
+netcapture_registry_password: "{{ envsetup_netcapture_docker_pwd }}"
+netcapture_cm_url: "https://{{ envsetup_cm_server_name | default('https://mirismanager.ubicast.eu', true) }}"
+netcapture_check_ssl: true
+netcapture_conf_folder: /etc/miris/conf
+netcapture_media_folder: /data/netcapture/media
+netcapture_hw_acceleration: false
+netcapture_miris_user_pwd: "{{ lookup('password', '/tmp/passwordfile length=12 chars=ascii_letters,digits') }}"
+netcapture_miris_auth: true
+
+netcapture_firewall_enabled: true
+netcapture_ferm_rules_filename: netcapture
+netcapture_ferm_input_rules: []
+netcapture_ferm_output_rules: []
+netcapture_ferm_global_settings:
+
+...

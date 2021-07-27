@@ -1,0 +1,31 @@
+localhost ansible_connection=local
+
+[postgres]
+localhost
+
+[mirismanager]
+localhost
+
+[mediaserver]
+localhost
+
+;[live]
+;localhost
+
+[celerity]
+localhost
+
+[mediaimport]
+localhost
+
+[msmonitor]
+localhost
+
+[munin_server]
+localhost
+
+[munin_node]
+localhost
+
+
+; vim:ft=dosini

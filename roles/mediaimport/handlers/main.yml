@@ -1,0 +1,31 @@
+---
+
+- name: reload systemd
+  systemd:
+    daemon_reload: true
+
+- name: restart pure-ftpd
+  systemd:
+    name: pure-ftpd
+    state: restarted
+
+- name: restart mysecureshell
+  systemd:
+    name: mysecureshell
+    state: restarted
+
+- name: restart mediaimport
+  systemd:
+    name: mediaimport
+    state: restarted
+
+- name: restart fail2ban
+  systemd:
+    name: fail2ban
+    state: restarted
+
+- name: sftp-verif
+  command:
+    cmd: timeout 30 sftp-verif
+
+...

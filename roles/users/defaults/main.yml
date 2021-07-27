@@ -1,0 +1,15 @@
+---
+
+users:
+  - name: ubicast
+    passwd: "{{ envsetup_shell_ubicast_pwd | password_hash('sha512', 'envsetup') }}"
+  - name: admin
+    passwd: "{{ envsetup_shell_admin_pwd | password_hash('sha512', 'envsetup') }}"
+
+users_ssh_authorized_keys:
+  - "{{ lookup('file', 'files/ubicast_support.pub') }}"
+  - "{{ envsetup_ssh_allowed_keys }}"
+
+users_root_change: true
+
+...

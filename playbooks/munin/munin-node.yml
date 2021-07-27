@@ -1,0 +1,10 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: Munin node
+  hosts: munin_node
+  tags: munin
+  roles:
+    - munin/munin-node
+
+...

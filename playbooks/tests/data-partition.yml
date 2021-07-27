@@ -1,0 +1,71 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: TEST DATA PARTITION
+  hosts: mediaserver
+  gather_facts: false
+  tasks:
+
+    - name: verify /data partition existence
+      shell: findmnt /data
+      register: data_exist
+      failed_when: false
+      changed_when: false
+
+    # /data exist
+    - block:
+
+        - name: get /data size
+          shell: df -BG /data --output=size | tail -n1 | grep -o '[0-9]*'
+          register: data_size
+          failed_when: false
+          changed_when: false
+
+        - name: print size
+          debug:
+            msg: "/data size is {{ data_size.stdout }}G"
+
+        - name: create a test directory in /data
+          file:
+            path: /data/test
+            state: directory
+            mode: '0755'
+            owner: nobody
+            group: nogroup
+          ignore_errors: true
+          changed_when: false
+
+        - name: create a test file in /data
+          file:
+            state: touch
+            path: /data/test/file
+            mode: '0644'
+            owner: nobody
+            group: nogroup
+          ignore_errors: true
+          become: true
+          become_method: sudo
+          become_user: nobody
+          changed_when: false
+
+      when: data_exist.rc == 0
+
+    # /data missing
+    - block:
+
+        - name: get /home size
+          shell: df -BG /home --output=size | tail -n1 | grep -o '[0-9]*'
+          register: home_size
+          failed_when: false
+          changed_when: false
+
+        - name: verify size
+          debug:
+            msg: "/home size is too short ({{ home_size.stdout }}G < 200G)"
+          when: home_size.stdout | int < 200
+          ignore_errors: true
+          failed_when: true
+
+      when: data_exist.rc != 0
+
+...

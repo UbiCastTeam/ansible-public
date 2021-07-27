@@ -1,0 +1,115 @@
+---
+
+- name: mirismanager dependencies install
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ dependencies_packages }}"
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: start postgresql
+  systemd:
+    name: postgresql
+    state: started
+
+- name: mirismanager install
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ manager_packages }}"
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: configure domain name in nginx conf
+  notify: restart nginx
+  replace:
+    path: /etc/nginx/sites-available/skyreach.conf
+    regexp: '^(\s*server_name).*;$'
+    replace: '\1 {{ manager_hostname }};'
+    backup: true
+
+- name: configure domain name in settings
+  notify: restart skyreach
+  lineinfile:
+    path: /home/skyreach/skyreach_data/private/settings_override.py
+    regexp: '^#? ?SITE_URL.*'
+    line: "SITE_URL = 'https://{{ manager_hostname }}'"
+    backup: true
+
+- name: configure site title in settings
+  notify: restart skyreach
+  lineinfile:
+    path: /home/skyreach/skyreach_data/private/settings_override.py
+    regexp: '^#? ?SITE_TITLE.*'
+    line: "SITE_TITLE = '{{ manager_hostname }}'"
+    backup: true
+
+- name: configure site name in settings
+  notify: restart skyreach
+  lineinfile:
+    path: /home/skyreach/skyreach_data/private/settings_override.py
+    regexp: '^#? ?SITE_NAME.*'
+    line: "SITE_NAME = '{{ manager_hostname }}'"
+    backup: true
+
+- name: configure email sender address in settings
+  notify: restart skyreach
+  lineinfile:
+    path: /home/skyreach/skyreach_data/private/settings_override.py
+    regexp: '^#? ?DEFAULT_FROM_EMAIL.*'
+    line: "DEFAULT_FROM_EMAIL = '{{ manager_email_sender }}'"
+    backup: true
+
+- name: resolve domain name to localhost ipv4
+  when: not in_docker
+  notify: restart nginx
+  lineinfile:
+    path: /etc/hosts
+    line: '127.0.0.1 {{ manager_hostname }}'
+    backup: true
+
+- name: ensure skyreach is running
+  service:
+    name: skyreach
+    enabled: true
+    state: started
+
+- name: check apt cacher ng config exists
+  register: manager_apt_cacher_conf
+  stat:
+    path: /etc/apt-cacher-ng/acng.conf
+
+- name: configure apt-cacher-ng
+  when:
+    - manager_apt_cacher_conf.stat.exists
+    - manager_proxy_http | d(false)
+  notify: restart apt-cacher-ng
+  lineinfile:
+    path: /etc/apt-cacher-ng/acng.conf
+    regexp: '^Proxy: .*'
+    line: 'Proxy: {{ manager_proxy_http }}'
+
+- name: ensure apt-cacher-ng is running
+  service:
+    name: apt-cacher-ng
+    enabled: true
+    state: started
+
+# FIREWALL
+
+- name: firewall
+  when: manager_firewall_enabled
+  vars:
+    ferm_rules_filename: "{{ manager_ferm_rules_filename }}"
+    ferm_input_rules: "{{ manager_ferm_input_rules }}"
+    ferm_output_rules: "{{ manager_ferm_output_rules }}"
+    ferm_global_settings: "{{ manager_ferm_global_settings }}"
+  include_role:
+    name: ferm-configure
+
+- meta: flush_handlers
+
+...

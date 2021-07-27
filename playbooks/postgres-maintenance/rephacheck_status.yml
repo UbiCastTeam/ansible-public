@@ -1,0 +1,14 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: REHACHECK STATUS
+  hosts: postgres_primary:postgres_standby:postgres_fenced
+  tasks:
+    - name: get cluster state
+      command: "rephacheck"
+      register: rephacheck
+    - name: show status for each node
+      debug:
+        msg: "Current node {{ ansible_hostname }} status {{ rephacheck['stdout'] }}"
+      when: rephacheck['stdout'] != ""
+
+...

@@ -1,0 +1,14 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: REPMGRD RESTART
+  hosts: postgres
+  tasks:
+    - name: kill repmgrd
+      command: "pkill repmgrd"
+      ignore_errors: true
+    - name: restart repmgrd
+      systemd:
+        name: repmgrd
+        state: restarted
+
+...

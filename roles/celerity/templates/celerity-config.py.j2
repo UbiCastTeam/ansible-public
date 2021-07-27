@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+SIGNING_KEY = '{{ celerity_signing_key }}'
+SERVER_URL = 'https://{{ celerity_server }}:6200'
+
+# Queues count, default: min(round(thread_count/2)-1,2)
+#QUEUES_PER_WORKER = 2
+
+# MediaServer interactions
+MEDIASERVERS = {
+    '{{ celerity_ms_id }}': {'url': 'https://{{ celerity_ms_hostname }}', 'api_key': '{{ celerity_ms_api_key }}'},
+}

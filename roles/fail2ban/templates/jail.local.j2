@@ -1,0 +1,8 @@
+[DEFAULT]
+
+ignoreip = {{ f2b_ignoreip }}
+bantime = {{ f2b_bantime }}
+maxretry = {{ f2b_maxretry }}
+destemail = {{ f2b_destemail | default(f2b_destemail_admins, true) }}
+sender = {{ f2b_sender }}
+action = %({{ f2b_action }})s

@@ -1,0 +1,69 @@
+---
+
+default:
+  image: registry.ubicast.net/mediaserver/envsetup
+
+stages:
+  - lint
+  - docker
+  - test-pf-std
+  - test-pf-ha
+  - test-pgsql
+
+# * * * * * * * * * * * * *
+
+lint:verify:
+  stage: lint
+  script:
+    - make lint
+
+# * * * * * * * * * * * * *
+
+# Docker envsetup image build job
+docker:image:
+  image: docker:stable
+  stage: docker
+  rules:
+    # Build docker image for schedule pipelines only
+    - if: '$DOCKER_BUILD == "True"'
+  before_script:
+    - apk add bash make
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.ubicast.net
+  script:
+    - make docker-build
+    - make docker-push
+
+# * * * * * * * * * * * * *
+
+.test-template:
+  retry: 2
+  timeout: 4h
+  rules:
+    # Run deployment for schedule pipelines
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $PF_DEPLOY_TEST == "True"'
+      when: always
+    # Run deployment for manual pipelines
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+    - when: never
+
+test:pf-std:
+  extends: .test-template
+  stage: test-pf-std
+  script:
+    - echo $CI_PIPELINE_SOURCE
+    - make test pf-std=1
+
+test:pf-ha:
+  extends: .test-template
+  stage: test-pf-ha
+  script:
+    - make test pf-ha=1
+
+test:pgsql-ha:
+  extends: .test-template
+  stage: test-pgsql
+  script:
+    - make test pgsql-ha=1 debug=1
+
+...

@@ -1,0 +1,33 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: DEPLOY BENCHMARK SERVER
+  hosts: bench_server
+  pre_tasks:
+    - name: "Fail is benchmark server is not unique"
+      fail:
+        msg: "Benchmark server must be unique"
+      when: groups['bench_server'] | length > 1
+  tags: bench_server
+  roles:
+    - bench-server
+  tasks:
+    - name: restart bench-server
+      service:
+        name: bench-server
+        state: restarted
+      tags: [ 'never', 'prepare-bench' ]
+
+- name: DEPLOY BENCHMARK WORKERS
+  hosts: bench_worker
+  tags: bench_worker
+  roles:
+    - bench-worker
+  tasks:
+    - name: restart bench-worker
+      service:
+        name: bench-worker
+        state: restarted
+      tags: [ 'never', 'prepare-bench' ]
+
+...

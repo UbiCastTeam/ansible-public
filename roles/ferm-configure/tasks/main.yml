@@ -1,0 +1,52 @@
+---
+
+- name: populate service facts
+  service_facts:
+
+- name: directories
+  loop:
+    - /etc/ferm/ferm.d
+    - /etc/ferm/input.d
+    - /etc/ferm/output.d
+    - /etc/ferm/forward.d
+  file:
+    path: "{{ item }}"
+    state: directory
+
+- name: global
+  when: ferm_global_settings | d(false)
+  notify:
+    - restart ferm
+    - restart fail2ban
+  copy:
+    dest: /etc/ferm/ferm.d/{{ ferm_rules_filename }}.conf
+    content: "{{ ferm_global_settings }}"
+
+- name: input
+  when: ferm_input_rules | length > 0
+  notify:
+    - restart ferm
+    - restart fail2ban
+  template:
+    src: ferm_rules_input.conf.j2
+    dest: /etc/ferm/input.d/{{ ferm_rules_filename }}.conf
+
+- name: output
+  when: ferm_output_rules | length > 0
+  notify:
+    - restart ferm
+    - restart fail2ban
+  template:
+    src: ferm_rules_output.conf.j2
+    dest: /etc/ferm/output.d/{{ ferm_rules_filename }}.conf
+
+- name: forward
+  when: ferm_forward_rules | length > 0
+  notify:
+    - restart ferm
+    - restart fail2ban
+  template:
+    src: ferm_rules_forward.conf.j2
+    dest: /etc/ferm/forward.d/{{ ferm_rules_filename }}.conf
+
+...

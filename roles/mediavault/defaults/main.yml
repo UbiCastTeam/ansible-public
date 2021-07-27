@@ -1,0 +1,24 @@
+---
+
+mvt_packages:
+  - ubicast-mediavault
+
+mvt_mailer_enabled: true
+mvt_mailer_script_path: /usr/local/sbin/systemd-mailer
+mvt_mailer_from: "{{ ansible_fqdn }} <backup@{{ ansible_fqdn }}>"
+mvt_mailer_to: sysadmin+backup@ubicast.eu
+mvt_mailer_service_name: status-email-admin
+mvt_mailer_service_path: /etc/systemd/system/{{ mvt_mailer_service_name }}@.service
+
+# firewall rules
+mvt_firewall_enabled: true
+mvt_ferm_rules_filename: vault
+mvt_ferm_input_rules: []
+mvt_ferm_output_rules:
+  - proto:
+      - tcp
+    dport:
+      - 22
+mvt_ferm_global_settings:
+
+...

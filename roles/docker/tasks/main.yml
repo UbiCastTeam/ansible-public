@@ -1,0 +1,62 @@
+---
+- name: requirements install
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - lsb-release
+      - software-properties-common
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: add docker key
+  when:
+    - not offline_mode | d(false)
+  apt_key:
+    url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+    state: present
+
+- name: add docker debian repository
+  when:
+    - not offline_mode | d(false)
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} stable
+    state: present
+    update_cache: true
+
+- name: install docker
+  when:
+    - not offline_mode | d(false)
+  apt:
+    name: docker-ce
+    state: latest
+    update_cache: true
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: docker service
+  when:
+    - not offline_mode | d(false)
+  systemd:
+    name: docker
+    enabled: true
+    state: started
+
+- name: install requirements for docker python binding
+  when:
+    - not offline_mode | d(false)
+  apt:
+    name: python3-docker
+    state: latest
+    update_cache: true
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+...

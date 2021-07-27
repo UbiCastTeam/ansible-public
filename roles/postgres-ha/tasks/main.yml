@@ -1,0 +1,335 @@
+---
+
+# INSTALLATION
+
+- name: install packages
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ repmgr_packages }}"
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+# POSTGRESQL
+
+- name: postgresql
+  vars:
+    pg_hba:
+      - type: local
+        method: peer
+      - type: host
+        address: 127.0.0.1/32
+      - type: host
+        address: ::1/128
+      - type: host
+        address: 0.0.0.0/0
+      - type: host
+        address: ::/0
+      - type: local
+        database: replication
+        method: peer
+      - type: host
+        database: replication
+        address: 127.0.0.1/32
+      - type: host
+        database: replication
+        address: ::1/128
+      - type: host
+        database: replication
+        address: 0.0.0.0/0
+      - type: host
+        database: replication
+        address: ::/0
+    pg_conf:
+      - name: main
+        content: |
+          listen_addresses = '*'
+      - name: modules
+        content: |
+          shared_preload_libraries = 'repmgr'
+    pg_users:
+      - name: "{{ repmgr_user }}"
+        password: "{{ repmgr_password }}"
+        roles: "{{ repmgr_roles }}"
+    pg_databases:
+      - name: "{{ repmgr_db }}"
+        owner: "{{ repmgr_user }}"
+    pg_ferm_input_rules:
+      - proto:
+          - tcp
+        dport:
+          - 5432
+          - "{{ repmgr_repha_port }}"
+  include_role:
+    name: postgres
+
+# CONFIGURATION
+
+- name: configure repmgr
+  notify: restart repmgrd
+  template:
+    src: repmgr.conf.j2
+    dest: "{{ repmgr_config }}"
+    owner: postgres
+    group: postgres
+
+- name: configure debian default
+  notify: restart repmgrd
+  loop:
+    - key: REPMGRD_ENABLED
+      value: 'yes'
+    - key: REPMGRD_CONF
+      value: "{{ repmgr_config }}"
+  replace:
+    path: /etc/default/repmgrd
+    regexp: '^#?{{ item.key }}=.*$'
+    replace: '{{ item.key }}={{ item.value }}'
+
+- name: configure sudo
+  copy:
+    dest: /etc/sudoers.d/postgres
+    validate: visudo -cf %s
+    content: |
+      Defaults:postgres !requiretty
+      postgres ALL=NOPASSWD: \
+        /bin/systemctl start postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}, \
+        /bin/systemctl stop postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}, \
+        /bin/systemctl restart postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}, \
+        /bin/systemctl reload postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
+
+# SSH
+
+- name: ensure postgres account have a ssh keypair
+  user:
+    name: postgres
+    generate_ssh_key: true
+    ssh_key_type: ed25519
+    ssh_key_file: ~postgres/.ssh/id_ed25519
+
+- name: fetch postgres ssh public key
+  register: repmgr_postgres_ssh_pubkey
+  slurp:
+    path: ~postgres/.ssh/id_ed25519.pub
+
+- name: register postgres ssh public key as an ansible fact
+  set_fact:
+    pubkey: "{{ repmgr_postgres_ssh_pubkey['content'] | b64decode }}"
+
+- name: share postgres ssh public key between cluster members
+  loop: "{{ groups['postgres'] }}"
+  authorized_key:
+    user: postgres
+    key: "{{ hostvars[item]['pubkey'] }}"
+
+- name: postgres ssh client configuration
+  copy:
+    dest: ~postgres/.ssh/config
+    owner: postgres
+    group: postgres
+    content: |
+      IdentityFile	~/.ssh/id_ed25519
+      StrictHostKeyChecking	no
+      UserKnownHostsFile	/dev/null
+
+# REGISTER PRIMARY
+
+- name: setup primary
+  when: (db_role is defined and db_role == "primary") or (db_role is undefined and inventory_hostname == groups['postgres'][0])
+  block:
+
+    - name: check if primary already joined
+      become: true
+      become_user: postgres
+      register: repmgr_check_primary
+      postgresql_query:
+        db: repmgr
+        query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
+
+    - name: register primary
+      become: true
+      become_user: postgres
+      when: repmgr_check_primary.query_result | length == 0
+      notify: restart repmgrd
+      command:
+        cmd: repmgr --config-file={{ repmgr_config }} primary register
+
+- meta: flush_handlers
+
+# REGISTER STANDBY
+
+- name: setup standby
+  when: (db_role is defined and db_role == "standby") or (db_role is undefined and inventory_hostname == groups['postgres'][1])
+  block:
+
+    - name: check if standby already joined
+      become: true
+      become_user: postgres
+      register: repmgr_check_standby
+      postgresql_query:
+        db: repmgr
+        query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
+
+    - name: stop postgresql service
+      when: repmgr_check_standby.query_result | length == 0
+      systemd:
+        name: postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
+        state: stopped
+
+    - name: remove existing pgdata
+      when: repmgr_check_standby.query_result | length == 0
+      command:
+        cmd: mv -vf {{ repmgr_pg_data }} {{ repmgr_pg_data }}.save
+        removes: "{{ repmgr_pg_data }}"
+
+    - name: clone from primary to standby
+      become: true
+      become_user: postgres
+      when: repmgr_check_standby.query_result | length == 0
+      ignore_errors: true
+      register: repmgr_clone_standby
+      shell:
+        cmd: |
+          repmgr \
+            --config-file={{ repmgr_config }} \
+            --force \
+            --dbname={{ repmgr_db }} \
+            --host={{ repmgr_primary_node }} \
+            --port=5432 \
+            --username={{ repmgr_user }} \
+            --pgdata={{ repmgr_pg_data }} \
+            standby clone --fast-checkpoint
+
+    - name: remove pgdata backup
+      when: repmgr_clone_standby is succeeded
+      file:
+        path: "{{ repmgr_pg_data }}.save"
+        state: absent
+
+    - name: remove failed clone pgdata
+      when: repmgr_clone_standby is failed
+      file:
+        path: "{{ repmgr_pg_data }}"
+        state: absent
+
+    - name: restore pgdata backup
+      when: repmgr_clone_standby is failed
+      command:
+        cmd: mv -vf {{ repmgr_pg_data }}.save {{ repmgr_pg_data }}
+        removes: "{{ repmgr_pg_data }}.save"
+
+    - name: start postgresql service
+      systemd:
+        name: postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
+        state: started
+
+    - name: standby clone failed
+      when: repmgr_clone_standby is failed
+      fail:
+        msg: "{{ repmgr_clone_standby.stderr }}"
+
+    - name: register standby
+      become: true
+      become_user: postgres
+      when: repmgr_check_standby.query_result | length == 0
+      notify: restart repmgrd
+      command:
+        cmd: repmgr --config-file={{ repmgr_config }} standby register
+
+- meta: flush_handlers
+
+# REGISTER WITNESS
+
+- name: setup witness
+  when: (db_role is defined and db_role == "witness") or (db_role is undefined and inventory_hostname == groups['postgres'][2])
+  block:
+
+    - name: check if witness already joined
+      become: true
+      become_user: postgres
+      register: repmgr_check_witness
+      postgresql_query:
+        db: repmgr
+        query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
+
+    - name: register witness
+      become: true
+      become_user: postgres
+      when: repmgr_check_witness.query_result | length == 0
+      notify: restart repmgrd
+      command:
+        cmd: repmgr --config-file={{ repmgr_config }} --host={{ repmgr_primary_node }} witness register
+
+- meta: flush_handlers
+
+# REPHACHECK
+
+- name: install rephacheck
+  template:
+    src: rephacheck.py.j2
+    dest: /usr/bin/rephacheck
+    mode: 0755
+
+- name: register variables needed by rephacheck as facts
+  set_fact:
+    repmgr_node_name: "{{ repmgr_node_name }}"
+    repmgr_node_id: "{{ repmgr_node_id }}"
+
+- name: configure rephacheck
+  template:
+    src: rephacheck.conf.j2
+    dest: /etc/postgresql/{{ repmgr_pg_version }}/{{ repmgr_pg_cluster }}/rephacheck.conf
+    owner: postgres
+    group: postgres
+    mode: 0644
+
+- name: configure rephacheck socket
+  notify:
+    - reload systemd
+    - restart rephacheck
+  copy:
+    dest: /etc/systemd/system/rephacheck.socket
+    content: |
+      [Unit]
+      Description=RepHACheck socket
+
+      [Socket]
+      ListenStream={{ repmgr_repha_port }}
+      Accept=yes
+
+      [Install]
+      WantedBy=sockets.target
+
+- name: configure rephacheck service
+  notify:
+    - reload systemd
+    - restart rephacheck
+  copy:
+    dest: /etc/systemd/system/rephacheck@.service
+    content: |
+      [Unit]
+      Description=RepHACheck - Health check for PostgreSQL cluster managed by repmgr
+
+      [Service]
+      ExecStart=-/usr/bin/rephacheck
+      StandardInput=socket
+      User=postgres
+      Group=postgres
+
+- name: enable and start rephacheck
+  service:
+    name: rephacheck.socket
+    state: started
+    enabled: true
+
+- name: firewall
+  when: pg_firewall_enabled
+  vars:
+    ferm_rules_filename: "{{ pg_ferm_rules_filename }}"
+    ferm_input_rules: "{{ pg_ferm_input_rules }}"
+    ferm_output_rules: "{{ pg_ferm_output_rules }}"
+    ferm_global_settings: "{{ pg_ferm_global_settings }}"
+  include_role:
+    name: ferm-configure
+
+...

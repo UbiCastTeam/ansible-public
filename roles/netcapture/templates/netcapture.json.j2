@@ -1,0 +1,10 @@
+{
+  "docker_registry_host": "{{ netcapture_registry_host }}",
+  "docker_registry_login": "{{ netcapture_registry_login }}",
+  "docker_registry_password": "{{ netcapture_registry_password }}",
+  "mirismanager_url": "{{ netcapture_cm_url }}",
+  "mirismanager_check_ssl": {% if netcapture_check_ssl %}true{% else %}false{% endif %},
+  "netcapture_conf_folder": "{{ netcapture_conf_folder }}",
+  "netcapture_media_folder": "{{ netcapture_media_folder }}",
+  "enable_hw_acceleration": {% if netcapture_hw_acceleration %}true{% else %}false{% endif %}
+}

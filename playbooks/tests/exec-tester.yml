@@ -1,0 +1,24 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: RUN TESTER
+  hosts: all
+  tags: tester
+  gather_facts: false
+  vars:
+    tester_reset_log: false
+  tasks:
+    - name: remove envsetup tester log
+      when: tester_reset_log
+      file:
+        path: /root/envsetup/tests/logs/tester_pb.log
+        state: absent
+    - name: envsetup tester
+      shell:
+        cmd: |
+          set -o pipefail
+          python3 /root/envsetup/tests/tester.py 2>&1 | tee /root/envsetup/tests/logs/tester_pb.log
+        creates: /root/envsetup/tests/logs/tester_pb.log
+        executable: /bin/bash
+
+...

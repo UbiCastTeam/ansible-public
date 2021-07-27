@@ -1,0 +1,85 @@
+---
+- include: repos.yml
+
+- name: install system utilities
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ sysconfig_packages }}"
+    state: latest
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: remove conflicting packages
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name:
+      - exim4
+      - exim4-base
+      - exim4-config
+      - exim4-daemon-light
+    state: absent
+    purge: true
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: install unattended-upgrades
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: unattended-upgrades
+    state: latest
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: enable unattended upgrades
+  copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+
+- name: remove old kernel with unattended-upgrades
+  replace:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^//Unattended-Upgrade::Remove-Unused-Kernel-Packages.*$'
+    replace: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";'
+  notify: restart unattended-upgrades
+
+- name: enable root login via ssh with key
+  replace:
+    dest: /etc/ssh/sshd_config
+    regexp: '^#PermitRootLogin (yes|without-password|prohibit-password)'
+    replace: "PermitRootLogin without-password"
+  notify: restart sshd
+
+- name: remove disabled root login
+  replace:
+    dest: /root/.ssh/authorized_keys
+    regexp: "^no-port-forwarding,(.+) ssh-"
+    replace: "ssh-"
+  ignore_errors: true
+
+# FIREWALL
+
+- name: firewall
+  when: sysconfig_firewall_enabled
+  vars:
+    ferm_rules_filename: "{{ sysconfig_ferm_rules_filename }}"
+    ferm_input_rules: "{{ sysconfig_ferm_input_rules }}"
+    ferm_output_rules: "{{ sysconfig_ferm_output_rules }}"
+    ferm_global_settings: "{{ sysconfig_ferm_global_settings }}"
+  include_role:
+    name: ferm-configure
+
+- include: logs.yml
+
+- include: locale.yml
+
+- include: ntp.yml
+
+...

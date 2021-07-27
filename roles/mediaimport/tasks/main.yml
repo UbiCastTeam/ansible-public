@@ -1,0 +1,166 @@
+---
+
+- name: install packages
+  package:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ mediaimport_packages }}"
+
+## USERS
+
+- name: create ftp folders
+  loop:
+    - /home/ftp/storage/incoming
+    - /home/ftp/storage/watchfolder
+  file:
+    path: "{{ item }}"
+    state: directory
+
+- name: deploy users management script
+  copy:
+    src: files/mediaimport.py
+    dest: /usr/local/bin/mediaimport
+    mode: 0755
+
+- name: create users
+  loop: "{{ mediaimport_users }}"
+  when:
+    - item.name | d(false)
+    - item.passwd | d(false)
+  no_log: true
+  command: mediaimport add --yes --user {{ item.name }} --passwd {{ item.passwd }}
+  args:
+    creates: /home/ftp/storage/incoming/{{ item.name }}
+
+- name: deploy on-upload script with setuid
+  copy:
+    src: files/on-upload
+    dest: /home/ftp/on-upload
+    mode: 04755
+
+## MYSECURESHELL
+
+- name: set the setuid on mysecureshell
+  file:
+    path: /usr/bin/mysecureshell
+    mode: 04755
+
+- name: configure mysecureshell
+  notify:
+    - restart mysecureshell
+    - sftp-verif
+  template:
+    src: sftp_config.j2
+    dest: /etc/ssh/sftp_config
+
+## PURE-FTPD
+
+- name: set pure-ftpd default config
+  notify: restart pure-ftpd
+  copy:
+    dest: /etc/default/pure-ftpd-common
+    content: |
+      STANDALONE_OR_INETD=standalone
+      VIRTUALCHROOT=false
+      UPLOADSCRIPT="/home/ftp/on-upload{% if mediaimport_virus_scan_on_upload %} --scan-virus{% endif %}"
+      UPLOADUID=0
+      UPLOADGID=0
+
+- name: configure pure-ftpd
+  notify: restart pure-ftpd
+  loop: "{{ mediaimport_pureftpd_config }}"
+  copy:
+    dest: /etc/pure-ftpd/conf/{{ item.key }}
+    content: "{{ item.value }}"
+
+## PURE-FTPD CERTIFICATES
+
+- name: create certificate directory
+  file:
+    path: /etc/ssl/{{ ansible_fqdn }}
+    state: directory
+
+- name: generate an private key
+  register: mediaimport_privkey
+  openssl_privatekey:
+    path: /etc/ssl/{{ ansible_fqdn }}/key.pem
+
+- name: generate an csr
+  when: mediaimport_privkey is changed
+  register: mediaimport_csr
+  openssl_csr:
+    path: /etc/ssl/{{ ansible_fqdn }}/csr.pem
+    privatekey_path: /etc/ssl/{{ ansible_fqdn }}/key.pem
+    common_name: "{{ ansible_fqdn }}"
+
+- name: generate a self-signed certificate
+  when: mediaimport_csr is changed
+  register: mediaimport_cert
+  openssl_certificate:
+    path: /etc/ssl/{{ ansible_fqdn }}/cert.pem
+    privatekey_path: /etc/ssl/{{ ansible_fqdn }}/key.pem
+    csr_path: /etc/ssl/{{ ansible_fqdn }}/csr.pem
+    provider: selfsigned
+
+- name: concatenate key and certificate
+  when: mediaimport_cert is changed
+  notify: restart pure-ftpd
+  shell: >
+    cat /etc/ssl/{{ ansible_fqdn }}/key.pem /etc/ssl/{{ ansible_fqdn }}/cert.pem > /etc/ssl/private/pure-ftpd.pem;
+    chmod 600 /etc/ssl/private/pure-ftpd.pem;
+
+- name: generate dhparams
+  notify: restart pure-ftpd
+  openssl_dhparam:
+    path: /etc/ssl/private/pure-ftpd-dhparams.pem
+    size: 1024
+
+## MEDIAIMPORT
+
+- name: setup cron job
+  copy:
+    src: files/mediaimport
+    dest: /etc/cron.d/mediaimport
+
+- name: configure mediaimport
+  when:
+    - mediaimport_ms_api_key | d(false)
+    - mediaimport_ms_server_name | d(false)
+  notify: restart mediaimport
+  template:
+    src: mediaimport.json.j2
+    dest: /etc/mediaserver/mediaimport.json
+    backup: true
+    mode: 0640
+
+- name: enable mediaimport service
+  systemd:
+    name: mediaimport
+    enabled: true
+
+# FAIL2BAN
+
+- name: deploy fail2ban jail
+  notify: restart fail2ban
+  template:
+    src: fail2ban_ftpd.conf.j2
+    dest: /etc/fail2ban/jail.d/pure-ftpd.conf
+    mode: 0644
+
+- meta: flush_handlers
+
+# FIREWALL
+
+- name: firewall
+  when: mediaimport_firewall_enabled
+  vars:
+    ferm_rules_filename: "{{ mediaimport_ferm_rules_filename }}"
+    ferm_input_rules: "{{ mediaimport_ferm_input_rules }}"
+    ferm_output_rules: "{{ mediaimport_ferm_output_rules }}"
+    ferm_global_settings: "{{ mediaimport_ferm_global_settings }}"
+  include_role:
+    name: ferm-configure
+
+- meta: flush_handlers
+
+...

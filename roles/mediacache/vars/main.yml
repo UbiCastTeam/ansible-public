@@ -1,0 +1,6 @@
+---
+
+debian_packages:
+  - ubicast-mediacache
+
+...

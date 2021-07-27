@@ -1,0 +1,73 @@
+---
+
+listen:
+
+  - groupname: mediaserver
+    ports: [ "80", "443" ]
+
+  - groupname: celerity
+    ports: [ "6200" ]
+
+  - groupname: wowza
+    ports: [ "1935" ]
+
+  - groupname: mirismanager
+    ports: [ "22", "443" ]
+
+  - groupname: mediaimport
+    ports: [ "20", "22" ]
+
+  - groupname: all
+    ports: [ "4949" ]
+
+  - groupname: postgres
+    ports: [ "5432", "22" ]
+
+
+test:
+
+  - groupname_src: mediaworker
+    groupname_dst: mediaserver
+    ports: [ "80", "443" ]
+
+  - groupname_src: mediaworker
+    groupname_dst: celerity
+    ports: [ "6200" ]
+
+  - groupname_src: mediaserver
+    groupname_dst: celerity
+    ports: [ "6200" ]
+
+  - groupname_src: mediaserver
+    groupname_dst: mediacache
+    ports: [ "22", "443" ]
+
+  - groupname_src: mediacache
+    groupname_dst: mediaserver
+    ports: [ "80", "443" ]
+
+  - groupname_src: mediaserver
+    hosts_dst: [ "mirismanager.ubicast.eu" ]
+    ports: [ "80", "443" ]
+
+  - groupname_src: mediaserver
+    hosts_dst: [ 'wowzalicense1.wowzamedia.com', 'wowzalicense2.wowzamedia.com', 'wowzalicense3.wowzamedia.com', 'wowzalicense4.wowzamedia.com' ]
+    ports: [ "80" ]
+
+  - groupname_src: mediaserver
+    groupname_dst: netcapture
+    ports: [ "22" ]
+
+  - groupname_src: netcapture
+    groupname_dst: mediaserver
+    ports: [ "443", "1935" ]
+
+  - groupname_src: mediaserver
+    hosts_dst: [ "git.ubicast.net" ]
+    ports: [ "22" ]
+
+  - groupname_src: localhost
+    groupname_dst: mediaserver
+    ports: [ "80", "443" ]
+
+...

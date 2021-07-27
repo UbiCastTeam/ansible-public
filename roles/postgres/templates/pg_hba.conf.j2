@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+
+# PostgreSQL Client Authentication Configuration File
+# ===================================================
+
+{% for connection in pg_hba %}
+{% if connection.comment is defined %}
+# {{ connection.comment }}
+{% endif %}
+{{ connection.type }}	{{ connection.database | d('all') }}	{{ connection.user | d('all') }}	{{ connection.address | d() }}	{{ connection.method | d('md5') }}
+{% endfor %}

@@ -1,0 +1,16 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: Munin server
+  hosts: munin_server
+  tags: munin
+  pre_tasks:
+    - name: gather munin_node group facts
+      setup:
+      delegate_to: "{{ item }}"
+      delegate_facts: true
+      with_items: "{{ groups['munin_node'] }}"
+  roles:
+    - munin/munin-server
+
+...

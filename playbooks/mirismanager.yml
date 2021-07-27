@@ -1,0 +1,31 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: MIRIS MANAGER
+  hosts: mirismanager
+  tags: mirismanager
+  pre_tasks:
+    - name: check running in a docker container
+      register: check_if_docker
+      stat:
+        path: /.dockerenv
+    - name: set docker flag variable
+      set_fact:
+        in_docker: "{{ check_if_docker.stat.exists | d(false) }}"
+  roles:
+    - mirismanager
+  post_tasks:
+    - name: deploy letsencrypt certificate
+      when: letsencrypt_enabled | d(false)
+      include_role:
+        name: letsencrypt
+    - name: configure network
+      when: network_apply | d(false)
+      include_role:
+        name: network
+    - name: configure proxy
+      when: proxy_apply | d(false)
+      include_role:
+        name: proxy
+
+...

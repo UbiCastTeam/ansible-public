@@ -1,0 +1,48 @@
+---
+
+pg_packages:
+  - postgresql
+
+pg_version: 11
+pg_cluster: main
+
+pg_password: "{{ envsetup_db_pg_root_pwd | d() }}"
+
+pg_conf_dir: /etc/postgresql/{{ pg_version }}/{{ pg_cluster }}
+
+pg_conf:
+  - name: main
+    content:
+
+pg_hba:
+  - type: local
+    method: peer
+  - type: host
+    address: 127.0.0.1/32
+  - type: host
+    address: ::1/128
+  - type: local
+    database: replication
+    method: peer
+  - type: host
+    database: replication
+    address: 127.0.0.1/32
+  - type: host
+    database: replication
+    address: ::1/128
+
+pg_users: []
+
+pg_databases: []
+
+pg_firewall_enabled: true
+pg_ferm_rules_filename: postgres
+pg_ferm_input_rules:
+  - proto:
+      - tcp
+    dport:
+      - 5432
+pg_ferm_output_rules: []
+pg_ferm_global_settings:
+
+...

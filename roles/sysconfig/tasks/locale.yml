@@ -1,0 +1,37 @@
+---
+- name: install locale packages
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ locale_packages }}"
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: generate locale
+  locale_gen:
+    name: "{{ init_locale }}"
+
+- name: set locale
+  notify: update locale
+  copy:
+    dest: /etc/default/locale
+    content: |
+      LANG={{ init_locale }}
+      LANGUAGE={{ init_locale }}
+      LC_ALL={{ init_locale }}
+
+- name: set locale.gen
+  notify: update locale
+  lineinfile:
+    path: /etc/locale.gen
+    regexp: '^(?:# )?({{ init_locale }}.*)$'
+    backrefs: true
+    line: '\1'
+
+- name: set timezone
+  notify: restart cron
+  timezone:
+    name: "{{ init_timezone }}"
+
+...

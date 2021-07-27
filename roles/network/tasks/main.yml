@@ -1,0 +1,56 @@
+---
+
+- name: if network settings are set
+  when:
+    - network_apply | bool
+    - network_ip | d(false)
+    - network_mask | d(false)
+    - network_gateway | d(false)
+    - network_dns | d(false)
+  block:
+
+    - name: packages
+      apt:
+        force_apt_get: true
+        install_recommends: false
+        name: "{{ network_packages }}"
+        state: present
+      register: apt_status
+      retries: 60
+      until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+    - name: cleanup
+      register: network_cleanup_interfaces
+      copy:
+        dest: /etc/network/interfaces
+        backup: true
+        content: |
+          # This file describes the network interfaces available on your system
+          # and how to activate them. For more information, se interfaces(5).
+
+          source /etc/network/interfaces.d/*
+
+          # The loopback network interface
+          auto lo
+          iface lo inet loopback
+
+    - name: service
+      when: network_cleanup_interfaces is changed
+      systemd:
+        name: network-manager
+        enabled: true
+        state: restarted
+
+    - name: interface
+      nmcli:
+        conn_name: "envsetup-{{ ansible_default_ipv4.interface }}"
+        type: ethernet
+        ifname: "{{ ansible_default_ipv4.interface }}"
+        ip4: "{{ network_ip_mask_cidr | ipv4 }}"
+        gw4: "{{ network_gateway | ipv4 }}"
+        dns4: "{{ network_dns | ipv4 }}"
+        autoconnect: true
+        activate: false
+        state: present
+
+...

@@ -1,0 +1,34 @@
+---
+- name: install kibana package
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: kibana
+    state: latest
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: deploy kibana configuration
+  template:
+    src: kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+  notify: restart kibana
+
+- name: install apm-server package
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: apm-server
+    state: latest
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: deploy apm-server configuration
+  template:
+    src: apm-server.yml.j2
+    dest: /etc/apm-server/apm-server.yml
+  notify: restart apm-server
+
+...

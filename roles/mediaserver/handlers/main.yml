@@ -1,0 +1,22 @@
+---
+
+- name: mscontroller restart
+  command:
+    cmd: mscontroller.py restart
+
+- name: restart nginx
+  systemd:
+    name: nginx
+    state: restarted
+
+- name: restart mediaserver
+  systemd:
+    name: mediaserver
+    state: restarted
+
+- name: restart systemd-sysusers
+  systemd:
+    name: systemd-sysusers
+    state: restarted
+
+...

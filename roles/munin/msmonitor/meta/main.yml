@@ -1,0 +1,11 @@
+---
+
+dependencies:
+  - role: conf           # get conf.sh
+  - role: init           # setup keys
+  - role: sysconfig      # setup repos
+  - role: ferm-install
+  - role: ferm-configure
+  - role: nginx
+
+...

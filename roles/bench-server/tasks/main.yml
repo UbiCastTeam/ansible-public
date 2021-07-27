@@ -1,0 +1,101 @@
+---
+
+- name: install bench-server packages
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    update_cache: true
+    name: "{{ bench_server_packages }}"
+    state: latest
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: ensure configuration directory exists
+  file:
+    path: /etc/mediaserver
+    state: directory
+
+- name: benchmark configuration settings
+  copy:
+    dest: /etc/mediaserver/bench-conf.json
+    content: |
+      {
+      "LOCUST_HOST":"{{ bench_server }}",
+      "MS_HOST":"{{ bench_host }}",
+      "MS_USERNAME":"{{ bench_user }}",
+      "MS_PASSWORD":"{{ bench_password }}",
+      "MEDIA_OID":"{{ bench_oid }}",
+      "DL_STREAMS":{{ bench_dl_streams }},
+      "TIME_STATS":{{ bench_time_stat }}
+      }
+
+- name: reload systemd daemon
+  systemd:
+    daemon_reload: true
+
+- name: restart bench-server
+  systemd:
+    name: bench-server
+    state: restarted
+
+- name: streaming configuration settings
+  template:
+    src: bench-streaming.conf.j2
+    dest: /etc/mediaserver/bench-streaming.conf
+
+- name: clone ms-testing-suite repository
+  git:
+    repo: "{{ bench_stream_repo }}"
+    version: stable
+    dest: /usr/share/ms-testing-suite
+    update: true
+    force: true
+
+- name: copy configuration for testing tools
+  copy:
+    src: /etc/mediaserver/bench-streaming.conf
+    dest: /usr/share/ms-testing-suite/config.json
+    remote_src: true
+
+- name: add docker key
+  when:
+    - not offline_mode | d(false)
+    - not in_docker | d(false)
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: add docker debian repository
+  when:
+    - not offline_mode | d(false)
+    - not in_docker | d(false)
+  apt_repository:
+    repo: "deb https://download.docker.com/linux/debian buster stable"
+    state: present
+    update_cache: true
+
+- name: install docker
+  when:
+    - not offline_mode | d(false)
+    - not in_docker | d(false)
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    update_cache: true
+    name: docker-ce
+    state: latest
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: generate docker image
+  when:
+    - not offline_mode | d(false)
+    - not in_docker | d(false)
+  command:
+    cmd: make build_docker_img
+    chdir: /usr/share/ms-testing-suite
+  run_once: true
+
+...

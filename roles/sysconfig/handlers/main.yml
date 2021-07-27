@@ -1,0 +1,47 @@
+---
+- name: update cache
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    update_cache: true
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: systemd daemon reload
+  systemd:
+    daemon_reload: true
+
+- name: update locale
+  command: locale-gen
+
+- name: restart cron
+  service:
+    name: cron
+    state: restarted
+
+- name: restart sshd
+  service:
+    name: sshd
+    state: restarted
+
+- name: restart unattended-upgrades
+  service:
+    name: unattended-upgrades
+    state: restarted
+
+- name: restart ntp
+  service:
+    name: ntp
+    state: restarted
+
+- name: update cache
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    update_cache: true
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+...

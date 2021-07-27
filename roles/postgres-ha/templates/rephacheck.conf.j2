@@ -1,0 +1,15 @@
+local_node_id = "{{ repmgr_node_id }}"
+connect_timeout = "{{ repmgr_timeout }}"
+
+{% for node in play_hosts %}
+[nodes."{{ hostvars[node]['repmgr_node_name'] }}"]
+addr = "{{ hostvars[node]['ansible_default_ipv4']['address'] }}"
+port = 5432
+node_id = {{ hostvars[node]['repmgr_node_id'] }}
+
+{% endfor %}
+
+[conninfo]
+dbname = "{{ repmgr_db }}"
+user = "{{ repmgr_user }}"
+password = "{{ repmgr_password }}"

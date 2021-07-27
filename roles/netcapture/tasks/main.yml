@@ -1,0 +1,52 @@
+---
+
+- name: netcapture install
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    name: python3-miris-netcapture
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: netcapture config
+  template:
+    src: netcapture.json.j2
+    dest: /etc/miris/netcapture.json
+
+- name: netcapture miris
+  template:
+    src: miris-api.json.j2
+    dest: /etc/miris/conf/api.json
+
+- name: netcapture config dir
+  file:
+    path: "{{ netcapture_conf_folder }}"
+    group: video
+    mode: u=rwX,g=rwX,o=r
+    recurse: true
+    state: directory
+
+- name: netcapture media dir
+  file:
+    path: "{{ netcapture_media_folder }}"
+    group: video
+    mode: u=rwX,g=rwX,o=r
+    recurse: true
+    state: directory
+
+# FIREWALL
+
+- name: firewall
+  when: netcapture_firewall_enabled
+  vars:
+    ferm_rules_filename: "{{ netcapture_ferm_rules_filename }}"
+    ferm_input_rules: "{{ netcapture_ferm_input_rules }}"
+    ferm_output_rules: "{{ netcapture_ferm_output_rules }}"
+    ferm_global_settings: "{{ netcapture_ferm_global_settings }}"
+  include_role:
+    name: ferm-configure
+
+- meta: flush_handlers
+
+...

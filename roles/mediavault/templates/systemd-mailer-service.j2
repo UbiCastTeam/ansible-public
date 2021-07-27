@@ -1,0 +1,8 @@
+[Unit]
+Description=status email for %i to {{ mvt_mailer_to }}
+
+[Service]
+Type=oneshot
+ExecStart={{ mvt_mailer_script_path }} {{ mvt_mailer_to }} %i
+User=nobody
+Group=systemd-journal

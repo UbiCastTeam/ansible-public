@@ -1,0 +1,22 @@
+---
+
+- name: reload systemd
+  systemd:
+    daemon_reload: true
+
+- name: restart postgresql
+  systemd:
+    name: postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
+    state: restarted
+
+- name: restart repmgrd
+  systemd:
+    name: repmgrd
+    state: restarted
+
+- name: restart rephacheck
+  systemd:
+    name: rephacheck.socket
+    state: restarted
+
+...

@@ -1,0 +1,10 @@
+{% for rule in ferm_input_rules %}
+{% if rule.mod is defined and rule.mod %}mod {{ rule.mod }} {% endif %}
+{% if rule.helper is defined and rule.helper %}helper {{ rule.helper }} {% endif %}
+{% if rule.saddr is defined and rule.saddr %}saddr @ipfilter(({{ rule.saddr | join(' ') }})) {% endif %}
+{% if rule.daddr is defined and rule.daddr %}daddr @ipfilter(({{ rule.daddr | join(' ') }})) {% endif %}
+{% if rule.proto is defined and rule.proto %}proto ({{ rule.proto | join(' ') }}) {% endif %}
+{% if rule.dport is defined and rule.dport %}dport ({{ rule.dport | join(' ') }}) {% endif %}
+{% if rule.sport is defined and rule.sport %}sport ({{ rule.sport | join(' ') }}) {% endif %}
+{% if rule.policy is defined and rule.policy %}{{ rule.policy | upper }}{% else %}ACCEPT{% endif %};
+{% endfor %}

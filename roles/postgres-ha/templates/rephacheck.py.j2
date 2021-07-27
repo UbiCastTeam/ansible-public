@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+
+"""
+Determine by voting which is the state of each node.
+For this to work properly, you need to have an odd number of nodes.
+"""
+
+from collections import Counter
+import psycopg2
+import toml
+
+
+def get_state(addr, port, node_id):
+    try:
+        # postgresql query
+        con_args = {'host': addr, 'port': port, 'connect_timeout': TIMEOUT}
+        con_args.update(CONNINFO)
+        con = psycopg2.connect(**con_args)
+        cur = con.cursor()
+        query = 'SELECT active, type FROM repmgr.nodes WHERE node_id = {};'
+        cur.execute(query.format(node_id))
+        data = cur.fetchone()
+        cur.close()
+        # return result
+        return data
+    except Exception:
+        # an error occured, so return false by default
+        return (False, 'unknown')
+
+
+def get_quorum_state(node_id):
+    # init vars
+    votes = []
+    # ask each node for the state of `node_id`
+    for node in NODES.values():
+        active, role = get_state(node['addr'], node['port'], node_id)
+        # if node considered active take vote, otherwise fence it
+        if active:
+            votes.append(role)
+        else:
+            votes.append('fenced')
+    # determines voting result
+    results = Counter(votes)
+    state = results.most_common(1)[0][0]
+    # catch inconsistent state case
+    if state == 'standby' and 'primary' in votes:
+        state = 'fenced'
+    # return result
+    return state
+
+
+if __name__ == '__main__':
+    with open('/etc/postgresql/{{ repmgr_pg_version }}/{{ repmgr_pg_cluster }}/rephacheck.conf') as rephaconf:
+        conf = toml.load(rephaconf)
+
+    NODES = conf.get('nodes')
+    CONNINFO = conf.get('conninfo')
+    TIMEOUT = conf.get('connect_timeout', 3)
+    CURRENT = conf.get('local_node_id')
+
+    state = get_quorum_state(CURRENT)
+    print(state)

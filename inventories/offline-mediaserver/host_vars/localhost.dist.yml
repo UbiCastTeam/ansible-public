@@ -1,0 +1,9 @@
+---
+
+# customer name
+customer_short_name: customer
+
+# install in offline environment
+offline_mode: true
+
+...

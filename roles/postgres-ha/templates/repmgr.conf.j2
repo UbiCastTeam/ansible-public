@@ -1,0 +1,70 @@
+# https://raw.githubusercontent.com/2ndQuadrant/repmgr/master/repmgr.conf.sample
+#------------------------------------------------------------------------------
+# Node configuration settigns
+#------------------------------------------------------------------------------
+# node information
+node_id={{ repmgr_node_id }}
+node_name={{ repmgr_node_name }}
+# database connection information
+conninfo='{{ repmgr_conninfo }}'
+# repmgr data directory
+data_directory='/var/lib/postgresql/{{ repmgr_pg_version }}/{{ repmgr_pg_cluster }}'
+# log level
+log_level='INFO'
+# log to file
+log_file='/var/log/postgresql/repmgrd.log'
+
+#------------------------------------------------------------------------------
+# Replication settings
+#------------------------------------------------------------------------------
+# physical replication slots (at least the number of standbys which will connect to the primary)
+use_replication_slots=1
+
+#------------------------------------------------------------------------------
+# Event notification settings
+#------------------------------------------------------------------------------
+# RM#33392
+# external program or script (should be executable by repmgr user)
+#event_notification_command='/usr/bin/repmgr-event %n %e %s "%t" "%d"'
+
+#------------------------------------------------------------------------------
+# Environment/command settings
+#------------------------------------------------------------------------------
+# path to PostgreSQL binary directory ((location of pg_ctl, pg_basebackup etc.) 
+pg_bindir='/usr/lib/postgresql/{{ repmgr_pg_version }}/bin/'
+
+#------------------------------------------------------------------------------
+# external command options
+#------------------------------------------------------------------------------
+# options to append to "pg_ctl"
+pg_ctl_options='-s'
+# options to append to "pg_basebackup"
+pg_basebackup_options='--label=repmgr_backup'
+
+#------------------------------------------------------------------------------
+# Failover and monitoring settings (repmgrd)
+#------------------------------------------------------------------------------
+# The max length of time (in seconds) to wait for the new primary to become available
+primary_follow_timeout=30
+# determines what action to take in the event of upstream failure
+#  'automatic': repmgrd will automatically attempt to promote the node or follow the new upstream node
+#  'manual': repmgrd will take no action and the node will require manual attention to reattach it to replication
+failover=automatic
+# Number of attempts which will be made to reconnect to an unreachable primary (or other upstream node)
+reconnect_attempts=6
+# Interval between attempts to reconnect to an unreachable primary (or other upstream node)
+reconnect_interval=5
+# command repmgrd executes when promoting a new primary
+promote_command='repmgr -f {{ repmgr_config }} standby promote'
+# command repmgrd executes when instructing a standby to follow a new primary
+follow_command='repmgr -f {{ repmgr_config }} standby follow -W'
+
+#------------------------------------------------------------------------------
+# service control commands
+#------------------------------------------------------------------------------
+# override the default pg_ctl commands used to stop, start, restart, reload and promote the PostgreSQL cluster
+service_start_command='sudo systemctl start postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}'
+service_stop_command='sudo systemctl stop postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}'
+service_restart_command='sudo systemctl restart postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}'
+service_reload_command='sudo systemctl reload postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}'
+
