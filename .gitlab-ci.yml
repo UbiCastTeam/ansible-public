@@ -14,6 +14,14 @@ stages:
 
 lint:verify:
   stage: lint
+  rules:
+    # Avoid duplicate CI on merge request commits
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+      when: never
+    # Ignore linting on docker image build
+    - if: '$DOCKER_BUILD != "True"'
+      when: always
+    - when: never
   script:
     - make lint
 
