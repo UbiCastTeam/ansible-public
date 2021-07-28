@@ -16,4 +16,3 @@ To benchmark the solution:
 To contribute:
 
 - [Contributing guide](/doc/contrib.md)
-
