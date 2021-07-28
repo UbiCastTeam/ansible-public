@@ -1,7 +1,7 @@
 ---
 
 default:
-  image: registry.ubicast.net/mediaserver/envsetup
+  image: registry.ubicast.net/sys/ansible-public
 
 stages:
   - lint
@@ -19,7 +19,7 @@ lint:verify:
 
 # * * * * * * * * * * * * *
 
-# Docker envsetup image build job
+# Docker image build job
 docker:image:
   image: docker:stable
   stage: docker

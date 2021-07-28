@@ -23,8 +23,8 @@ Clone this repository on your computer:
 
 ```sh
 cd /root
-git clone https://git.ubicast.net/mediaserver/envsetup.git
-cd envsetup/
+git clone https://git.ubicast.net/sys/ansible-public.git
+cd ansible-public
 ```
 
 ### Python and ansible
@@ -75,7 +75,7 @@ docker run \
   `# let container know where is mapped the SSH agent` \
   -e SSH_AUTH_SOCK=/ssh-agent \
   `# container image to use` \
-  registry.ubicast.net/mediaserver/envsetup \
+  registry.ubicast.net/sys/ansible-public \
   `# executable to run` \
   bash
 ```

@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-DOCKER_IMAGE_NAME := registry.ubicast.net/mediaserver/envsetup
+DOCKER_IMAGE_NAME := registry.ubicast.net/sys/ansible-public
 VENV := /tmp/pyvensetup
 ANSIBLE_CONFIG := ansible.cfg
 PIP_BIN = $(shell command -v $(VENV)/bin/pip3 || command -v pip3 || echo pip3)

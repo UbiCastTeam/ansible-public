@@ -13,7 +13,7 @@ Please read the tools documentations and the associated best practices.
 Install all [required tools](requirements.md) and then execute:
 
 ```sh
-cd /root/envsetup
+cd /root/ansible-public
 make requirements-dev
 ```
 

@@ -6,7 +6,7 @@ The benchmarking tool is based on Locust.
 
 ## Prerequisite
 
-- Envsetup and ansible [Help to get envsetup](/doc/install.md).
+- Ansible and ansible-public repository.
 - An SSH access to the machines that will be used to make requests on MediaServer (you can use the workers for that).
 - A video on demand or a live stream to test. To create a live stream for the test, please read the section `Prepare a live page` of this documentation.
 

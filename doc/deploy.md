@@ -1,9 +1,9 @@
 # Deployment
 
-Move to envsetup root directory
+Move to ansible-public root directory
 
 ```sh
-cd /root/envsetup
+cd /root/ansible-public
 ```
 
 To deploy all components, execute:
