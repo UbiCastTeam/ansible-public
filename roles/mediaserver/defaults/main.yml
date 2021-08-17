@@ -43,6 +43,8 @@ server_ferm_input_rules:
 server_ferm_output_rules: []
 server_ferm_global_settings:
 
+server_celerity_server_url: "{{ envsetup_celerity_server | d(hostvars[groups['celerity'][0]]['ansible_default_ipv4']['address']) }}"
+
 real_ip_from: ""  # default for OVH is 10.108.0.0/14
 
 ...

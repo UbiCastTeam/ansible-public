@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 SIGNING_KEY = '{{ server_celerity_signing_key }}'
-SERVER_URL = 'https://{{ hostvars[groups['celerity'][0]]['ansible_default_ipv4']['address'] }}:6200'
+SERVER_URL = 'https://{{ server_celerity_server_url }}:6200'
 
 # Queues count, default: min(round(thread_count/2)-1,2)
 #QUEUES_PER_WORKER = 2
