@@ -9,7 +9,7 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 
 def test_apt_source_skyreach_file(host):
-    f = host.file("/etc/apt/sources.list.d/skyreach.list")
+    f = host.file("/etc/apt/sources.list.d/ubicast.list")
 
     assert f.exists
     assert f.is_file

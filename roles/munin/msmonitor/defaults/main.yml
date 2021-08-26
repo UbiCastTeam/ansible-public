@@ -1,7 +1,7 @@
 ---
 
-monitor_shell_pwd: "{{ envsetup_monitor_shell_pwd }}"
-monitor_hostname: "{{ envsetup_monitor_server_name }}"
+monitor_shell_pwd: "{{ envsetup_monitor_shell_pwd | d() }}"
+monitor_hostname: "{{ envsetup_monitor_server_name | d('monitor', true) }}"
 
 monitor_firewall_enabled: true
 monitor_ferm_rules_filename: monitor

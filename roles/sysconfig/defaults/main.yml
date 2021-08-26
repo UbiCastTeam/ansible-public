@@ -5,41 +5,31 @@ repos_deb: deb.debian.org
 repos_deb_sec: security.debian.org
 repos_release: "{{ ansible_distribution_release }}"
 
-repos_skyreach_token: "{{ envsetup_skyreach_apt_token }}"
-repos_skyreach_host: "{{ envsetup_skyreach_host }}"
-
+repos_skyreach_token: "{{ envsetup_skyreach_apt_token | d('') }}"
+repos_skyreach_host: "{{ envsetup_skyreach_host | d('mirismanager.ubicast.eu', true) }}"
 
 sysconfig_packages:
   - bash-completion
   - curl
-  - git
   - host
   - htop
+  - iftop
   - ifupdown
   - iotop
-  - iftop
   - ipython3
   - lm-sensors
   - make
+  - man
   - net-tools
   - netcat
   - nfs-client
   - openssh-server
   - pciutils
-  - python3-psutil
-  - python3-openssl
-  - python3-requests
-  - python3-spf
-  - python3-packaging
-  - python3-lxml
   - pwgen
   - rsync
   - smartmontools
   - sudo
-  - unattended-upgrades
   - vim
-  - man
-  - git-man
 
 sysconfig_firewall_enabled: true
 sysconfig_ferm_rules_filename: sysutils
@@ -68,6 +58,6 @@ init_timezone: "{{ envsetup_timezone | d('Etc/UTC', true) }}"
 sysconfig_logs_packages:
   - rsyslog
 
-ntp_servers: "{{ envsetup_ntp_server }}"
+ntp_servers: "{{ envsetup_ntp_server | d('0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org', true) }}"
 
 ...

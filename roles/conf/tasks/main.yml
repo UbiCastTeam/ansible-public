@@ -26,23 +26,6 @@
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
-- name: clone envsetup repository
-  when: not offline_mode | d(false)
-  ignore_errors: true
-  register: conf_clone
-  git:
-    repo: "{{ conf_repo_url }}"
-    version: "{{ conf_repo_version }}"
-    dest: "{{ conf_repo_dest }}"
-
-- name: ask to continue
-  when:
-    - not offline_mode | d(false)
-    - conf_clone is failed
-  pause:
-    prompt: "Previous task failed, it may be normal if you have local changes in the commited files, do you want to continue anyway?"
-    seconds: 30
-
 - name: generate root ssh key pair
   register: conf_root
   user:
@@ -51,17 +34,17 @@
     ssh_key_type: ed25519
     ssh_key_file: .ssh/id_ed25519
 
+- name: create conf dir
+  file:
+    path: "{{ conf_dir }}"
+    state: directory
+    mode: "0700"
+
 - name: check if auto-generated-conf.sh exists
   check_mode: false
-  register: check_conf
+  register: check_auto_conf
   stat:
-    path: "{{ conf_repo_dest }}/auto-generated-conf.sh"
-
-- name: check if conf.sh exists
-  check_mode: false
-  register: check_local_conf
-  stat:
-    path: "{{ conf_repo_dest }}/conf.sh"
+    path: "{{ conf_dir }}/auto-generated-conf.sh"
 
 - name: download conf and update ssh public key with activation key
   when: skyreach_activation_key | d(false)
@@ -69,7 +52,7 @@
   changed_when: conf_dl_ak.status == 200
   failed_when:
     - conf_dl_ak.status != 200
-    - not check_conf.stat.exists
+    - not check_auto_conf.stat.exists
     - not skyreach_system_key
   uri:
     url: https://{{ conf_host }}/erp/credentials/envsetup-conf.sh
@@ -83,13 +66,13 @@
 
 - name: download conf and update ssh public key with system key
   when:
-    - not check_conf.stat.exists or conf_update
+    - not check_auto_conf.stat.exists or conf_update
     - skyreach_system_key | d(false)
   register: conf_dl_sk
   changed_when: conf_dl_sk.status == 200
   failed_when:
     - conf_dl_sk.status != 200
-    - not check_conf.stat.exists
+    - not check_auto_conf.stat.exists
   uri:
     url: https://{{ conf_host }}/erp/credentials/envsetup-conf.sh
     method: POST
@@ -107,45 +90,37 @@
   when: item is changed
   copy:
     content: "{{ item.content }}"
-    dest: "{{ conf_repo_dest }}/auto-generated-conf.sh"
+    dest: "{{ conf_dir }}/auto-generated-conf.sh"
     force: true
     backup: true
 
-- name: touch generated conf
-  file:
-    path: "{{ conf_repo_dest }}/auto-generated-conf.sh"
-    access_time: preserve
-    modification_time: preserve
-    state: touch
-
-- name: touch local conf
-  file:
-    path: "{{ conf_repo_dest }}/conf.sh"
-    access_time: preserve
-    modification_time: preserve
-    state: touch
-
-- name: load global conf
-  changed_when: false
+- name: check if auto-generated-conf.sh exists
   check_mode: false
-  source_file:
-    path: "{{ conf_repo_dest }}/global-conf.sh"
-    prefix: envsetup_
-    lower: true
+  register: check_auto_conf
+  stat:
+    path: "{{ conf_dir }}/auto-generated-conf.sh"
+
+- name: check if conf.sh exists
+  check_mode: false
+  register: check_local_conf
+  stat:
+    path: "{{ conf_dir }}/conf.sh"
 
 - name: load generated conf
+  when: check_auto_conf.stat.exists
   changed_when: false
   check_mode: false
   source_file:
-    path: "{{ conf_repo_dest }}/auto-generated-conf.sh"
+    path: "{{ conf_dir }}/auto-generated-conf.sh"
     prefix: envsetup_
     lower: true
 
 - name: load local conf
+  when: check_local_conf.stat.exists
   changed_when: false
   check_mode: false
   source_file:
-    path: "{{ conf_repo_dest }}/conf.sh"
+    path: "{{ conf_dir }}/conf.sh"
     prefix: envsetup_
     lower: true
 

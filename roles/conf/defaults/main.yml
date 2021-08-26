@@ -7,9 +7,7 @@ conf_req_packages:
 conf_req_packages_online:
   - git
 
-conf_repo_url: https://mirismanager.ubicast.eu/git/mediaserver/envsetup.git
-conf_repo_version: "{{ lookup('env', 'ENVSETUP_BRANCH') | d('stable', true) }}"
-conf_repo_dest: /root/envsetup
+conf_dir: /root/envsetup
 
 conf_host: "{{ skyreach_host | default('mirismanager.ubicast.eu', true) }}"
 conf_valid_cert: "{{ skyreach_valid_cert | default(true, true) }}"

@@ -12,10 +12,10 @@ manager_packages:
   - ubicast-skyreach
 
 manager_testing: false
-manager_hostname: "{{ envsetup_cm_server_name }}"
+manager_hostname: "{{ envsetup_cm_server_name | d('mirismanager', true) }}"
 manager_default_email_sender: "noreply@{{ manager_hostname }}"
 manager_email_sender: "{{ envsetup_email_sender | default(manager_default_email_sender, true) }}"
-manager_proxy_http: "{{ envsetup_proxy_http }}"
+manager_proxy_http: "{{ envsetup_proxy_http | d() }}"
 
 manager_firewall_enabled: true
 manager_ferm_rules_filename: manager
