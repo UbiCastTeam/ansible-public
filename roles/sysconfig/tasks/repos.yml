@@ -26,20 +26,25 @@
       deb {{ repos_prefix }}{{ repos_deb }}/debian {{ repos_release }}-updates main contrib non-free
       deb {{ repos_prefix }}{{ repos_deb_sec }}/debian-security {{ repos_release }}/updates main contrib non-free
 
-- name: add skyreach apt repo key
-  when:
-    - not offline_mode | d(false)
-    - repos_skyreach_token | d(false)
+- name: add ubicast apt repo key
+  when: not offline_mode | d(false)
   apt_key:
     url: https://{{ repos_skyreach_host }}/media/public.gpg
 
-- name: add skyreach apt repo
+- name: add ubicast apt repo
   when:
     - not offline_mode | d(false)
     - repos_skyreach_token | d(false)
   apt_repository:
     repo: deb https://{{ repos_skyreach_host }} packaging/apt/{{ repos_skyreach_token }}/
-    filename: skyreach
+    filename: ubicast
+    update_cache: true
+
+- name: add ubicast security apt repo
+  when: not offline_mode | d(false)
+  apt_repository:
+    repo: deb https://{{ repos_skyreach_host }} packaging/apt/ubicast-security-updates/
+    filename: ubicast-secu
     update_cache: true
 
 ...

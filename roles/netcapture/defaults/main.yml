@@ -1,8 +1,8 @@
 ---
 
 netcapture_registry_host: registry.ubicast.eu
-netcapture_registry_login: "{{ envsetup_netcapture_docker_login }}"
-netcapture_registry_password: "{{ envsetup_netcapture_docker_pwd }}"
+netcapture_registry_login: "{{ envsetup_netcapture_docker_login | d() }}"
+netcapture_registry_password: "{{ envsetup_netcapture_docker_pwd | d() }}"
 netcapture_cm_url: "https://{{ envsetup_cm_server_name | default('https://mirismanager.ubicast.eu', true) }}"
 netcapture_check_ssl: true
 netcapture_conf_folder: /etc/miris/conf

@@ -48,4 +48,7 @@
 - import_playbook: munin/all.yml
   tags: monitor
 
+- import_playbook: tester.yml
+  tags: tester
+
 ...

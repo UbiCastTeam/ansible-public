@@ -1,0 +1,7 @@
+---
+
+tester_packages:
+  - ubicast-env
+  - ubicast-tester
+
+...

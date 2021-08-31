@@ -70,7 +70,7 @@
 
     - name: disable skyreach repository
       shell:
-        cmd: mv -f /etc/apt/sources.list.d/skyreach.list /etc/apt/sources.list.d/skyreach.list.migrate
+        cmd: mv -f /etc/apt/sources.list.d/ubicast.list /etc/apt/sources.list.d/ubicast.list.migrate
 
     - name: update sources list
       copy:

@@ -9,5 +9,7 @@ SERVER_URL = 'https://{{ celerity_server }}:6200'
 
 # MediaServer interactions
 MEDIASERVERS = {
+{% if celerity_ms_id and celerity_ms_hostname and celerity_ms_api_key %}
     '{{ celerity_ms_id }}': {'url': 'https://{{ celerity_ms_hostname }}', 'api_key': '{{ celerity_ms_api_key }}'},
+{% endif %}
 }

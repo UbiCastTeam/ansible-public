@@ -1,6 +1,38 @@
 ---
 - include: repos.yml
 
+# Upgrade already installed packages to latest version and clean system
+
+- name: apt update
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    update_cache: true
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: apt dist upgrade
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    upgrade: dist
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: apt clean and autoremove
+  apt:
+    force_apt_get: true
+    install_recommends: false
+    autoclean: true
+    autoremove: true
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+# Install new packages and remove conflicts
+
 - name: install system utilities
   apt:
     force_apt_get: true
@@ -26,6 +58,8 @@
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
+# Enable automatic security upgrades
+
 - name: install unattended-upgrades
   apt:
     force_apt_get: true
@@ -50,10 +84,17 @@
     replace: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";'
   notify: restart unattended-upgrades
 
+- name: allow automatic updates for ubicast security
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    insertafter: '^Unattended-Upgrade::Origins-Pattern {$'
+    line: '        "origin=UbiCast,label=UbiCast-Security";'
+    backup: true
+
 - name: enable root login via ssh with key
   replace:
     dest: /etc/ssh/sshd_config
-    regexp: '^#PermitRootLogin (yes|without-password|prohibit-password)'
+    regexp: "^#PermitRootLogin (yes|without-password|prohibit-password)"
     replace: "PermitRootLogin without-password"
   notify: restart sshd
 
