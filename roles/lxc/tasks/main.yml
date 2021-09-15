@@ -1,0 +1,52 @@
+---
+
+- name: Masquerade bridge configuration
+  block:
+    - name: Warning for test
+      pause:
+        prompt: |
+          -------------------------------------------------------------------------------------------
+          ! WARNING !
+          Host bridge configuration must be done manually, and named: br0
+          Documentation (section host device as bridge): https://wiki.debian.org/LXC/SimpleBridge
+          Continue (yes/no)
+          -------------------------------------------------------------------------------------------
+      when: lxc_network_type == 'host_bridge'
+      register: confirm_continue
+      no_log: true
+
+    - name: 'check parm is null or invalid'
+      fail: msg='Installation aborted'
+      when: not ((confirm_continue.user_input | bool)
+            or (confirm_continue.user_input | length == 0))
+  when: lxc_network_type == 'host_bridge'
+
+- name: LXC packages installation
+  apt:
+    force_apt_get: true
+    name:
+      - lxc
+      - lxcfs
+      - bridge-utils
+    state: present
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: Default container configuration
+  notify: restart lxc
+  template:
+    src: lxc-default.j2
+    dest: /etc/lxc/default.conf
+
+- name: Masquerade bridge configuration
+  block:
+    - name: Container network configuration
+      notify: restart lxc-net
+      template:
+        src: lxc-net.j2
+        dest: /etc/default/lxc-net
+  when: lxc_network_type == 'masquerade_bridge'
+
+
+...

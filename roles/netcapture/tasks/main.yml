@@ -4,7 +4,7 @@
   apt:
     force_apt_get: true
     install_recommends: false
-    name: python3-miris-netcapture
+    name: ubicast-netcapture
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -31,22 +31,13 @@
   file:
     path: "{{ netcapture_media_folder }}"
     group: video
-    mode: u=rwX,g=rwX,o=r
-    recurse: true
+    mode: u=rwX,g=rwX,o=rx
     state: directory
 
-# FIREWALL
-
-- name: firewall
-  when: netcapture_firewall_enabled
-  vars:
-    ferm_rules_filename: "{{ netcapture_ferm_rules_filename }}"
-    ferm_input_rules: "{{ netcapture_ferm_input_rules }}"
-    ferm_output_rules: "{{ netcapture_ferm_output_rules }}"
-    ferm_global_settings: "{{ netcapture_ferm_global_settings }}"
-  include_role:
-    name: ferm-configure
-
-- meta: flush_handlers
+- name: netcapture package dir
+  file:
+    path: "{{ netcapture_pkg_folder }}"
+    mode: u=rwX,g=rwX,o=rx
+    state: directory
 
 ...

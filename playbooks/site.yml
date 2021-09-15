@@ -39,7 +39,7 @@
 - import_playbook: mediaimport.yml
   tags: import
 
-- import_playbook: netcapture.yml
+- import_playbook: netcapture/deploy-standalone.yml
   tags: netcapture
 
 - import_playbook: bench.yml
