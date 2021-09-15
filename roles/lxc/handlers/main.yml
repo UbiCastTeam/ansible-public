@@ -1,0 +1,15 @@
+---
+
+- name: restart lxc
+  systemd:
+    name: lxc
+    state: restarted
+  changed_when: true
+  notify: restart lxc-net
+
+- name: restart lxc-net
+  systemd:
+    name: lxc-net
+    state: restarted
+
+...

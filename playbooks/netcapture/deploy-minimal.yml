@@ -1,0 +1,11 @@
+---
+
+- name: NETCAPTURE
+  hosts: netcapture
+  gather_facts: false
+  tags: netcapture
+  roles:
+    - lxc
+    - netcapture
+
+...

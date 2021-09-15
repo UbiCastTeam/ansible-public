@@ -1,0 +1,31 @@
+---
+
+- name: NETCAPTURE
+  hosts: netcapture
+  tags: netcapture
+  roles:
+    - base
+
+- hosts: netcapture
+  tags: netcapture
+  vars:
+    server_ferm_rules_filename: netcapture
+    server_ferm_input_rules: []
+    server_ferm_output_rules: []
+    server_ferm_global_settings:
+  tasks:
+    - name: firewall
+      when: ((server_firewall_enabled is defined) and server_firewall_enabled)
+            or (server_firewall_enabled is undefined)
+      vars:
+        ferm_rules_filename: "{{ server_ferm_rules_filename }}"
+        ferm_input_rules: "{{ server_ferm_input_rules }}"
+        ferm_output_rules: "{{ server_ferm_output_rules }}"
+        ferm_global_settings: "{{ server_ferm_global_settings }}"
+      include_role:
+        name: ferm-configure
+
+- import_playbook: deploy-minimal.yml
+  tags: netcapture
+
+...

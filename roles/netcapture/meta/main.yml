@@ -1,7 +1,0 @@
----
-
-dependencies:
-  - role: base
-  - role: docker
-
-...
