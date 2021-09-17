@@ -22,8 +22,8 @@ For a HA case, you will have to setup the live cluster VIP address in the `ip_li
 | Name        | Default      | Description                             |
 |-------------|--------------|-----------------------------------------|
 | ip_live     | 127.0.0.1    | IP/DNS to reach the live server/cluster from the MediaServer point of view |
-| live_domain |              | Domain name of the live cluster         |
-| tmpfs_size  | 2048m        | Size of the tmpfs storing the live chunks (unit g or m) |
+| live_domain |              | Domain name of the live cluster (only if distinct live server(s) from MediaServer)         |
+| tmpfs_size  | 2048m        | Size of the tmpfs storing the live chunks (unit g or m and only if distinct live server(s) from MediaServer) |
 
 **Note**: See the [ubicast prerequisites](https://docs.google.com/document/d/1vAfLq1hgPMYoTlcCs9-yGHfaKdwKirSmpfic1DwfnXo/edit#heading=h.6txdj6tamlvd) for details on the tmpfs size (Although 2048m should cover most of the non-intensive cases)
 
