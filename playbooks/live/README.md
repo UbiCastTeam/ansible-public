@@ -21,7 +21,7 @@ For a HA case, you will have to setup the live cluster VIP address in the `ip_li
 
 | Type | Name        | Default      | Description                             |
 |------|-------------|--------------|-----------------------------------------|
-| Base | ip_live     | 127.0.0.1    | IP/DNS to reach the live server/cluster |
+| Base | ip_live     | 127.0.0.1    | IP/DNS to reach the live server/cluster from the MediaServer point of view |
 | HA   | live_domain | live.live.fr | Domain name of the live cluster         |
 | HA   | tmpfs_size  | 2048m        | Size of the tmpfs storing the live chunks (unit g or m) |
 
