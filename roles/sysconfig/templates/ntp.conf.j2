@@ -6,13 +6,14 @@ driftfile /var/lib/ntp/ntp.drift
 leapfile /usr/share/zoneinfo/leap-seconds.list
 
 # Specify one or more NTP servers.
-{% if ntp_servers | type_debug == "AnsibleUnsafeText" %}
-pool {{ ntp_servers }} iburst
+{% if ntp_servers is string %}
+{% set ntp_list = ntp_servers.split(',') %}
 {% else %}
-{% for server in ntp_servers %}
+{% set ntp_list = ntp_servers %}
+{% endif %}
+{% for server in ntp_list %}
 pool {{ server }} iburst
 {% endfor %}
-{% endif %}
 
 # By default, exchange time with everybody, but don't allow configuration.
 restrict -4 default kod notrap nomodify nopeer noquery limited
