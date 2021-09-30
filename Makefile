@@ -38,8 +38,8 @@ venv:
 	-@command -v apt-get >/dev/null && apt-get update && apt-get install -y python3-venv
 	python3 -m venv $(VENV)
 
-## requirements.txt: Update requirements and their depende.dockeres
-## requirements.dev.txt: Update development requirements and their depende.dockeres
+## requirements.txt: Update requirements and their dependencies
+## requirements.dev.txt: Update development requirements and their dependencies
 %.txt: %.in
 	$(PIP_COMPILE_BIN) -U $^ -o $@
 	chmod 644 $@
