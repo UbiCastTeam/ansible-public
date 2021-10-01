@@ -27,7 +27,7 @@ To check that your "code" is compliant:
 make lint
 ```
 
-To run Ansible tests:
+To run Ansible tests, you will need the same configuration as in the CI, then run:
 
 ```sh
 # run default test
@@ -42,3 +42,24 @@ KEEP=1 make test
 
 If you add/modify a role, please write relevants tests in `molecule/default/tests`.
 
+
+## Test changes in a docker container
+
+A command is available in the make file to deploy the full product in a docker container.
+
+First, you need to set a correct value for `skyreach_system_key` in this file:
+`inventories/test-container/host_vars/ansibletest.yml`
+
+To instantiate the docker container and to run the deployment, start this command:
+
+```sh
+make deploy-test-container
+```
+
+The docker container is named "ansibletest".
+
+To access the container:
+
+```sh
+make enter-test-container
+```

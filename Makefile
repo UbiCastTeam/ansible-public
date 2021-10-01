@@ -72,7 +72,17 @@ lint:
 .PHONY: test
 ## test: Run development tests on the project : SKYREACH_SYSTEM_KEY=<xxx>, debug=1, keep=1, pf-std=1, pgsql-ha=1
 test:
-	cd ansible; molecule $(MOLECULE_FLAGS) test $(MOLECULE_TEST_FLAGS)
+	molecule $(MOLECULE_FLAGS) test $(MOLECULE_TEST_FLAGS)
+
+.PHONY: deploy-test-container
+## deploy-test-container: Run deployment using ansible in a docker container
+deploy-test-container:
+	ANSIBLE_CONFIG=$(ANSIBLE_CONFIG) $(ANSIBLE_PLAYBOOK_BIN) -vvvv -i inventories/test-container playbooks/site_docker.yml
+
+.PHONY: enter-test-container
+## enter-test-container: Enter the docker test container
+enter-test-container:
+	docker exec -it ansibletest /bin/bash
 
 .PHONY: deploy
 ## deploy: Run deployment playbooks : i=<inventory-path>, l=<host-or-group>, t=<tag>
