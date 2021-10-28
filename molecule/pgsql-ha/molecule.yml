@@ -5,7 +5,7 @@ driver:
 
 platforms:
   - name: db0-${CI_PIPELINE_ID:-default}
-    image: registry.ubicast.net/docker/debian-systemd:buster
+    image: registry.ubicast.net/docker/debian-systemd:latest
     command: /lib/systemd/systemd
     privileged: true
     volumes:
@@ -16,7 +16,7 @@ platforms:
     groups:
       - postgres
   - name: db1-${CI_PIPELINE_ID:-default}
-    image: registry.ubicast.net/docker/debian-systemd:buster
+    image: registry.ubicast.net/docker/debian-systemd:latest
     command: /lib/systemd/systemd
     privileged: true
     volumes:
@@ -27,7 +27,7 @@ platforms:
     groups:
       - postgres
   - name: db2-${CI_PIPELINE_ID:-default}
-    image: registry.ubicast.net/docker/debian-systemd:buster
+    image: registry.ubicast.net/docker/debian-systemd:latest
     command: /lib/systemd/systemd
     privileged: true
     volumes:
