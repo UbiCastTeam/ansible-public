@@ -7,7 +7,7 @@ platforms:
   - name: ms-${CI_PIPELINE_ID:-default}
     environment:
       HOSTALIASES: /etc/hosts.aliases
-    image: registry.ubicast.net/docker/debian-systemd:latest
+    image: registry.ubicast.net/docker/debian-systemd:buster
     command: /lib/systemd/systemd
     privileged: true
     volumes:
@@ -26,7 +26,7 @@ platforms:
   - name: mw-${CI_PIPELINE_ID:-default}
     environment:
       HOSTALIASES: /etc/hosts.aliases
-    image: registry.ubicast.net/docker/debian-systemd:latest
+    image: registry.ubicast.net/docker/debian-systemd:buster
     command: /lib/systemd/systemd
     privileged: true
     volumes:

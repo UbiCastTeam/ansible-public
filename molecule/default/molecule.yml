@@ -5,7 +5,7 @@ driver:
 
 platforms:
   - name: ms-prep-${CI_PIPELINE_ID:-default}
-    image: registry.ubicast.net/docker/debian-systemd:latest
+    image: registry.ubicast.net/docker/debian-systemd:buster
     command: /lib/systemd/systemd
     privileged: true
     volumes:

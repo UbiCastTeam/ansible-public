@@ -7,7 +7,7 @@ platforms:
   - name: ms0-${CI_PIPELINE_ID:-default}
     environment:
       HOSTALIASES: /etc/hosts.aliases
-    image: registry.ubicast.net/docker/debian-systemd:latest
+    image: registry.ubicast.net/docker/debian-systemd:buster
     command: /lib/systemd/systemd
     privileged: true
     volumes:
@@ -23,7 +23,7 @@ platforms:
   - name: ms1-${CI_PIPELINE_ID:-default}
     environment:
       HOSTALIASES: /etc/hosts.aliases
-    image: registry.ubicast.net/docker/debian-systemd:latest
+    image: registry.ubicast.net/docker/debian-systemd:buster
     command: /lib/systemd/systemd
     privileged: true
     volumes:
@@ -36,7 +36,7 @@ platforms:
       - mediaserver
       - live
   - name: ms2-${CI_PIPELINE_ID:-default}
-    image: registry.ubicast.net/docker/debian-systemd:latest
+    image: registry.ubicast.net/docker/debian-systemd:buster
     environment:
       HOSTALIASES: /etc/hosts.aliases
     command: /lib/systemd/systemd
@@ -51,7 +51,7 @@ platforms:
       - mediaserver
       - live
   - name: db0-${CI_PIPELINE_ID:-default}
-    image: registry.ubicast.net/docker/debian-systemd:latest
+    image: registry.ubicast.net/docker/debian-systemd:buster
     command: /lib/systemd/systemd
     privileged: true
     volumes:
@@ -62,7 +62,7 @@ platforms:
     groups:
       - postgres
   - name: db1-${CI_PIPELINE_ID:-default}
-    image: registry.ubicast.net/docker/debian-systemd:latest
+    image: registry.ubicast.net/docker/debian-systemd:buster
     command: /lib/systemd/systemd
     privileged: true
     volumes:
@@ -73,7 +73,7 @@ platforms:
     groups:
       - postgres
   - name: db2-${CI_PIPELINE_ID:-default}
-    image: registry.ubicast.net/docker/debian-systemd:latest
+    image: registry.ubicast.net/docker/debian-systemd:buster
     command: /lib/systemd/systemd
     privileged: true
     volumes:

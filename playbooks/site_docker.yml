@@ -9,7 +9,7 @@
     - name: Create docker containers from inventory
       docker_container:
         name: "{{ item }}"
-        image: registry.ubicast.net/docker/debian-systemd:latest
+        image: registry.ubicast.net/docker/debian-systemd:buster
         privileged: true
         command: /lib/systemd/systemd
         state: started
