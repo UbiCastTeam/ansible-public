@@ -100,18 +100,6 @@
   stat:
     path: "{{ conf_dir }}/auto-generated-conf.sh"
 
-# confsh:
-#  tester_ignored_test: 'test_mediaworker.py'
-#  envsetup_branch: 'master'
-- name: override envsetup variables in conf.sh file
-  lineinfile:
-    path: "{{ conf_dir }}/conf.sh"
-    line: "{{ item.key | upper }}={{ item.value }}"
-    regexp: '^{{ item.key | upper }}='
-    create: true
-  loop: "{{ confsh | dict2items }}"
-  when: confsh is defined
-
 - name: check if conf.sh exists
   check_mode: false
   register: check_local_conf
