@@ -56,9 +56,6 @@
   template:
     src: celerity-config.py.j2
     dest: /etc/celerity/config.py
-    mode: 0644
-    owner: root
-    group: root
   when:
     - inventory_hostname not in groups['celerity']
   changed_when: "'molecule-idempotence-notest' not in ansible_skip_tags"
