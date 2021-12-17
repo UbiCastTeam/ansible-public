@@ -91,7 +91,7 @@ ifndef i
 	$(error i is undefined)
 endif
 ifndef l
-	$(eval l=all)
+	$(eval l=all,localhost)
 endif
 ifndef t
 	$(eval t=all)
