@@ -24,7 +24,7 @@
 
 # FIREWALL
 
-- name: firewall
+- name: celerity firewall
   when: celerity_firewall_enabled
   vars:
     ferm_rules_filename: "{{ celerity_ferm_rules_filename }}"
@@ -34,6 +34,7 @@
   include_role:
     name: ferm-configure
 
-- meta: flush_handlers
+- name: flush handlers
+  meta: flush_handlers
 
 ...

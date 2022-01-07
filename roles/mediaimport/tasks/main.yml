@@ -147,7 +147,8 @@
     dest: /etc/fail2ban/jail.d/pure-ftpd.conf
     mode: 0644
 
-- meta: flush_handlers
+- name: flush handlers
+  meta: flush_handlers
 
 # FIREWALL
 
@@ -161,6 +162,7 @@
   include_role:
     name: ferm-configure
 
-- meta: flush_handlers
+- name: flush handlers
+  meta: flush_handlers
 
 ...

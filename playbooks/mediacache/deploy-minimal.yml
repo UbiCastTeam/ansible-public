@@ -14,7 +14,7 @@
       notify: restart nginx on mediaservers
       lineinfile:
         path: /etc/nginx/conf.d/mediaserver-securelink.conf
-        line: "{{'\t'}}{{ securelink_ip }} 1;"
+        line: "{{'\t'}}{{ securelink_ip }} 1;"  # noqa: no-tabs
         insertafter: '^geo'
       delegate_to: "{{ item }}"
       delegate_facts: true
