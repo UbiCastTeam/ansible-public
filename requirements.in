@@ -1,5 +1,0 @@
-ansible<2.10
-netaddr
-pyyaml
-openstacksdk
-ovh

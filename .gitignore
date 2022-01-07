@@ -30,8 +30,4 @@ packer/*.json
 *.sublime-project
 
 # secrets
-.env/*
-!.env/_reset
-!.env/_config
-!.env/*example
-!.env/example
+.env

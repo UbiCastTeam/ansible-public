@@ -1,4 +1,6 @@
----
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  DOCKER_IMAGE_NAME: registry.ubicast.net/sys/ansible-public
 
 default:
   image: registry.ubicast.net/sys/ansible-public
@@ -73,5 +75,3 @@ test:pgsql-ha:
   stage: test-pgsql
   script:
     - make test pgsql-ha=1 debug=1
-
-...
