@@ -1,30 +1,18 @@
-FROM registry.ubicast.net/docker/debian-dev:latest
+FROM registry.ubicast.net/docker/dind-compose:latest
 
-# avoid warnings by switching to noninteractive
-ENV DEBIAN_FRONTEND noninteractive
-# local pyvenv to avoid conflicts with system
-ENV PYVENV ${HOME}/pyvenv
-# add pyvenv to path
-ENV PATH ${PYVENV}/bin:${PATH}
+# Set locale
+ENV LANG="C.UTF-8" LC_ALL="C.UTF-8" LANGUAGE="C.UTF-8"
 
-# copy requirement file
+# Copy requirement files
+COPY requirements.txt .
 COPY requirements.dev.txt .
+COPY requirements.dev.apk.txt .
 
+# Install required apk packages
+RUN apk add $(grep -v '^#' requirements.dev.apk.txt | cut -d ' ' -f1 | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
+
+# Install ansible tools
 RUN \
-    # install required tools
-    sudo apt-get update && \
-    sudo apt-get install -y libffi-dev libncurses5 libncursesw5 libssl-dev python3-netaddr && \
-    # create pyvenv + install ansible tools
-    python3 -m venv --system-site-packages ${PYVENV} && \
     pip install -U pip wheel && \
-    pip install -r requirements.dev.txt && \
-    # clean up
-    sudo apt-get autoremove -y && \
-    sudo apt-get clean -y && \
-    sudo rm -rf /var/lib/apt/lists/* &&  \
-    sudo rm requirements.dev.txt 
-
-# switch back to dialog for any ad-hoc use of apt-get
-ENV DEBIAN_FRONTEND dialog
-ENV HOME /root
-USER root
+    pip install -r requirements.txt && \
+    pip install -r requirements.dev.txt

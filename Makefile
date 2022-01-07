@@ -1,5 +1,9 @@
+# expose .env variables globally
+-include .env
+export
+
+DOCKER_IMAGE_NAME ?= ansible-public
 SHELL := /bin/bash
-DOCKER_IMAGE_NAME := registry.ubicast.net/sys/ansible-public
 VENV := /tmp/pyvensetup
 ANSIBLE_CONFIG := ansible.cfg
 PIP_BIN = $(shell command -v $(VENV)/bin/pip3 || command -v pip3 || echo pip3)
@@ -101,7 +105,7 @@ endif
 
 .PHONY: docker-build
 ## docker-build: Run docker image build for.docker
-docker-build: docker-pull
+docker-build:
 	docker build -t $(DOCKER_IMAGE_NAME) -f .docker/Dockerfile .
 
 .PHONY: docker-rebuild
