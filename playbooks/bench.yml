@@ -13,10 +13,12 @@
     - bench-server
   tasks:
     - name: restart bench-server
+      tags:
+        - never
+        - prepare-bench
       service:
         name: bench-server
         state: restarted
-      tags: [ 'never', 'prepare-bench' ]
 
 - name: DEPLOY BENCHMARK WORKERS
   hosts: bench_worker
@@ -25,9 +27,11 @@
     - bench-worker
   tasks:
     - name: restart bench-worker
+      tags:
+        - never
+        - prepare-bench
       service:
         name: bench-worker
         state: restarted
-      tags: [ 'never', 'prepare-bench' ]
 
 ...

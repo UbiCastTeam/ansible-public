@@ -86,7 +86,7 @@
     path: /etc/ssl/{{ ansible_fqdn }}/key.pem
 
 - name: generate an csr
-  when: mediaimport_privkey is changed
+  when: mediaimport_privkey is changed  # noqa no-handler
   register: mediaimport_csr
   openssl_csr:
     path: /etc/ssl/{{ ansible_fqdn }}/csr.pem
@@ -94,7 +94,7 @@
     common_name: "{{ ansible_fqdn }}"
 
 - name: generate a self-signed certificate
-  when: mediaimport_csr is changed
+  when: mediaimport_csr is changed  # noqa no-handler
   register: mediaimport_cert
   openssl_certificate:
     path: /etc/ssl/{{ ansible_fqdn }}/cert.pem
@@ -103,7 +103,7 @@
     provider: selfsigned
 
 - name: concatenate key and certificate
-  when: mediaimport_cert is changed
+  when: mediaimport_cert is changed  # noqa no-handler
   notify: restart pure-ftpd
   shell: >
     cat /etc/ssl/{{ ansible_fqdn }}/key.pem /etc/ssl/{{ ansible_fqdn }}/cert.pem > /etc/ssl/private/pure-ftpd.pem;

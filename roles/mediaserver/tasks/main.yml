@@ -92,7 +92,7 @@
   throttle: 1
 
 - name: synchronize configuration between servers
-  ignore_errors: true
+  ignore_errors: true  # noqa ignore-errors
   when:
     - groups['mediaserver'] | length > 1
     - inventory_hostname != groups['mediaserver'][0]
@@ -119,7 +119,7 @@
   tags: mediaserver-synchronize
 
 - name: synchronize letsencrypt configuration between servers
-  ignore_errors: true
+  ignore_errors: true  # noqa ignore-errors
   when:
     - groups['mediaserver'] | length > 1
     - inventory_hostname != groups['mediaserver'][0]
