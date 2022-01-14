@@ -1,6 +1,7 @@
 ansible-lint
 flake8
-#git+git://github.com/atmaniak/molecule@e03437923b302fca1bd7b4f6030c6956ad00367a#egg=molecule[docker]
-molecule[docker]
+#git+https://github.com/atmaniak/molecule@e03437923b302fca1bd7b4f6030c6956ad00367a#egg=molecule[docker]
+#git+https://github.com/ansible-community/molecule@bc795e717108af2f8e63bbb05fcc4d7212ef62cd#egg=molecule[docker]
+molecule[docker]==3.2.2
 pytest-testinfra
 yamllint
