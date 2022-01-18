@@ -91,8 +91,9 @@
     creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
   throttle: 1
 
-- name: synchronize configuration between servers
-  ignore_errors: true  # noqa ignore-errors
+- name: synchronize configuration between servers  # noqa 303
+  # Cannot use the ansible synchronization module, cause there is no way to set a destination IP intead of the destination ansible hostname
+  # noqa 303 = warn to use the synchronization module instead of rsync in the command module
   when:
     - groups['mediaserver'] | length > 1
     - inventory_hostname != groups['mediaserver'][0]
@@ -102,42 +103,41 @@
     - /etc/celerity
     - /etc/sysusers.d
     - /var/www
-  synchronize:
-    src: "{{ item }}"
-    dest: "{{ item }}"
-    mode: push
-    copy_links: true
-    delete: true
-    recursive: true
-    set_remote_user: false
-    existing_only: true
+  command: |
+    rsync \
+      -avh \
+      -e "ssh -o StrictHostKeyChecking=no" \
+      --delete \
+      "{{ item }}/" \
+      "root@{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ item }}/"
   notify:
     - restart mediaserver
     - restart nginx
     - restart systemd-sysusers
   delegate_to: "{{ groups['mediaserver'][0] }}"
+  changed_when: false
   tags: mediaserver-synchronize
 
-- name: synchronize letsencrypt configuration between servers
-  ignore_errors: true  # noqa ignore-errors
+- name: synchronize letsencrypt configuration between servers  # noqa 303
+  # Cannot use the ansible synchronization module, cause there is no way to set a destination IP intead of the destination ansible hostname
+  # noqa 303 = warn to use the synchronization module instead of rsync in the command module
   when:
     - groups['mediaserver'] | length > 1
     - inventory_hostname != groups['mediaserver'][0]
     - letsencrypt_enabled | d(false)
   loop:
     - /etc/letsencrypt
-  synchronize:
-    src: "{{ item }}"
-    dest: "{{ item }}"
-    mode: push
-    copy_links: true
-    delete: true
-    recursive: true
-    set_remote_user: false
-    existing_only: true
+  command: |
+    rsync \
+      -avh \
+      -e "ssh -o StrictHostKeyChecking=no" \
+      --delete \
+      "{{ item }}/" \
+      "root@{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ item }}/"
   notify:
     - restart nginx
   delegate_to: "{{ groups['mediaserver'][0] }}"
+  changed_when: false
   tags: mediaserver-synchronize
 
 - name: configure email sender address
