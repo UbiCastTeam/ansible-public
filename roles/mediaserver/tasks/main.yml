@@ -36,29 +36,29 @@
     line: '127.0.1.1 {{ item.ms_server_name }}'
     backup: true
 
-# - name: synchronize configuration
-#   when: groups['mediaserver'] | length > 1
-#   loop:
-#     - /etc/passwd
-#     - /etc/shadow
-#     - /etc/group
-#   synchronize:
-#     src: "{{ item }}"
-#     dest: "{{ item }}"
-#     mode: push
-#     copy_links: yes
-#     set_remote_user: no
-#   delegate_to: "{{ groups['mediaserver'][0] }}"
-#   tags: always
+- name: Update the MS configuration with the celerity server IP
+  lineinfile:
+    path: /etc/mediaserver/msconf.py
+    regexp: '^CELERITY_SERVER_URL = '
+    line: "CELERITY_SERVER_URL = 'https://{{ server_celerity_server_url }}:6200'"
+    create: true
+    owner: root
+    group: root
+    # 644 as all the instances must reach this file
+    # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
+    mode: '0644'
 
-- name: create celerity-config
-  notify: restart celerity-server
-  template:
-    src: celerity-config.py.j2
-    dest: /etc/celerity/config.py
-  when:
-    - inventory_hostname not in groups['celerity']
-  changed_when: "'molecule-idempotence-notest' not in ansible_skip_tags"
+- name: Update the MS configuration with the celerity server secret
+  lineinfile:
+    path: /etc/mediaserver/msconf.py
+    regexp: '^CELERITY_SIGNING_KEY = '
+    line: "CELERITY_SIGNING_KEY = '{{ server_celerity_signing_key }}'"
+    create: true
+    owner: root
+    group: root
+    # 644 as all the instances must reach this file
+    # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
+    mode: '0644'
 
 - name: create instances
   when: inventory_hostname == groups['mediaserver'][0]
@@ -111,9 +111,9 @@
       "{{ item }}/" \
       "root@{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ item }}/"
   notify:
-    - restart mediaserver
-    - restart nginx
     - restart systemd-sysusers
+    - restart nginx
+    - restart mediaserver
   delegate_to: "{{ groups['mediaserver'][0] }}"
   changed_when: false
   tags: mediaserver-synchronize
@@ -146,6 +146,11 @@
     path: /etc/mediaserver/msconf.py
     backup: true
     create: true
+    owner: root
+    group: root
+    # 644 as all the instances must reach this file
+    # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
+    mode: '0644'
     regexp: '^#? ?DEFAULT_FROM_EMAIL.*'
     line: "DEFAULT_FROM_EMAIL = '{{ server_email_sender }}'"
     validate: python3 -m py_compile %s
