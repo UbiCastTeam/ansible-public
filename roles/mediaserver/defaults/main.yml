@@ -28,6 +28,7 @@ server_instances:
     ms_superuser_pwd: "{{ server_superuser_passwd }}"
     ms_admin_pwd: "{{ server_admin_passwd }}"
 
+server_celerity_server_url: "{{ envsetup_celerity_server | d(hostvars[groups['celerity'][0]]['ansible_default_ipv4']['address']) }}"
 server_celerity_signing_key: "{{ envsetup_celerity_signing_key | d('change-me', true) }}"
 
 server_live_host: "{{ envsetup_live_host | d() }}"
@@ -42,8 +43,6 @@ server_ferm_input_rules:
       - 443
 server_ferm_output_rules: []
 server_ferm_global_settings:
-
-server_celerity_server_url: "{{ envsetup_celerity_server | d(hostvars[groups['celerity'][0]]['ansible_default_ipv4']['address']) }}"
 
 real_ip_from: ""  # default for OVH is 10.108.0.0/14
 
