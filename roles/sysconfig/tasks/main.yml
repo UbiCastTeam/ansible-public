@@ -1,5 +1,5 @@
 ---
-- include: repos.yml
+- include_tasks: repos.yml
 
 # Upgrade already installed packages to latest version and clean system
 
@@ -11,6 +11,7 @@
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+  changed_when: false
 
 - name: apt dist upgrade
   apt:
@@ -117,10 +118,10 @@
   include_role:
     name: ferm-configure
 
-- include: logs.yml
+- include_tasks: logs.yml
 
-- include: locale.yml
+- include_tasks: locale.yml
 
-- include: ntp.yml
+- include_tasks: ntp.yml
 
 ...

@@ -1,4 +1,4 @@
-ansible<2.10
+ansible<5.3
 netaddr
 pyyaml
 openstacksdk
