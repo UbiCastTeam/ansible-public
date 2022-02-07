@@ -15,7 +15,7 @@
     ssh_key_file: .ssh/id_ed25519
 
 # MAILER
-- include: mailer.yml
+- include_tasks: mailer.yml
 
 # FIREWALL
 - name: firewall

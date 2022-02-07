@@ -18,7 +18,7 @@
     - include_vars:
         file: ressources/firewall/rules.yml
 
-    - include: ressources/firewall/listen.yml
+    - include_tasks: ressources/firewall/listen.yml
       # loop over listen vars (named outer_item) and call firewall-listen
       loop: "{{ listen }}"
       loop_control:
@@ -35,7 +35,7 @@
         file: ressources/firewall/rules.yml
 
     - name: test rules
-      include: ressources/firewall/test-rule.yml
+      include_tasks: ressources/firewall/test-rule.yml
       # loop over listen vars (named outer_item) and call firewall-listen
       loop: "{{ test }}"
       loop_control:

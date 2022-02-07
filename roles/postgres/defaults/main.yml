@@ -1,6 +1,7 @@
 ---
 
 pg_packages:
+  - acl
   - postgresql
 
 pg_version: 11
