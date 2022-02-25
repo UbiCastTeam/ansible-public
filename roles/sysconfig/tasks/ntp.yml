@@ -9,6 +9,7 @@
   notify: systemd daemon reload
   copy:
     dest: /lib/systemd/system/systemd-timesyncd.service.d/disable-with-time-daemon.conf
+    mode: '644'
     content: |
       [Unit]
       # don't run timesyncd if we have another NTP daemon installed
@@ -40,6 +41,7 @@
     backup: true
     src: ntp.conf.j2
     dest: /etc/ntp.conf
+    mode: '644'
 
 - name: ensure ntp is running
   service:

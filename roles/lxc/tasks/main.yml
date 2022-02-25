@@ -38,6 +38,7 @@
   template:
     src: lxc-default.j2
     dest: /etc/lxc/default.conf
+    mode: '644'
 
 - name: Masquerade bridge configuration
   block:
@@ -46,7 +47,7 @@
       template:
         src: lxc-net.j2
         dest: /etc/default/lxc-net
+        mode: '644'
   when: lxc_network_type == 'masquerade_bridge'
-
 
 ...

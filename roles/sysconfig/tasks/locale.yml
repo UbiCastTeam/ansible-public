@@ -1,4 +1,5 @@
 ---
+
 - name: install locale packages
   apt:
     force_apt_get: true
@@ -17,6 +18,7 @@
   notify: update locale
   copy:
     dest: /etc/default/locale
+    mode: '644'
     content: |
       LANG={{ init_locale }}
       LANGUAGE={{ init_locale }}

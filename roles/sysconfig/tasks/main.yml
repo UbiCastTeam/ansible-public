@@ -77,6 +77,7 @@
     content: |
       APT::Periodic::Update-Package-Lists "1";
       APT::Periodic::Unattended-Upgrade "1";
+    mode: '644'
 
 - name: remove old kernel with unattended-upgrades
   replace:
@@ -104,7 +105,8 @@
     dest: /root/.ssh/authorized_keys
     regexp: "^no-port-forwarding,(.+) ssh-"
     replace: "ssh-"
-  ignore_errors: true
+    mode: '600'
+  failed_when: false
 
 # FIREWALL
 

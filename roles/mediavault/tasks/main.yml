@@ -28,6 +28,6 @@
   include_role:
     name: ferm-configure
 
-- meta: flush_handlers
+- meta: flush_handlers  # noqa unnamed-task
 
 ...

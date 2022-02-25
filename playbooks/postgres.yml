@@ -4,14 +4,6 @@
 - name: POSTGRESQL
   hosts: postgres
   tags: postgres
-  pre_tasks:
-    - name: check running in a docker container
-      register: check_if_docker
-      stat:
-        path: /.dockerenv
-    - name: set docker flag variable
-      set_fact:
-        in_docker: "{{ check_if_docker.stat.exists | d(false) }}"
   roles:
     - postgres
   post_tasks:

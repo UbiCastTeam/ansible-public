@@ -28,7 +28,6 @@
   tags: always
 
 - name: resolve domain name to localhost
-  when: not in_docker
   notify: restart nginx
   loop: "{{ server_instances }}"
   lineinfile:
@@ -190,6 +189,7 @@
   template:
     src: realip.conf.j2
     dest: /etc/nginx/conf.d/realip.conf
+    mode: '644'
 
 - name: ensure mediaserver is running
   service:

@@ -17,6 +17,7 @@
   template:
     src: munin-node.conf.j2
     dest: /etc/munin/munin-node.conf
+    mode: '644'
 
 - name: setup munin-node plugins link
   notify: restart munin-node

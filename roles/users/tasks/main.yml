@@ -32,24 +32,28 @@
   copy:
     src: .bashrc
     dest: ~{{ item.name }}/.bashrc
+    mode: '644'
 
 - name: copy .vimrc
   loop: "{{ users }}"
   copy:
     src: .vimrc
     dest: ~{{ item.name }}/.vimrc
+    mode: '644'
 
 - name: copy .bashrc for root
   when: users_root_change
   copy:
     src: .bashrc
     dest: ~root/.bashrc
+    mode: '644'
 
 - name: copy .vimrc for root
   when: users_root_change
   copy:
     src: .vimrc
     dest: ~root/.vimrc
+    mode: '644'
 
 - name: set users allowed ssh keys
   loop: "{{ users | product(users_ssh_authorized_keys) | list }}"
@@ -67,6 +71,7 @@
   copy:
     dest: /etc/sudoers.d/nopasswd
     validate: visudo -cf %s
+    mode: '440'
     content: |
       %sudo ALL=(ALL) NOPASSWD: ALL
 

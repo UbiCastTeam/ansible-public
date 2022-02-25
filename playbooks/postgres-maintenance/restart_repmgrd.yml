@@ -5,7 +5,10 @@
   tasks:
     - name: kill repmgrd
       command: "pkill repmgrd"
-      ignore_errors: true
+      # TOFIX: implement a proper verification
+      changed_when: false
+      failed_when: false
+
     - name: restart repmgrd
       systemd:
         name: repmgrd

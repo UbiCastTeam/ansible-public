@@ -26,7 +26,6 @@
     backup: true
 
 - name: resolve domain name to localhost ipv4
-  when: not in_docker or in_docker is not defined
   notify: restart nginx
   lineinfile:
     path: /etc/hosts

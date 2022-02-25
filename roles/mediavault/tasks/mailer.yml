@@ -13,5 +13,6 @@
   template:
     src: systemd-mailer-service.j2
     dest: "{{ mvt_mailer_service_path }}"
+    mode: '644'
 
 ...

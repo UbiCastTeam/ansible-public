@@ -13,6 +13,7 @@
   template:
     src: kibana.yml.j2
     dest: /etc/kibana/kibana.yml
+    mode: '644'
   notify: restart kibana
 
 - name: install apm-server package
@@ -29,6 +30,7 @@
   template:
     src: apm-server.yml.j2
     dest: /etc/apm-server/apm-server.yml
+    mode: '644'
   notify: restart apm-server
 
 ...

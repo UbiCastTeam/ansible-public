@@ -15,6 +15,7 @@
   file:
     path: /etc/mediaserver
     state: directory
+    mode: '755'
 
 - name: benchmark configuration settings
   copy:
@@ -29,6 +30,7 @@
       "DL_STREAMS":{{ bench_dl_streams }},
       "TIME_STATS":{{ bench_time_stat }}
       }
+    mode: '644'
 
 - name: reload systemd daemon
   systemd:

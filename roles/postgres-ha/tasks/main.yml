@@ -73,6 +73,7 @@
     dest: "{{ repmgr_config }}"
     owner: postgres
     group: postgres
+    mode: '644'
 
 - name: configure debian default
   notify: restart repmgrd
@@ -90,6 +91,7 @@
   copy:
     dest: /etc/sudoers.d/postgres
     validate: visudo -cf %s
+    mode: '440'
     content: |
       Defaults:postgres !requiretty
       postgres ALL=NOPASSWD: \
@@ -127,10 +129,11 @@
     dest: ~postgres/.ssh/config
     owner: postgres
     group: postgres
+    mode: '640'
     content: |
-      IdentityFile	~/.ssh/id_ed25519
-      StrictHostKeyChecking	no
-      UserKnownHostsFile	/dev/null
+      IdentityFile ~/.ssh/id_ed25519
+      StrictHostKeyChecking no
+      UserKnownHostsFile /dev/null
 
 # REGISTER PRIMARY
 
@@ -154,7 +157,7 @@
       command:
         cmd: repmgr --config-file={{ repmgr_config }} primary register
 
-- meta: flush_handlers
+- meta: flush_handlers  # noqa unnamed-task
 
 # REGISTER STANDBY
 
@@ -236,7 +239,7 @@
       command:
         cmd: repmgr --config-file={{ repmgr_config }} standby register
 
-- meta: flush_handlers
+- meta: flush_handlers  # noqa unnamed-task
 
 # REGISTER WITNESS
 
@@ -260,7 +263,7 @@
       command:
         cmd: repmgr --config-file={{ repmgr_config }} --host={{ repmgr_primary_node }} witness register
 
-- meta: flush_handlers
+- meta: flush_handlers  # noqa unnamed-task
 
 # REPHACHECK
 
@@ -289,6 +292,7 @@
     - restart rephacheck
   copy:
     dest: /etc/systemd/system/rephacheck.socket
+    mode: '644'
     content: |
       [Unit]
       Description=RepHACheck socket
@@ -306,6 +310,7 @@
     - restart rephacheck
   copy:
     dest: /etc/systemd/system/rephacheck@.service
+    mode: '644'
     content: |
       [Unit]
       Description=RepHACheck - Health check for PostgreSQL cluster managed by repmgr

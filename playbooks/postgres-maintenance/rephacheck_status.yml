@@ -6,9 +6,11 @@
     - name: get cluster state
       command: "rephacheck"
       register: rephacheck
+      changed_when: false
+
     - name: show status for each node
       debug:
         msg: "Current node {{ ansible_hostname }} status {{ rephacheck['stdout'] }}"
-      when: rephacheck['stdout'] != ""
+      when: rephacheck['stdout'] | length > 0
 
 ...

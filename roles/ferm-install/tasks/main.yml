@@ -15,6 +15,7 @@
     src: ferm.conf.j2
     dest: /etc/ferm/ferm.conf
     backup: true
+    mode: '644'
 
 - name: service
   systemd:

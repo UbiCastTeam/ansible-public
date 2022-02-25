@@ -15,12 +15,13 @@
   file:
     path: "{{ item }}"
     state: directory
+    mode: '755'
 
 - name: deploy users management script
   copy:
     src: files/mediaimport.py
     dest: /usr/local/bin/mediaimport
-    mode: 0755
+    mode: '755'
 
 - name: create users
   loop: "{{ mediaimport_users }}"
@@ -52,6 +53,7 @@
   template:
     src: sftp_config.j2
     dest: /etc/ssh/sftp_config
+    mode: '644'
 
 ## PURE-FTPD
 
@@ -59,6 +61,7 @@
   notify: restart pure-ftpd
   copy:
     dest: /etc/default/pure-ftpd-common
+    mode: '644'
     content: |
       STANDALONE_OR_INETD=standalone
       VIRTUALCHROOT=false
@@ -72,6 +75,7 @@
   copy:
     dest: /etc/pure-ftpd/conf/{{ item.key }}
     content: "{{ item.value }}"
+    mode: '644'
 
 ## PURE-FTPD CERTIFICATES
 
@@ -79,11 +83,13 @@
   file:
     path: /etc/ssl/{{ ansible_fqdn }}
     state: directory
+    mode: '755'
 
 - name: generate an private key
   register: mediaimport_privkey
   openssl_privatekey:
     path: /etc/ssl/{{ ansible_fqdn }}/key.pem
+    mode: '600'
 
 - name: generate an csr
   when: mediaimport_privkey is changed  # noqa no-handler
@@ -92,6 +98,7 @@
     path: /etc/ssl/{{ ansible_fqdn }}/csr.pem
     privatekey_path: /etc/ssl/{{ ansible_fqdn }}/key.pem
     common_name: "{{ ansible_fqdn }}"
+    mode: '600'
 
 - name: generate a self-signed certificate
   when: mediaimport_csr is changed  # noqa no-handler
@@ -101,6 +108,7 @@
     privatekey_path: /etc/ssl/{{ ansible_fqdn }}/key.pem
     csr_path: /etc/ssl/{{ ansible_fqdn }}/csr.pem
     provider: selfsigned
+    mode: '600'
 
 - name: concatenate key and certificate
   when: mediaimport_cert is changed  # noqa no-handler
@@ -114,6 +122,7 @@
   openssl_dhparam:
     path: /etc/ssl/private/pure-ftpd-dhparams.pem
     size: 1024
+    mode: '600'
 
 ## MEDIAIMPORT
 
@@ -121,6 +130,7 @@
   copy:
     src: files/mediaimport
     dest: /etc/cron.d/mediaimport
+    mode: '644'
 
 - name: configure mediaimport
   when:

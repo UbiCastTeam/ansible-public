@@ -15,6 +15,7 @@
   file:
     path: /etc/mediaserver
     state: directory
+    mode: '755'
 
 - name: benchmark configuration settings
   copy:
@@ -29,6 +30,7 @@
       "DL_STREAMS":{{ bench_dl_streams }},
       "TIME_STATS":{{ bench_time_stat }}
       }
+    mode: '644'
 
 - name: reload systemd daemon
   systemd:
@@ -43,6 +45,7 @@
   template:
     src: bench-streaming.conf.j2
     dest: /etc/mediaserver/bench-streaming.conf
+    mode: '644'
 
 - name: clone ms-testing-suite repository
   git:
@@ -57,6 +60,7 @@
     src: /etc/mediaserver/bench-streaming.conf
     dest: /usr/share/ms-testing-suite/config.json
     remote_src: true
+    mode: '644'
 
 - name: add docker key
   when:

@@ -7,25 +7,37 @@
       fail:
         msg: "Current status {{ rephacheck['stdout'] }} must be fenced."
       when: rephacheck['stdout'] != "fenced"
+
     - name: stop postgresql
       systemd:
         name: postgresql
         state: stopped
+
     - name: delete postgresql data directory
       file:
         path: /var/lib/postgresql/11/main/
         state: absent
         force: true
+
     - name: copy data from primary
-      command: "repmgr -f /etc/postgresql/11/main/repmgr.conf --force --verbose standby clone -h {{ hostvars[groups['postgres_primary'][0]]['ansible_default_ipv4']['address'] }} -d repmgr -U repmgr -c"
+      command: >
+        repmgr -f /etc/postgresql/11/main/repmgr.conf
+          --force --verbose
+          standby clone
+          -h {{ hostvars[groups['postgres_primary'][0]]['ansible_default_ipv4']['address'] }}
+          -d repmgr -U repmgr -c
       become: true
       become_user: postgres
       register: copy_from_primary
+      # TOFIX: it would be better to check for a change in the output
+      changed_when: false
+
     - name: start postgresql
       systemd:
         name: postgresql
         state: started
       when: copy_from_primary is succeeded
+
     - name: register node as standby
       command: "repmgr -f /etc/postgresql/11/main/repmgr.conf --force --verbose standby register"
       become: true

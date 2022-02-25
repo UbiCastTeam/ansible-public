@@ -3,6 +3,7 @@
 # config
 exclude_pattern=()
 exclude_pattern+=('^./roles/elastic.elasticsearch')
+exclude_pattern+=('^./.venv')
 
 apt_regex='^[^#]*apt:'
 until_regex='^[^#]*until: apt_status is success'

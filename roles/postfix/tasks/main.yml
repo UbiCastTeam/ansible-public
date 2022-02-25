@@ -4,6 +4,7 @@
   file:
     path: /etc/postfix
     state: directory
+    mode: '755'
 
 - name: postfix main config
   notify: restart postfix
@@ -11,6 +12,7 @@
     backup: true
     src: main.cf.j2
     dest: /etc/postfix/main.cf
+    mode: '644'
 
 - name: postfix mailname
   notify: restart postfix
@@ -18,6 +20,7 @@
     backup: true
     dest: /etc/mailname
     content: "{{ postfix_mailname }}"
+    mode: '644'
 
 - name: postfix local aliases
   notify:
@@ -26,6 +29,7 @@
   copy:
     backup: true
     dest: /etc/aliases
+    mode: '644'
     content: |
       devnull: /dev/null
       clamav: root
@@ -38,6 +42,7 @@
   copy:
     backup: true
     dest: /etc/postfix/virtual
+    mode: '644'
     content: |
       postmaster@{{ postfix_mailname }} root
       bounces@{{ postfix_mailname }} root
@@ -50,6 +55,7 @@
   copy:
     backup: true
     dest: /etc/postfix/generic
+    mode: '644'
     content: |
       root@localhost {{ postfix_email_sender }}
       root@{{ postfix_mailname }} {{ postfix_email_sender }}
@@ -68,6 +74,7 @@
   copy:
     backup: true
     dest: /etc/postfix/sasl-passwords
+    mode: '644'
     content: "{{ postfix_relay_host }} {{ postfix_relay_user }}:{{ postfix_relay_pass }}"
 
 - name: install postfix

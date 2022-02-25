@@ -29,16 +29,19 @@
       {% for domain in letsencrypt_domains %}
       {{ domain }}
       {% endfor %}
+    mode: '644'
 
 - name: create webroot directory
   file:
     path: "{{ letsencrypt_webroot }}"
     state: directory
+    mode: '755'
 
 - name: create pre hook directory
   file:
     path: /etc/letsencrypt/renewal-hooks/pre
     state: directory
+    mode: '755'
 
 - name: create pre hook script
   copy:
@@ -54,6 +57,7 @@
   file:
     path: /etc/letsencrypt/renewal-hooks/deploy
     state: directory
+    mode: '755'
 
 - name: create deploy hook script
   copy:
