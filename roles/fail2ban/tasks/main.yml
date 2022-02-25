@@ -15,6 +15,7 @@
   template:
     src: jail.local.j2
     dest: /etc/fail2ban/jail.local
+    mode: '644'
 
 - name: service
   systemd:

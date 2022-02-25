@@ -12,6 +12,7 @@
         create: true
         marker_begin: BEGIN PROXY
         marker_end: END PROXY
+        mode: '644'
         block: |
           http_proxy={{ proxy_http }}
           HTTP_PROXY={{ proxy_http }}
@@ -23,6 +24,7 @@
     - name: apt
       copy:
         dest: /etc/apt/apt.conf.d/proxy
+        mode: '644'
         content: |
           Acquire::http::Proxy "{{ proxy_http }}";
           Acquire::https::Proxy "{{ proxy_https }}";
@@ -30,6 +32,7 @@
     - name: wget
       copy:
         dest: /etc/wgetrc
+        mode: '644'
         content: |
           use_proxy=yes
           http_proxy={{ proxy_http }}

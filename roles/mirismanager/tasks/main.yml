@@ -64,7 +64,6 @@
     backup: true
 
 - name: resolve domain name to localhost ipv4
-  when: not in_docker
   notify: restart nginx
   lineinfile:
     path: /etc/hosts

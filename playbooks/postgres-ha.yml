@@ -26,7 +26,7 @@
 
 - name: POSTGRES HA CLIENTS
   hosts: mediaserver
-  tags: [ 'postgres', 'mediaserver' ]
+  tags: ['postgres', 'mediaserver']
   pre_tasks:
     - name: check that haproxy is configured
       assert:

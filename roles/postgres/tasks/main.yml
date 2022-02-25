@@ -26,6 +26,7 @@
     owner: postgres
     group: postgres
     state: directory
+    mode: '755'
 
 - name: ensure conf directory is included
   replace:
@@ -52,6 +53,7 @@
     group: postgres
     backup: true
     content: "{{ item.content }}"
+    mode: '644'
 
 - name: configure authentication
   notify: restart postgresql

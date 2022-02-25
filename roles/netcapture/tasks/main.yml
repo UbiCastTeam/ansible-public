@@ -13,11 +13,13 @@
   template:
     src: netcapture.json.j2
     dest: /etc/miris/netcapture.json
+    mode: '644'
 
 - name: netcapture miris
   template:
     src: miris-api.json.j2
     dest: /etc/miris/conf/api.json
+    mode: '644'
 
 - name: netcapture config dir
   file:

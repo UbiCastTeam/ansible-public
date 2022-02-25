@@ -12,6 +12,7 @@
   file:
     path: "{{ item }}"
     state: directory
+    mode: '755'
 
 - name: global
   when: ferm_global_settings | d(false)
@@ -21,6 +22,7 @@
   copy:
     dest: /etc/ferm/ferm.d/{{ ferm_rules_filename }}.conf
     content: "{{ ferm_global_settings }}"
+    mode: '644'
 
 - name: input
   when: ferm_input_rules | length > 0
@@ -30,6 +32,7 @@
   template:
     src: ferm_rules_input.conf.j2
     dest: /etc/ferm/input.d/{{ ferm_rules_filename }}.conf
+    mode: '644'
 
 - name: output
   when: ferm_output_rules | length > 0
@@ -39,6 +42,7 @@
   template:
     src: ferm_rules_output.conf.j2
     dest: /etc/ferm/output.d/{{ ferm_rules_filename }}.conf
+    mode: '644'
 
 - name: forward
   when: ferm_forward_rules | length > 0
@@ -48,5 +52,6 @@
   template:
     src: ferm_rules_forward.conf.j2
     dest: /etc/ferm/forward.d/{{ ferm_rules_filename }}.conf
+    mode: '644'
 
 ...

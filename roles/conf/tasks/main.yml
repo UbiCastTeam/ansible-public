@@ -83,7 +83,7 @@
     return_content: true
     validate_certs: "{{ conf_valid_cert }}"
 
-- name: save generated conf
+- name: save generated conf  # noqa no-handler
   loop:
     - "{{ conf_dl_ak }}"
     - "{{ conf_dl_sk }}"
@@ -93,6 +93,7 @@
     dest: "{{ conf_dir }}/auto-generated-conf.sh"
     force: true
     backup: true
+    mode: '644'
 
 - name: check if auto-generated-conf.sh exists
   check_mode: false

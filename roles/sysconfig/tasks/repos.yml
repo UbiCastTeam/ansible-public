@@ -7,12 +7,12 @@
   notify: update cache
   copy:
     dest: /etc/apt/sources.list
+    mode: '644'
     content: |
       deb {{ repos_prefix }}archive.ubuntu.com/ubuntu/ {{ repos_release }} main restricted universe multiverse
       deb {{ repos_prefix }}archive.ubuntu.com/ubuntu/ {{ repos_release }}-updates main restricted universe multiverse
       deb {{ repos_prefix }}archive.ubuntu.com/ubuntu/ {{ repos_release }}-backports main restricted universe multiverse
       deb {{ repos_prefix }}security.ubuntu.com/ubuntu {{ repos_release }}-security main restricted universe multiverse
-
 
 - name: debian apt repo sources list
   when:
@@ -21,6 +21,7 @@
   notify: update cache
   copy:
     dest: /etc/apt/sources.list
+    mode: '644'
     content: |
       deb {{ repos_prefix }}{{ repos_deb }}/debian {{ repos_release }} main contrib non-free
       deb {{ repos_prefix }}{{ repos_deb }}/debian {{ repos_release }}-updates main contrib non-free

@@ -1,7 +1,0 @@
-bash
-# To compile cryptography
-gcc
-libffi-dev
-musl-dev
-openssl-dev
-python3-dev

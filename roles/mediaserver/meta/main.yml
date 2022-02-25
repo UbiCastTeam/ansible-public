@@ -3,12 +3,6 @@
 dependencies:
   - role: base
   - role: nginx
-  - when: "'celerity' in group_names"
-    role: celerity
-  # - when: "'postgres' in group_names and groups['postgres'] | length > 1"
-  #   role: postgres-ha
-  # - when: "'postgres' in group_names and groups['postgres'] | length == 1"
-  #   role: postgres
   - when: "groups['postgres'] | length > 1"
     role: haproxy
 

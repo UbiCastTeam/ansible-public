@@ -14,7 +14,7 @@
   template:
     src: celerity-config.py.j2
     dest: /etc/celerity/config.py
-  changed_when: "'molecule-idempotence-notest' not in ansible_skip_tags"
+    mode: '644'
 
 - name: ensure celerity server is running
   service:

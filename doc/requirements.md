@@ -1,9 +1,6 @@
 # Prepare deployment environment
 
-This installation has only been tested on Linux. But it should (with some adjustements) work for MacOS or Windows WSL.  
-There are 2 installations possibilities : 
-- setup tools
-- docker image
+This installation has only been tested on Debian Linux.
 
 ## Setup tools
 
@@ -55,32 +52,6 @@ python3 -m pip install -r requirements.txt
 ansible-galaxy install -r requirements.yml
 
 ```
-
-## Docker
-
-If you do not want to bother with tools installation, you can use [Docker](https://docs.docker.com/install/).
-
-```sh
-docker run \
-  `# run an interactive pseudo-TTY` \
-  -it \
-  `# remove the container once you leave it` \
-  --rm \
-  `# share the current directory` \
-  -v $(pwd):/workspace \
-  `# share your SSH configuration` \
-  -v $HOME/.ssh:/home/code/.ssh:ro \
-  `# share your SSH agent` \
-  -v $SSH_AUTH_SOCK:/ssh-agent:ro \
-  `# let container know where is mapped the SSH agent` \
-  -e SSH_AUTH_SOCK=/ssh-agent \
-  `# container image to use` \
-  registry.ubicast.net/sys/ansible-public \
-  `# executable to run` \
-  bash
-```
-
-Make sur to share your SSH configuration with the Docker container, this may require to adapt the example command.
 
 ## Testing
 

@@ -3,7 +3,7 @@
 
 - name: DEPLOY ELASTIC KIBANA SERVER
   hosts: elastic
-  tags: [ 'never', 'monbench' ]
+  tags: ['never', 'monbench']
   vars:
     - es_heap_size: 2g
     - es_config:
@@ -20,7 +20,7 @@
 
 - name: DEPLOY METRICBEAT WORKERS
   hosts: mediaserver,postgres
-  tags: [ 'never', 'monbench' ]
+  tags: ['never', 'monbench']
   vars:
     - kibana_server_host: "{{ hostvars[groups['elastic'][0]]['ansible_default_ipv4']['address'] }}"
     - elastic_host: "{{ es_config['network.host'] }}"

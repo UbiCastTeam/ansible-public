@@ -1,81 +1,40 @@
 ---
 
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-  DOCKER_IMAGE_NAME: registry.ubicast.net/sys/ansible-public
-
-default:
-  image: registry.ubicast.net/sys/ansible-public
-
-stages:
-  - lint
-  - docker
-  - test-pf-std
-  - test-pf-ha
-  - test-pgsql
-
-# * * * * * * * * * * * * *
-
-lint:verify:
-  stage: lint
+checkpf:
+  # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html
+  trigger:
+    project: sys/ubicast-environment
+    strategy: depend
+  # Sends the current branch to the ubicast-environment triggered pipeline as a variable
+  variables:
+    ANSIBLE_BRANCH: "$CI_COMMIT_BRANCH"
+    DEPLOY_STD: "$DEPLOY_STD"
+    DEPLOY_HA: "$DEPLOY_HA"
+    DESTROY_STD: "$DESTROY_STD"
+    DESTROY_HA: "$DESTROY_HA"
+  # Register the job in a resource group to prevent having multiple running pipelines in parallel
+  resource_group: deployment
   rules:
-    # Avoid duplicate CI on merge request commits
-    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
-      when: never
-    # Ignore linting on docker image build
-    - if: '$DOCKER_BUILD != "True"'
-      when: always
-    - when: never
-  script:
-    - make lint
-
-# * * * * * * * * * * * * *
-
-# Docker image build job
-docker:image:
-  image: docker:stable
-  stage: docker
-  rules:
-    # Build docker image for schedule pipelines only
-    - if: '$DOCKER_BUILD == "True"'
-  before_script:
-    - apk add bash make
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.ubicast.net
-  script:
-    - make docker-build
-    - make docker-push
-
-# * * * * * * * * * * * * *
-
-.test-template:
-  retry: 2
-  timeout: 4h
-  rules:
-    # Run deployment for schedule pipelines
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $PF_DEPLOY_TEST == "True"'
-      when: always
-    # Run deployment for manual pipelines
+    # Only triggers the pipeline if it's launched manually from the GitLab webinterface
     - if: '$CI_PIPELINE_SOURCE == "web"'
-      when: always
-    - when: never
+    # Only triggers the pipeline if it's launched by a scheduled job
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    # Only if push on the main branch
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"'
 
-test:pf-std:
-  extends: .test-template
-  stage: test-pf-std
-  script:
-    - echo $CI_PIPELINE_SOURCE
-    - make test pf-std=1
-
-test:pf-ha:
-  extends: .test-template
-  stage: test-pf-ha
-  script:
-    - make test pf-ha=1
-
-test:pgsql-ha:
-  extends: .test-template
-  stage: test-pgsql
-  script:
-    - make test pgsql-ha=1 debug=1
+lint:
+  # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html
+  trigger:
+    project: sys/ubicast-environment
+    strategy: depend
+  # Sends the current branch to the ubicast-environment triggered pipeline as a variable
+  variables:
+    ANSIBLE_BRANCH: "$CI_COMMIT_BRANCH"
+    DEPLOY_STD: "false"
+    DEPLOY_HA: "false"
+  resource_group: deployment
+  rules:
+    # Only if push in a branch other than main
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main"'
 
 ...

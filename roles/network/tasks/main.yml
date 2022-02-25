@@ -24,6 +24,7 @@
       copy:
         dest: /etc/network/interfaces
         backup: true
+        mode: '644'
         content: |
           # This file describes the network interfaces available on your system
           # and how to activate them. For more information, se interfaces(5).
