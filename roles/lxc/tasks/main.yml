@@ -2,7 +2,7 @@
 
 - name: Masquerade bridge configuration
   block:
-    - name: Warning for test
+    - name: Ask confirmation
       pause:
         prompt: |
           -------------------------------------------------------------------------------------------
