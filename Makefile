@@ -21,6 +21,7 @@ venv: $(VENV)/bin/activate
 ${VENV}/bin/activate: requirements.txt requirements.dev.txt
 	test -d $(VENV) || python3 -m venv $(VENV)
 	$(PYTHON) -m pip install -U pip
+	$(PYTHON) -m pip install -U wheel
 	$(PYTHON) -m pip install -r requirements.txt -r requirements.dev.txt
 	touch $(VENV)/bin/activate
 
