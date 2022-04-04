@@ -22,7 +22,7 @@
         ferm_input_rules: "{{ server_ferm_input_rules }}"
         ferm_output_rules: "{{ server_ferm_output_rules }}"
         ferm_global_settings: "{{ server_ferm_global_settings }}"
-      include_role:
+      ansible.builtin.include_role:
         name: ferm-configure
 
 - import_playbook: deploy-minimal.yml

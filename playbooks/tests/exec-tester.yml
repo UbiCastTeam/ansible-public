@@ -10,11 +10,11 @@
   tasks:
     - name: remove envsetup tester log
       when: tester_reset_log
-      file:
+      ansible.builtin.file:
         path: /root/envsetup/tests/logs/tester_pb.log
         state: absent
     - name: envsetup tester
-      shell:
+      ansible.builtin.shell:
         cmd: |
           set -o pipefail
           python3 /root/envsetup/tests/tester.py 2>&1 | tee /root/envsetup/tests/logs/tester_pb.log

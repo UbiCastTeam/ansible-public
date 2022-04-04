@@ -1,6 +1,6 @@
 ---
 - name: update cache
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     update_cache: true
@@ -9,34 +9,34 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: systemd daemon reload
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: update locale
-  command: locale-gen
+  ansible.builtin.command: locale-gen
 
 - name: restart cron
-  service:
+  ansible.builtin.service:
     name: cron
     state: restarted
 
 - name: restart sshd
-  service:
+  ansible.builtin.service:
     name: sshd
     state: restarted
 
 - name: restart unattended-upgrades
-  service:
+  ansible.builtin.service:
     name: unattended-upgrades
     state: restarted
 
 - name: restart ntp
-  service:
+  ansible.builtin.service:
     name: ntp
     state: restarted
 
 - name: update cache
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     update_cache: true

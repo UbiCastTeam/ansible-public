@@ -2,13 +2,13 @@
 
 - name: create users groups
   loop: "{{ users }}"
-  group:
+  ansible.builtin.group:
     name: "{{ item.name }}"
     state: present
 
 - name: create users
   loop: "{{ users }}"
-  user:
+  ansible.builtin.user:
     name: "{{ item.name }}"
     group: "{{ item.name }}"
     shell: /bin/bash
@@ -22,53 +22,53 @@
 
 - name: set users passwords
   loop: "{{ users }}"
-  user:
+  ansible.builtin.user:
     name: "{{ item.name }}"
     password: "{{ item.passwd }}"
     update_password: always
 
 - name: copy .bashrc
   loop: "{{ users }}"
-  copy:
+  ansible.builtin.copy:
     src: .bashrc
     dest: ~{{ item.name }}/.bashrc
     mode: '644'
 
 - name: copy .vimrc
   loop: "{{ users }}"
-  copy:
+  ansible.builtin.copy:
     src: .vimrc
     dest: ~{{ item.name }}/.vimrc
     mode: '644'
 
 - name: copy .bashrc for root
   when: users_root_change
-  copy:
+  ansible.builtin.copy:
     src: .bashrc
     dest: ~root/.bashrc
     mode: '644'
 
 - name: copy .vimrc for root
   when: users_root_change
-  copy:
+  ansible.builtin.copy:
     src: .vimrc
     dest: ~root/.vimrc
     mode: '644'
 
 - name: set users allowed ssh keys
   loop: "{{ users | product(users_ssh_authorized_keys) | list }}"
-  authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ item[0].name }}"
     key: "{{ item[1] }}"
 
 - name: set root allowed ssh keys
   loop: "{{ users_ssh_authorized_keys }}"
-  authorized_key:
+  ansible.posix.authorized_key:
     user: root
     key: "{{ item }}"
 
 - name: sudoers without password
-  copy:
+  ansible.builtin.copy:
     dest: /etc/sudoers.d/nopasswd
     validate: visudo -cf %s
     mode: '440'
@@ -77,7 +77,7 @@
 
 - name: install ubicast ssh access
   when: not offline_mode | d(false)
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "ubicast-ssh-access"

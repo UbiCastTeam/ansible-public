@@ -1,7 +1,7 @@
 ---
 
 - name: netcapture install
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: ubicast-netcapture
@@ -10,19 +10,19 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: netcapture config
-  template:
+  ansible.builtin.template:
     src: netcapture.json.j2
     dest: /etc/miris/netcapture.json
     mode: '644'
 
 - name: netcapture miris
-  template:
+  ansible.builtin.template:
     src: miris-api.json.j2
     dest: /etc/miris/conf/api.json
     mode: '644'
 
 - name: netcapture config dir
-  file:
+  ansible.builtin.file:
     path: "{{ netcapture_conf_folder }}"
     group: video
     mode: u=rwX,g=rwX,o=r
@@ -30,14 +30,14 @@
     state: directory
 
 - name: netcapture media dir
-  file:
+  ansible.builtin.file:
     path: "{{ netcapture_media_folder }}"
     group: video
     mode: u=rwX,g=rwX,o=rx
     state: directory
 
 - name: netcapture package dir
-  file:
+  ansible.builtin.file:
     path: "{{ netcapture_pkg_folder }}"
     mode: u=rwX,g=rwX,o=rx
     state: directory

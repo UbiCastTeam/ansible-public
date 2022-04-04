@@ -1,7 +1,7 @@
 ---
 
 - name: install bench-server packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     update_cache: true
@@ -12,13 +12,13 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: ensure configuration directory exists
-  file:
+  ansible.builtin.file:
     path: /etc/mediaserver
     state: directory
     mode: '755'
 
 - name: benchmark configuration settings
-  copy:
+  ansible.builtin.copy:
     dest: /etc/mediaserver/bench-conf.json
     content: |
       {
@@ -33,22 +33,22 @@
     mode: '644'
 
 - name: reload systemd daemon
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: restart bench-server
-  systemd:
+  ansible.builtin.systemd:
     name: bench-server
     state: restarted
 
 - name: streaming configuration settings
-  template:
+  ansible.builtin.template:
     src: bench-streaming.conf.j2
     dest: /etc/mediaserver/bench-streaming.conf
     mode: '644'
 
 - name: clone ms-testing-suite repository
-  git:
+  ansible.builtin.git:
     repo: "{{ bench_stream_repo }}"
     version: stable
     dest: /usr/share/ms-testing-suite
@@ -56,7 +56,7 @@
     force: true
 
 - name: copy configuration for testing tools
-  copy:
+  ansible.builtin.copy:
     src: /etc/mediaserver/bench-streaming.conf
     dest: /usr/share/ms-testing-suite/config.json
     remote_src: true
@@ -66,7 +66,7 @@
   when:
     - not offline_mode | d(false)
     - not in_docker | d(false)
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://download.docker.com/linux/debian/gpg
     state: present
 
@@ -74,7 +74,7 @@
   when:
     - not offline_mode | d(false)
     - not in_docker | d(false)
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb https://download.docker.com/linux/debian buster stable"
     state: present
     update_cache: true
@@ -83,7 +83,7 @@
   when:
     - not offline_mode | d(false)
     - not in_docker | d(false)
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     update_cache: true
@@ -97,7 +97,7 @@
   when:
     - not offline_mode | d(false)
     - not in_docker | d(false)
-  command:
+  ansible.builtin.command:
     cmd: make build_docker_img
     chdir: /usr/share/ms-testing-suite
   run_once: true

@@ -7,7 +7,7 @@
   tasks:
 
     - name: verify /data partition existence
-      shell: findmnt /data
+      ansible.builtin.shell: findmnt /data
       register: data_exist
       failed_when: false
       changed_when: false
@@ -16,17 +16,17 @@
     - block:
 
         - name: get /data size
-          shell: df -BG /data --output=size | tail -n1 | grep -o '[0-9]*'
+          ansible.builtin.shell: df -BG /data --output=size | tail -n1 | grep -o '[0-9]*'
           register: data_size
           failed_when: false
           changed_when: false
 
         - name: print size
-          debug:
+          ansible.builtin.debug:
             msg: "/data size is {{ data_size.stdout }}G"
 
         - name: create a test directory in /data
-          file:
+          ansible.builtin.file:
             path: /data/test
             state: directory
             mode: '0755'
@@ -36,7 +36,7 @@
           changed_when: false
 
         - name: create a test file in /data
-          file:
+          ansible.builtin.file:
             state: touch
             path: /data/test/file
             mode: '0644'
@@ -54,13 +54,13 @@
     - block:
 
         - name: get /home size
-          shell: df -BG /home --output=size | tail -n1 | grep -o '[0-9]*'
+          ansible.builtin.shell: df -BG /home --output=size | tail -n1 | grep -o '[0-9]*'
           register: home_size
           failed_when: false
           changed_when: false
 
         - name: verify size
-          debug:
+          ansible.builtin.debug:
             msg: "/home size is too short ({{ home_size.stdout }}G < 200G)"
           when: home_size.stdout | int < 200
           ignore_errors: true

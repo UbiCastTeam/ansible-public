@@ -1,7 +1,7 @@
 ---
 
 - name: install bench-worker packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     update_cache: true
@@ -12,13 +12,13 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: ensure configuration directory exists
-  file:
+  ansible.builtin.file:
     path: /etc/mediaserver
     state: directory
     mode: '755'
 
 - name: benchmark configuration settings
-  copy:
+  ansible.builtin.copy:
     dest: /etc/mediaserver/bench-conf.json
     content: |
       {
@@ -33,11 +33,11 @@
     mode: '644'
 
 - name: reload systemd daemon
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: restart bench-worker
-  systemd:
+  ansible.builtin.systemd:
     name: bench-worker
     state: restarted
 

@@ -1,7 +1,7 @@
 ---
 
 - name: ansible postgresql requirements install
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: python3-psycopg2
@@ -10,7 +10,7 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: install packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ pg_packages }}"
@@ -21,7 +21,7 @@
 # CONFIGURATION
 
 - name: ensure conf directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_conf_dir }}/conf.d"
     owner: postgres
     group: postgres
@@ -29,14 +29,14 @@
     mode: '755'
 
 - name: ensure conf directory is included
-  replace:
+  ansible.builtin.replace:
     path: "{{ pg_conf_dir }}/postgresql.conf"
     backup: true
     regexp: "^#?include_dir = '[A-Za-z\\.]+'(\\s+.*)$"
     replace: "include_dir = 'conf.d'\\1"
 
 - name: change max connections value
-  replace:
+  ansible.builtin.replace:
     path: "{{ pg_conf_dir }}/postgresql.conf"
     backup: true
     regexp: "^#?max_connections = [0-9]+"
@@ -47,7 +47,7 @@
   notify: restart postgresql
   loop: "{{ pg_conf }}"
   when: item.content | d(false)
-  copy:
+  ansible.builtin.copy:
     dest: "{{ pg_conf_dir }}/conf.d/{{ item.name }}.conf"
     owner: postgres
     group: postgres
@@ -57,7 +57,7 @@
 
 - name: configure authentication
   notify: restart postgresql
-  template:
+  ansible.builtin.template:
     src: pg_hba.conf.j2
     dest: "{{ pg_conf_dir }}/pg_hba.conf"
     owner: postgres
@@ -66,7 +66,7 @@
     backup: true
 
 - name: ensure service is enabled and running
-  systemd:
+  ansible.builtin.systemd:
     name: postgresql@{{ pg_version }}-{{ pg_cluster }}
     enabled: true
     state: started
@@ -77,7 +77,7 @@
   become: true
   become_user: postgres
   no_log: true
-  postgresql_user:
+  community.general.postgresql_user:
     name: postgres
     password: "{{ pg_password | d(omit) }}"
 
@@ -86,7 +86,7 @@
   become_user: postgres
   no_log: true
   loop: "{{ pg_users }}"
-  postgresql_user:
+  community.general.postgresql_user:
     name: "{{ item.name }}"
     password: "{{ item.password | d(omit) }}"
     db: "{{ item.db | d(omit) }}"
@@ -95,7 +95,7 @@
 
 - name: set .pgpass to allow passwordless connection
   loop: "{{ query('nested', ['root', 'postgres'], pg_users) }}"
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: "~{{ item.0 }}/.pgpass"
     block: "*:*:*:{{ item.1.name }}:{{ item.1.password }}"
     marker: "# {mark} {{ item.1.name }}"
@@ -123,10 +123,10 @@
     ferm_input_rules: "{{ pg_ferm_input_rules }}"
     ferm_output_rules: "{{ pg_ferm_output_rules }}"
     ferm_global_settings: "{{ pg_ferm_global_settings }}"
-  include_role:
+  ansible.builtin.include_role:
     name: ferm-configure
 
 - name: flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 ...

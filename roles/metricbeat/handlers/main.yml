@@ -1,6 +1,6 @@
 ---
 - name: restart metricbeat
-  service:
+  ansible.builtin.service:
     name: metricbeat
     state: restarted
 

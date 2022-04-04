@@ -10,7 +10,7 @@
   block:
 
     - name: packages
-      apt:
+      ansible.builtin.apt:
         force_apt_get: true
         install_recommends: false
         name: "{{ network_packages }}"
@@ -21,7 +21,7 @@
 
     - name: cleanup
       register: network_cleanup_interfaces
-      copy:
+      ansible.builtin.copy:
         dest: /etc/network/interfaces
         backup: true
         mode: '644'
@@ -37,7 +37,7 @@
 
     - name: service
       when: network_cleanup_interfaces is changed
-      systemd:
+      ansible.builtin.systemd:
         name: network-manager
         enabled: true
         state: restarted

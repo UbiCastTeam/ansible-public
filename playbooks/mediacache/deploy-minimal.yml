@@ -7,12 +7,12 @@
     - mediacache
   tasks:
     - name: Getting the IP to trust in term of securelink
-      set_fact:
+      ansible.builtin.set_fact:
         securelink_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 
     - name: authorize mediacache on mediaserver
       notify: restart nginx on mediaservers
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/nginx/conf.d/mediaserver-securelink.conf
         line: "{{'\t'}}{{ securelink_ip }} 1;"  # noqa: no-tabs
         insertafter: '^geo'
@@ -22,7 +22,7 @@
 
   handlers:
     - name: restart nginx on mediaservers
-      systemd:
+      ansible.builtin.systemd:
         name: nginx
         state: restarted
       delegate_to: "{{ item }}"

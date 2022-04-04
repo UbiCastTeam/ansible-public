@@ -4,7 +4,7 @@
 # Upgrade already installed packages to latest version and clean system
 
 - name: apt update
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     update_cache: true
@@ -14,7 +14,7 @@
   changed_when: false
 
 - name: apt dist upgrade
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     upgrade: dist
@@ -23,7 +23,7 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: apt clean and autoremove
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     autoclean: true
@@ -35,7 +35,7 @@
 # Install new packages and remove conflicts
 
 - name: install system utilities
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ sysconfig_packages }}"
@@ -45,7 +45,7 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: remove conflicting packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name:
@@ -62,7 +62,7 @@
 # Enable automatic security upgrades
 
 - name: install unattended-upgrades
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: unattended-upgrades
@@ -72,7 +72,7 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: enable unattended upgrades
-  copy:
+  ansible.builtin.copy:
     dest: /etc/apt/apt.conf.d/20auto-upgrades
     content: |
       APT::Periodic::Update-Package-Lists "1";
@@ -80,28 +80,28 @@
     mode: '644'
 
 - name: remove old kernel with unattended-upgrades
-  replace:
+  ansible.builtin.replace:
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
     regexp: '^//Unattended-Upgrade::Remove-Unused-Kernel-Packages.*$'
     replace: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";'
   notify: restart unattended-upgrades
 
 - name: allow automatic updates for ubicast security
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     insertafter: '^Unattended-Upgrade::Origins-Pattern {$'
     line: '        "origin=UbiCast,label=UbiCast-Security";'
     backup: true
 
 - name: enable root login via ssh with key
-  replace:
+  ansible.builtin.replace:
     dest: /etc/ssh/sshd_config
     regexp: "^#PermitRootLogin (yes|without-password|prohibit-password)"
     replace: "PermitRootLogin without-password"
   notify: restart sshd
 
 - name: remove disabled root login
-  replace:
+  ansible.builtin.replace:
     dest: /root/.ssh/authorized_keys
     regexp: "^no-port-forwarding,(.+) ssh-"
     replace: "ssh-"
@@ -117,7 +117,7 @@
     ferm_input_rules: "{{ sysconfig_ferm_input_rules }}"
     ferm_output_rules: "{{ sysconfig_ferm_output_rules }}"
     ferm_global_settings: "{{ sysconfig_ferm_global_settings }}"
-  include_role:
+  ansible.builtin.include_role:
     name: ferm-configure
 
 - include_tasks: logs.yml

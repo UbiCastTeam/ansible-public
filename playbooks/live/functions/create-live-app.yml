@@ -6,23 +6,23 @@
   tags: live
   tasks:
     - name: Check the existence of the live configuration
-      stat:
+      ansible.builtin.stat:
         path: /etc/nginx/rtmp.d/{{ live_app_name }}.conf
       register: live_conf_live
 
     - name: Getting the live configuration content
-      shell: grep -oP '^application \K[A-Za-z0-9]+' /etc/nginx/rtmp.d/{{ live_app_name }}.conf
+      ansible.builtin.shell: grep -oP '^application \K[A-Za-z0-9]+' /etc/nginx/rtmp.d/{{ live_app_name }}.conf
       when: live_conf_live.stat.exists
       register: live_conf_secret
       changed_when: false
 
     - name: Extracting the application secret
-      set_fact:
+      ansible.builtin.set_fact:
         live_secret: "{{ live_conf_secret.stdout }}"
       when: live_conf_live.stat.exists
 
     - name: Declaring the application secret
-      set_fact:
+      ansible.builtin.set_fact:
         live_secret: ""
       when: not live_conf_live.stat.exists
 
@@ -32,23 +32,23 @@
   tags: live
   tasks:
     - name: Check the existence of the live configuration
-      stat:
+      ansible.builtin.stat:
         path: /home/{{ live_app_name }}/msinstance/conf/lives.json
       register: ms_conf_live
 
     - name: Retrieve the live configuration
-      slurp:
+      ansible.builtin.slurp:
         src: /home/{{ live_app_name }}/msinstance/conf/lives.json
       register: ms_live_config
       when: ms_conf_live.stat.exists
 
     - name: Extracting the application secret
-      set_fact:
+      ansible.builtin.set_fact:
         live_secret: "{{ ms_live_config.content|b64decode|from_json | json_query('RTMP_APP') }}"
       when: ms_conf_live.stat.exists
 
     - name: Declaring the application secret
-      set_fact:
+      ansible.builtin.set_fact:
         live_secret: ""
       when: not ms_conf_live.stat.exists
 
@@ -58,13 +58,13 @@
   tags: live
   tasks:
     - name: Retrieving the first live host configured app secret as reference
-      set_fact:
+      ansible.builtin.set_fact:
         base_live_secret: "{{ hostvars[groups['live'][0]].live_secret }}"
         app_secret_diff: false
       when: hostvars[groups['live'][0]].live_secret | length > 0
 
     - name: Comparing the app secrets from MS an live servers with the reference
-      set_fact:
+      ansible.builtin.set_fact:
         app_secret_diff: true
       when: base_live_secret is defined
             and hostvars[item].live_secret != base_live_secret
@@ -73,7 +73,7 @@
         - "{{ groups['mediaserver'] }}"
 
     - name: Generating an application secret on localhost with /dev/urandom
-      shell: >
+      ansible.builtin.shell: >
         set -o pipefail && \
         cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 30 | head -n 1
       register: secret
@@ -84,7 +84,7 @@
             or app_secret_diff
 
     - name: Deciding the application secret to use
-      set_fact:
+      ansible.builtin.set_fact:
         live_app_secret: "{{ secret.stdout | d(base_live_secret) }}"
 
 - name: Live server(s) - "{{ live_app_name }}" live application configuration
@@ -93,19 +93,19 @@
   tags: live
   tasks:
     - name: Check the existence of the RTMP app
-      command: ubicast-livectl get {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
+      ansible.builtin.command: ubicast-livectl get {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
       register: app_status
       changed_when: false
       failed_when: false
 
     - name: (Re)create the RTMP app configuration
       notify: Reload nginx
-      command: ubicast-livectl add {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
+      ansible.builtin.command: ubicast-livectl add {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
       when: app_status.rc == 1
 
     - name: Prepare the nginx RTMP temporary directory
       notify: Reload nginx
-      file:
+      ansible.builtin.file:
         path: /var/tmp/nginx-rtmp/{{ live_app_name }}
         owner: nginx
         group: root
@@ -114,7 +114,7 @@
 
     - name: Create the nginx RTMP web directory symlink
       notify: Reload nginx
-      file:
+      ansible.builtin.file:
         src: /var/tmp/nginx-rtmp/{{ live_app_name }}
         dest: /var/www/{{ live_app_name }}/streaming-rtmp
         state: link
@@ -123,7 +123,7 @@
 
   handlers:
     - name: Reload nginx
-      systemd:
+      ansible.builtin.systemd:
         name: nginx
         state: reloaded
 
@@ -133,54 +133,54 @@
   tags: live
   tasks:
     - name: Getting the current lives configuration
-      slurp:
+      ansible.builtin.slurp:
         src: /home/{{ live_app_name }}/msinstance/conf/lives.json
       register: lives_config
       when: ms_conf_live.stat.exists
 
     # The "W10K" string is decoded to an empty json file => "[]"
     - name: Store the lives configuration in a variable
-      set_fact:
+      ansible.builtin.set_fact:
         lives_config: "{{ lives_config.content | default('W10K') | b64decode | from_json }}"
 
     - name: Set the live application secret in lives configuration
       vars:
         rtmp_app_line:
           RTMP_APP: "{{ hostvars['localhost'].live_app_secret }}"
-      set_fact:
+      ansible.builtin.set_fact:
         lives_config: "{{ lives_config | combine(rtmp_app_line) }}"
 
     - name: Set the RTMP_NAME in lives configuration
       vars:
         rtmp_name_line:
           RTMP_NAME: "{{ live_app_name }}"
-      set_fact:
+      ansible.builtin.set_fact:
         lives_config: "{{ lives_config | combine(rtmp_name_line) }}"
 
     - name: Set the RTMP_HLS_PLAYBACK_URL in lives configuration
       vars:
         rtmp_hls_line:
           RTMP_HLS_PLAYBACK_URL: "{{ rtmp_hls_url }}"
-      set_fact:
+      ansible.builtin.set_fact:
         lives_config: "{{ lives_config | combine(rtmp_hls_line) }}"
 
     - name: Set the RTMP_PLAYBACK_URL in lives configuration
       vars:
         rtmp_playback_line:
           RTMP_PLAYBACK_URL: null
-      set_fact:
+      ansible.builtin.set_fact:
         lives_config: "{{ lives_config | combine(rtmp_playback_line) }}"
 
     - name: Set the RTMP_PUBLISH_URL in lives configuration
       vars:
         rtmp_publish_line:
           RTMP_PUBLISH_URL: "{{ rtmp_pub_url }}"
-      set_fact:
+      ansible.builtin.set_fact:
         lives_config: "{{ lives_config | combine(rtmp_publish_line) }}"
 
     - name: Update mediaserver lives configuration
       notify: Restart mediaserver
-      copy:
+      ansible.builtin.copy:
         content: "{{ lives_config | to_nice_json }}"
         dest: "/home/{{ live_app_name }}/msinstance/conf/lives.json"
         owner: "{{ live_app_name }}"
@@ -189,7 +189,7 @@
 
   handlers:
     - name: Restart mediaserver
-      systemd:
+      ansible.builtin.systemd:
         name: mediaserver
         state: restarted
 

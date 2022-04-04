@@ -1,7 +1,7 @@
 ---
 
 - name: nginx install
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ nginx_packages }}"
@@ -15,13 +15,13 @@
   loop:
     - /etc/nginx/sites-enabled/default
     - /etc/nginx/sites-enabled/default.conf
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: absent
 
 - name: nginx check old ssl conf exists
   register: nginx_old_ssl_conf
-  stat:
+  ansible.builtin.stat:
     path: /etc/nginx/conf.d/ssl.conf
 
 - name: nginx migrate old ssl certificate conf
@@ -30,12 +30,12 @@
   loop:
     - grep ssl_certificate /etc/nginx/conf.d/ssl.conf > /etc/nginx/conf.d/ssl_certificate.conf
     - mv /etc/nginx/conf.d/ssl.conf /etc/nginx/conf.d/ssl.conf.old
-  command:
+  ansible.builtin.command:
     cmd: "{{ item }}"
 
 - name: nginx check ssl cert conf exists
   register: nginx_ssl_cert_conf
-  stat:
+  ansible.builtin.stat:
     path: /etc/nginx/conf.d/ssl_certificate.conf
 
 - name: nginx update ssl certificate conf
@@ -43,7 +43,7 @@
     - nginx_ssl_cert_conf.stat.exists
     - nginx_ssl_certificate != "/etc/ssl/certs/ssl-cert-snakeoil.pem"
   notify: restart nginx
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
     regexp: 'ssl_certificate\s+([\w/\-\_\.]+);'
     line: 'ssl_certificate {{ nginx_ssl_certificate }};'
@@ -53,7 +53,7 @@
     - nginx_ssl_cert_conf.stat.exists
     - nginx_ssl_certificate_key != "/etc/ssl/private/ssl-cert-snakeoil.key"
   notify: restart nginx
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
     regexp: 'ssl_certificate_key\s+([\w/\-\_\.]+);'
     line: 'ssl_certificate_key {{ nginx_ssl_certificate_key }};'

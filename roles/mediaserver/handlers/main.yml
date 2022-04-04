@@ -1,21 +1,21 @@
 ---
 
 - name: mscontroller restart
-  command:
+  ansible.builtin.command:
     cmd: mscontroller.py restart
 
 - name: restart nginx
-  systemd:
+  ansible.builtin.systemd:
     name: nginx
     state: restarted
 
 - name: restart mediaserver
-  systemd:
+  ansible.builtin.systemd:
     name: mediaserver
     state: restarted
 
 - name: restart systemd-sysusers
-  systemd:
+  ansible.builtin.systemd:
     name: systemd-sysusers
     state: restarted
 

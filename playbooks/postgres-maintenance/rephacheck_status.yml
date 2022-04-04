@@ -4,12 +4,12 @@
   hosts: postgres_primary:postgres_standby:postgres_fenced
   tasks:
     - name: get cluster state
-      command: "rephacheck"
+      ansible.builtin.command: "rephacheck"
       register: rephacheck
       changed_when: false
 
     - name: show status for each node
-      debug:
+      ansible.builtin.debug:
         msg: "Current node {{ ansible_hostname }} status {{ rephacheck['stdout'] }}"
       when: rephacheck['stdout'] | length > 0
 

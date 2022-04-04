@@ -5,7 +5,7 @@
     - not offline_mode | d(false)
     - ansible_distribution == 'Ubuntu'
   notify: update cache
-  copy:
+  ansible.builtin.copy:
     dest: /etc/apt/sources.list
     mode: '644'
     content: |
@@ -19,7 +19,7 @@
     - not offline_mode | d(false)
     - ansible_distribution == 'Debian'
   notify: update cache
-  copy:
+  ansible.builtin.copy:
     dest: /etc/apt/sources.list
     mode: '644'
     content: |
@@ -29,21 +29,21 @@
 
 - name: add ubicast apt repo key
   when: not offline_mode | d(false)
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://{{ repos_skyreach_host }}/media/public.gpg
 
 - name: add ubicast apt repo
   when:
     - not offline_mode | d(false)
     - repos_skyreach_token | d(false)
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://{{ repos_skyreach_host }} packaging/apt/{{ repos_skyreach_token }}/
     filename: ubicast
     update_cache: true
 
 - name: add ubicast security apt repo
   when: not offline_mode | d(false)
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://{{ repos_skyreach_host }} packaging/apt/ubicast-security-updates/
     filename: ubicast-secu
     update_cache: true

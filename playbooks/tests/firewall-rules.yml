@@ -7,7 +7,7 @@
     - name: ensure python3 is installed
       register: python_install
       changed_when: "'es_pyinstall' in python_install.stdout_lines"
-      raw: command -v python3 || echo es_pyinstall && apt update && apt install -y python3-minimal python3-apt iproute2
+      ansible.builtin.raw: command -v python3 || echo es_pyinstall && apt update && apt install -y python3-minimal python3-apt iproute2
       tags: always
 
 - name: SET PORTS TO LISTEN

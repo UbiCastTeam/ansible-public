@@ -1,14 +1,13 @@
-#!/usr/bin/env bash
 
 # config
 exclude_pattern=()
 exclude_pattern+=('^./roles/elastic.elasticsearch')
 exclude_pattern+=('^./.venv')
 
-apt_regex='^[^#]*apt:'
+apt_regex='^[^#]*(ansible.builtin.|)apt:'
 until_regex='^[^#]*until: apt_status is success'
 
-# * * * 
+# * * *
 
 # go to repository root dir
 cd "$(readlink -f "$(dirname "${0}")")"/..
@@ -24,14 +23,14 @@ errors_count=0
 for f in "${yml_files[@]}"; do
 
     # count apt block
-    apt_block_count=$(grep -c "${apt_regex}" "${f}")
+    apt_block_count=$(grep -cE "${apt_regex}" "${f}")
 
     # test if file contain apt block
     if (( apt_block_count > 0 )); then
-    
+
         # get apt block, count apt: and until:
         apt_blocks="$(awk -v RS='' "/${apt_regex}/" "${f}")"
-        apt_nb="$(echo "${apt_blocks}" | grep -c "${apt_regex}")"
+        apt_nb="$(echo "${apt_blocks}" | grep -cE "${apt_regex}")"
         until_nb="$(echo "${apt_blocks}" | grep -c "${until_regex}")"
 
         # test if apt: and until: count differ
@@ -51,4 +50,3 @@ if (( errors_count != 0 )); then
 else
     exit 0
 fi
-

@@ -1,17 +1,17 @@
 ---
 
 - name: restart nginx
-  service:
+  ansible.builtin.service:
     name: nginx
     state: restarted
 
 - name: restart skyreach
-  service:
+  ansible.builtin.service:
     name: skyreach
     state: restarted
 
 - name: restart apt-cacher-ng
-  service:
+  ansible.builtin.service:
     name: apt-cacher-ng
     state: restarted
 

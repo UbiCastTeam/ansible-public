@@ -1,6 +1,6 @@
 ---
 - name: requirements install
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name:
@@ -17,14 +17,14 @@
 - name: add docker key
   when:
     - not offline_mode | d(false)
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
     state: present
 
 - name: add docker debian repository
   when:
     - not offline_mode | d(false)
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} stable
     state: present
     update_cache: true
@@ -32,7 +32,7 @@
 - name: install docker
   when:
     - not offline_mode | d(false)
-  apt:
+  ansible.builtin.apt:
     name: docker-ce
     state: latest
     update_cache: true
@@ -43,7 +43,7 @@
 - name: docker service
   when:
     - not offline_mode | d(false)
-  systemd:
+  ansible.builtin.systemd:
     name: docker
     enabled: true
     state: started
@@ -51,7 +51,7 @@
 - name: install requirements for docker python binding
   when:
     - not offline_mode | d(false)
-  apt:
+  ansible.builtin.apt:
     name: python3-docker
     state: latest
     update_cache: true

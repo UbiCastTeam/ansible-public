@@ -1,14 +1,14 @@
 ---
 
 - name: install packages
-  package:
+  ansible.builtin.package:
     force_apt_get: true
     install_recommends: false
     name: "{{ mvt_packages }}"
     state: present
 
 - name: generate ssh keys pair
-  user:
+  ansible.builtin.user:
     name: root
     generate_ssh_key: true
     ssh_key_type: ed25519
@@ -25,9 +25,9 @@
     ferm_input_rules: "{{ mvt_ferm_input_rules }}"
     ferm_output_rules: "{{ mvt_ferm_output_rules }}"
     ferm_global_settings: "{{ mvt_ferm_global_settings }}"
-  include_role:
+  ansible.builtin.include_role:
     name: ferm-configure
 
-- meta: flush_handlers  # noqa unnamed-task
+- ansible.builtin.meta: flush_handlers  # noqa unnamed-task
 
 ...

@@ -1,7 +1,7 @@
 ---
 
 - name: install packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ hap_packages }}"
@@ -11,12 +11,12 @@
 
 - name: configure
   notify: reload haproxy
-  template:
+  ansible.builtin.template:
     src: haproxy.cfg.j2
     dest: /etc/haproxy/haproxy.cfg
     backup: true
     mode: '644'
 
-- meta: flush_handlers  # noqa unnamed-task
+- ansible.builtin.meta: flush_handlers  # noqa unnamed-task
 
 ...

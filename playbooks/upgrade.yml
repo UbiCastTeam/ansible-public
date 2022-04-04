@@ -7,7 +7,7 @@
 
     - name: apt-get dist-upgrade
       when: ansible_os_family == "Debian"
-      apt:
+      ansible.builtin.apt:
         force_apt_get: true
         install_recommends: false
         cache_valid_time: 3600
@@ -18,7 +18,7 @@
 
     - name: yum upgrade
       when: ansible_os_family == "RedHat"
-      yum:
+      ansible.builtin.yum:
         name: "*"
         state: latest
 

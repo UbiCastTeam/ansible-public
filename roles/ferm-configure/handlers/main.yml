@@ -2,13 +2,13 @@
 
 - name: restart ferm
   when: ansible_facts.services['ferm.service'] is defined
-  systemd:
+  ansible.builtin.systemd:
     name: ferm
     state: restarted
 
 - name: restart fail2ban
   when: ansible_facts.services['fail2ban.service'] is defined
-  systemd:
+  ansible.builtin.systemd:
     name: fail2ban
     state: started
 ...

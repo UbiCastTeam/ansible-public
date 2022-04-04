@@ -1,14 +1,14 @@
 ---
 
 - name: restart lxc
-  systemd:
+  ansible.builtin.systemd:
     name: lxc
     state: restarted
   changed_when: true
   notify: restart lxc-net
 
 - name: restart lxc-net
-  systemd:
+  ansible.builtin.systemd:
     name: lxc-net
     state: restarted
 
