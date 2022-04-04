@@ -1,7 +1,7 @@
 ---
 
 - name: install certbot
-  package:
+  ansible.builtin.package:
     force_apt_get: true
     install_recommends: false
     name: certbot
@@ -10,7 +10,7 @@
   when: letsencrypt_domains == []
   changed_when: false
   register: letsencryt_nginx_output
-  shell:
+  ansible.builtin.shell:
     executable: /bin/bash
     cmd: >
       set -o pipefail;
@@ -18,12 +18,12 @@
 
 - name: save result as list
   when: letsencrypt_domains == []
-  set_fact:
+  ansible.builtin.set_fact:
     letsencrypt_domains: "{{ letsencryt_nginx_output.stdout.split() }}"
 
 - name: save domains list in a file
   register: letsencrypt_save_list
-  copy:
+  ansible.builtin.copy:
     dest: /etc/letsencrypt/domains.txt
     content: |
       {% for domain in letsencrypt_domains %}
@@ -32,19 +32,19 @@
     mode: '644'
 
 - name: create webroot directory
-  file:
+  ansible.builtin.file:
     path: "{{ letsencrypt_webroot }}"
     state: directory
     mode: '755'
 
 - name: create pre hook directory
-  file:
+  ansible.builtin.file:
     path: /etc/letsencrypt/renewal-hooks/pre
     state: directory
     mode: '755'
 
 - name: create pre hook script
-  copy:
+  ansible.builtin.copy:
     dest: /etc/letsencrypt/renewal-hooks/pre/mkdir
     mode: 0755
     content: |
@@ -54,13 +54,13 @@
       chmod 755 "$CERTBOT_DOCROOT"
 
 - name: create deploy hook directory
-  file:
+  ansible.builtin.file:
     path: /etc/letsencrypt/renewal-hooks/deploy
     state: directory
     mode: '755'
 
 - name: create deploy hook script
-  copy:
+  ansible.builtin.copy:
     dest: /etc/letsencrypt/renewal-hooks/deploy/nginx
     mode: 0755
     content: |
@@ -74,7 +74,7 @@
     - letsencrypt_save_list is changed
   register: letsencrypt_dry_run
   ignore_errors: true
-  command:
+  ansible.builtin.command:
     cmd: >
       certbot certonly
         --dry-run
@@ -85,13 +85,13 @@
 
 - name: remove domains list file in case of failure
   when: letsencrypt_dry_run is failed
-  file:
+  ansible.builtin.file:
     path: "{{ letsencrypt_save_list.dest }}"
     state: absent
 
 - name: exit in case of failure
   when: letsencrypt_dry_run is failed
-  fail:
+  ansible.builtin.fail:
 
 - name: generate certificates
   notify: restart nginx
@@ -99,7 +99,7 @@
     - letsencrypt_domains != []
     - letsencrypt_save_list is changed
     - letsencrypt_dry_run is succeeded
-  command:
+  ansible.builtin.command:
     cmd: >
       certbot certonly
         {% if letsencrypt_testing %}--staging{% endif %}
@@ -114,7 +114,7 @@
     - letsencrypt_save_list is changed
     - letsencrypt_dry_run is succeeded
   notify: restart nginx
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
     regexp: 'ssl_certificate\s+([\w/\-\_\.]+);'
     line: 'ssl_certificate /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/fullchain.pem;'
@@ -125,7 +125,7 @@
     - letsencrypt_save_list is changed
     - letsencrypt_dry_run is succeeded
   notify: restart nginx
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
     regexp: 'ssl_certificate_key\s+([\w/\-\_\.]+);'
     line: 'ssl_certificate_key /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem;'

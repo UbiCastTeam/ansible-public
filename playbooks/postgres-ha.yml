@@ -6,15 +6,15 @@
   tags: postgres
   pre_tasks:
     - name: check that repmgr_node_id is set
-      assert:
+      ansible.builtin.assert:
         that: repmgr_node_id != ""
         quiet: true
     - name: check that repmgr_primary_node is set
-      assert:
+      ansible.builtin.assert:
         that: repmgr_primary_node != ""
         quiet: true
     - name: install psycopg2
-      apt:
+      ansible.builtin.apt:
         force_apt_get: true
         install_recommends: false
         name: python3-psycopg2
@@ -29,7 +29,7 @@
   tags: ['postgres', 'mediaserver']
   pre_tasks:
     - name: check that haproxy is configured
-      assert:
+      ansible.builtin.assert:
         that: hap_config_listen != ""
         quiet: true
   roles:

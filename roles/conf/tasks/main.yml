@@ -4,11 +4,11 @@
   when:
     - proxy_http | d()
     - proxy_https | d()
-  include_role:
+  ansible.builtin.include_role:
     name: proxy
 
 - name: install requirements
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ conf_req_packages }}"
@@ -18,7 +18,7 @@
 
 - name: install online requirements
   when: not offline_mode | d(false)
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ conf_req_packages_online }}"
@@ -28,14 +28,14 @@
 
 - name: generate root ssh key pair
   register: conf_root
-  user:
+  ansible.builtin.user:
     name: root
     generate_ssh_key: true
     ssh_key_type: ed25519
     ssh_key_file: .ssh/id_ed25519
 
 - name: create conf dir
-  file:
+  ansible.builtin.file:
     path: "{{ conf_dir }}"
     state: directory
     mode: "0700"
@@ -43,7 +43,7 @@
 - name: check if auto-generated-conf.sh exists
   check_mode: false
   register: check_auto_conf
-  stat:
+  ansible.builtin.stat:
     path: "{{ conf_dir }}/auto-generated-conf.sh"
 
 - name: download conf and update ssh public key with activation key
@@ -54,7 +54,7 @@
     - conf_dl_ak.status != 200
     - not check_auto_conf.stat.exists
     - not skyreach_system_key
-  uri:
+  ansible.builtin.uri:
     url: https://{{ conf_host }}/erp/credentials/envsetup-conf.sh
     method: POST
     body_format: form-urlencoded
@@ -73,7 +73,7 @@
   failed_when:
     - conf_dl_sk.status != 200
     - not check_auto_conf.stat.exists
-  uri:
+  ansible.builtin.uri:
     url: https://{{ conf_host }}/erp/credentials/envsetup-conf.sh
     method: POST
     body_format: form-urlencoded
@@ -88,7 +88,7 @@
     - "{{ conf_dl_ak }}"
     - "{{ conf_dl_sk }}"
   when: item is changed
-  copy:
+  ansible.builtin.copy:
     content: "{{ item.content }}"
     dest: "{{ conf_dir }}/auto-generated-conf.sh"
     force: true
@@ -98,13 +98,13 @@
 - name: check if auto-generated-conf.sh exists
   check_mode: false
   register: check_auto_conf
-  stat:
+  ansible.builtin.stat:
     path: "{{ conf_dir }}/auto-generated-conf.sh"
 
 - name: check if conf.sh exists
   check_mode: false
   register: check_local_conf
-  stat:
+  ansible.builtin.stat:
     path: "{{ conf_dir }}/conf.sh"
 
 - name: load generated conf
@@ -127,7 +127,7 @@
 
 - name: debug variables
   when: conf_debug
-  debug:
+  ansible.builtin.debug:
     var: ansible_facts
 
 ...

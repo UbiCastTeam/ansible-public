@@ -3,7 +3,7 @@
 - name: Masquerade bridge configuration
   block:
     - name: Ask confirmation
-      pause:
+      ansible.builtin.pause:
         prompt: |
           -------------------------------------------------------------------------------------------
           ! WARNING !
@@ -16,13 +16,13 @@
       no_log: true
 
     - name: 'check parm is null or invalid'
-      fail: msg='Installation aborted'
+      ansible.builtin.fail: msg='Installation aborted'
       when: not ((confirm_continue.user_input | bool)
             or (confirm_continue.user_input | length == 0))
   when: lxc_network_type == 'host_bridge'
 
 - name: LXC packages installation
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     name:
       - lxc
@@ -35,7 +35,7 @@
 
 - name: Default container configuration
   notify: restart lxc
-  template:
+  ansible.builtin.template:
     src: lxc-default.j2
     dest: /etc/lxc/default.conf
     mode: '644'
@@ -44,7 +44,7 @@
   block:
     - name: Container network configuration
       notify: restart lxc-net
-      template:
+      ansible.builtin.template:
         src: lxc-net.j2
         dest: /etc/default/lxc-net
         mode: '644'

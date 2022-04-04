@@ -9,15 +9,15 @@
   post_tasks:
     - name: deploy letsencrypt certificate
       when: letsencrypt_enabled | d(false)
-      include_role:
+      ansible.builtin.include_role:
         name: letsencrypt
     - name: configure network
       when: network_apply | d(false)
-      include_role:
+      ansible.builtin.include_role:
         name: network
     - name: configure proxy
       when: proxy_apply | d(false)
-      include_role:
+      ansible.builtin.include_role:
         name: proxy
 
 ...

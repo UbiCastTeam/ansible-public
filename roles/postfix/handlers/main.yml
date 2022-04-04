@@ -1,19 +1,19 @@
 ---
 
 - name: postmap sasl
-  command: postmap hash:/etc/postfix/sasl-passwords
+  ansible.builtin.command: postmap hash:/etc/postfix/sasl-passwords
 
 - name: postmap generic
-  command: postmap hash:/etc/postfix/generic
+  ansible.builtin.command: postmap hash:/etc/postfix/generic
 
 - name: postmap virtual
-  command: postmap hash:/etc/postfix/virtual
+  ansible.builtin.command: postmap hash:/etc/postfix/virtual
 
 - name: newaliases
-  command: newaliases
+  ansible.builtin.command: newaliases
 
 - name: restart postfix
-  service:
+  ansible.builtin.service:
     name: postfix
     state: restarted
 

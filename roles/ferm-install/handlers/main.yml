@@ -1,7 +1,7 @@
 ---
 
 - name: restart ferm
-  systemd:
+  ansible.builtin.systemd:
     name: ferm
     state: restarted
 

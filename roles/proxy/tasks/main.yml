@@ -7,7 +7,7 @@
   block:
 
     - name: environment
-      blockinfile:
+      ansible.builtin.blockinfile:
         path: /etc/environment
         create: true
         marker_begin: BEGIN PROXY
@@ -22,7 +22,7 @@
           NO_PROXY={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
 
     - name: apt
-      copy:
+      ansible.builtin.copy:
         dest: /etc/apt/apt.conf.d/proxy
         mode: '644'
         content: |
@@ -30,7 +30,7 @@
           Acquire::https::Proxy "{{ proxy_https }}";
 
     - name: wget
-      copy:
+      ansible.builtin.copy:
         dest: /etc/wgetrc
         mode: '644'
         content: |
@@ -40,7 +40,7 @@
           no_proxy={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
 
     - name: install git
-      apt:
+      ansible.builtin.apt:
         force_apt_get: true
         install_recommends: false
         name: git

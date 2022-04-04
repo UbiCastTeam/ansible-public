@@ -1,6 +1,6 @@
 ---
 - name: install kibana package
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: kibana
@@ -10,14 +10,14 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: deploy kibana configuration
-  template:
+  ansible.builtin.template:
     src: kibana.yml.j2
     dest: /etc/kibana/kibana.yml
     mode: '644'
   notify: restart kibana
 
 - name: install apm-server package
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: apm-server
@@ -27,7 +27,7 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: deploy apm-server configuration
-  template:
+  ansible.builtin.template:
     src: apm-server.yml.j2
     dest: /etc/apm-server/apm-server.yml
     mode: '644'

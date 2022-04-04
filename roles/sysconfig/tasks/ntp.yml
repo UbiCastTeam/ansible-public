@@ -1,13 +1,13 @@
 ---
 - name: create systemd-timesync service config directory
-  file:
+  ansible.builtin.file:
     path: /lib/systemd/system/systemd-timesyncd.service.d
     state: directory
     mode: 0755
 
 - name: ntp add condition to systemd-timesyncd service
   notify: systemd daemon reload
-  copy:
+  ansible.builtin.copy:
     dest: /lib/systemd/system/systemd-timesyncd.service.d/disable-with-time-daemon.conf
     mode: '644'
     content: |
@@ -20,13 +20,13 @@
 
 - name: ntp disable systemd-timesyncd service
   notify: restart ntp
-  systemd:
+  ansible.builtin.systemd:
     name: systemd-timesyncd
     enabled: false
     state: stopped
 
 - name: ntp install
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: ntp
@@ -37,14 +37,14 @@
 
 - name: ntp config
   notify: restart ntp
-  template:
+  ansible.builtin.template:
     backup: true
     src: ntp.conf.j2
     dest: /etc/ntp.conf
     mode: '644'
 
 - name: ensure ntp is running
-  service:
+  ansible.builtin.service:
     name: ntp
     enabled: true
     state: started

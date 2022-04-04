@@ -1,7 +1,7 @@
 ---
 
 - name: mediaserver install
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ server_packages }}"
@@ -11,18 +11,18 @@
 
 - name: fetch ssh public key
   register: root_ssh_pubkey
-  slurp:
+  ansible.builtin.slurp:
     path: /root/.ssh/id_ed25519.pub
   tags: always
 
 - name: register ssh public key as an ansible fact
-  set_fact:
+  ansible.builtin.set_fact:
     pubkey: "{{ root_ssh_pubkey['content'] | b64decode }}"
   tags: always
 
 - name: share ssh public key between cluster members
   loop: "{{ groups['mediaserver'] }}"
-  authorized_key:
+  ansible.posix.authorized_key:
     user: root
     key: "{{ hostvars[item]['pubkey'] }}"
   tags: always
@@ -30,13 +30,13 @@
 - name: resolve domain name to localhost
   notify: restart nginx
   loop: "{{ server_instances }}"
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/hosts
     line: '127.0.1.1 {{ item.ms_server_name }}'
     backup: true
 
 - name: Update the MS configuration with the celerity server IP
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/mediaserver/msconf.py
     regexp: '^CELERITY_SERVER_URL = '
     line: "CELERITY_SERVER_URL = 'https://{{ server_celerity_server_url }}:6200'"
@@ -48,7 +48,7 @@
     mode: '0644'
 
 - name: Update the MS configuration with the celerity server secret
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/mediaserver/msconf.py
     regexp: '^CELERITY_SIGNING_KEY = '
     line: "CELERITY_SIGNING_KEY = '{{ server_celerity_signing_key }}'"
@@ -69,7 +69,7 @@
     CM_SERVER_NAME: "{{ item.cm_server_name }}"
     MS_SUPERUSER_PWD: "{{ item.ms_superuser_pwd }}"
     MS_ADMIN_PWD: "{{ item.ms_admin_pwd }}"
-  command:
+  ansible.builtin.command:
     cmd: msinstaller.py {{ item.name }} --no-input
     creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
 
@@ -85,7 +85,7 @@
     CM_SERVER_NAME: "{{ item.cm_server_name }}"
     MS_SUPERUSER_PWD: "{{ item.ms_superuser_pwd }}"
     MS_ADMIN_PWD: "{{ item.ms_admin_pwd }}"
-  command:
+  ansible.builtin.command:
     cmd: msinstaller.py {{ item.name }} --no-input
     creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
   throttle: 1
@@ -102,7 +102,7 @@
     - /etc/celerity
     - /etc/sysusers.d
     - /var/www
-  command: |
+  ansible.builtin.command: |
     rsync \
       -avh \
       -e "ssh -o StrictHostKeyChecking=no" \
@@ -126,7 +126,7 @@
     - letsencrypt_enabled | d(false)
   loop:
     - /etc/letsencrypt
-  command: |
+  ansible.builtin.command: |
     rsync \
       -avh \
       -e "ssh -o StrictHostKeyChecking=no" \
@@ -141,7 +141,7 @@
 
 - name: configure email sender address
   notify: mscontroller restart
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/mediaserver/msconf.py
     backup: true
     create: true
@@ -157,7 +157,7 @@
 - name: configure domain name in nginx conf
   notify: restart nginx
   loop: "{{ server_instances }}"
-  replace:
+  ansible.builtin.replace:
     path: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
     regexp: '^(\s*server_name).*;$'
     replace: '\1 {{ item.ms_server_name }};'
@@ -165,7 +165,7 @@
 
 - name: configure domain name in database
   loop: "{{ server_instances }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
       python3 /usr/lib/python3/dist-packages/mediaserver/scripts/mssiteconfig.py {{ item.name }} site_url=https://{{ item.ms_server_name }} ;
       mscontroller.py restart -u {{ item.name }} ;
@@ -174,7 +174,7 @@
 
 - name: reset service resources
   loop: "{{ server_instances }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
       python3 /usr/lib/python3/dist-packages/mediaserver/scripts/reset_service_resources.py {{ item.name }} local ;
       mscontroller.py restart -u {{ item.name }} ;
@@ -186,13 +186,13 @@
   when:
     - groups['mediaserver'] | length > 1
     - real_ip_from | length > 0
-  template:
+  ansible.builtin.template:
     src: realip.conf.j2
     dest: /etc/nginx/conf.d/realip.conf
     mode: '644'
 
 - name: ensure mediaserver is running
-  service:
+  ansible.builtin.service:
     name: mediaserver
     enabled: true
     state: started
@@ -206,10 +206,10 @@
     ferm_input_rules: "{{ server_ferm_input_rules }}"
     ferm_output_rules: "{{ server_ferm_output_rules }}"
     ferm_global_settings: "{{ server_ferm_global_settings }}"
-  include_role:
+  ansible.builtin.include_role:
     name: ferm-configure
 
 - name: flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 ...

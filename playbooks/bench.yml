@@ -5,7 +5,7 @@
   hosts: bench_server
   pre_tasks:
     - name: "Fail is benchmark server is not unique"
-      fail:
+      ansible.builtin.fail:
         msg: "Benchmark server must be unique"
       when: groups['bench_server'] | length > 1
   tags: bench_server
@@ -16,7 +16,7 @@
       tags:
         - never
         - prepare-bench
-      service:
+      ansible.builtin.service:
         name: bench-server
         state: restarted
 
@@ -30,7 +30,7 @@
       tags:
         - never
         - prepare-bench
-      service:
+      ansible.builtin.service:
         name: bench-worker
         state: restarted
 

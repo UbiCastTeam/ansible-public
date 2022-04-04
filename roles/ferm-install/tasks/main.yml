@@ -1,7 +1,7 @@
 ---
 
 - name: packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ ferm_packages }}"
@@ -11,14 +11,14 @@
 
 - name: configuration
   notify: restart ferm
-  template:
+  ansible.builtin.template:
     src: ferm.conf.j2
     dest: /etc/ferm/ferm.conf
     backup: true
     mode: '644'
 
 - name: service
-  systemd:
+  ansible.builtin.systemd:
     name: ferm
     enabled: true
     masked: false

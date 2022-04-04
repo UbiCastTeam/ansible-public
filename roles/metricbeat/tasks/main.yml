@@ -1,6 +1,6 @@
 ---
 - name: install apt-transport-https
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: apt-transport-https
@@ -10,16 +10,16 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: install elastic GPG key
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
     state: present
 
 - name: install elastic repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
 
 - name: install metricbeat
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: metricbeat
@@ -29,18 +29,18 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: install metricbeat configuration
-  template:
+  ansible.builtin.template:
     src: metricbeat.yml.j2
     dest: /etc/metricbeat/metricbeat.yml
     mode: '644'
   notify: restart metricbeat
 
 - name: enable metricbeat dashboard
-  command: metricbeat setup
+  ansible.builtin.command: metricbeat setup
   when: inventory_hostname == groups['mediaserver'][0]
 
 - name: enable sql metricbeat configuration
-  template:
+  ansible.builtin.template:
     src: postgresql.yml.j2
     dest: /etc/metricbeat/modules.d/postgresql.yml
     mode: '644'
@@ -48,7 +48,7 @@
   notify: restart metricbeat
 
 - name: enable metricbeat client
-  systemd:
+  ansible.builtin.systemd:
     name: metricbeat
     enabled: true
     state: started

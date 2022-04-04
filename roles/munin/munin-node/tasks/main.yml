@@ -1,7 +1,7 @@
 ---
 
 - name: install required packages for munin-node
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     state: latest
@@ -14,14 +14,14 @@
 
 - name: copy munin-node configuration
   notify: restart munin-node
-  template:
+  ansible.builtin.template:
     src: munin-node.conf.j2
     dest: /etc/munin/munin-node.conf
     mode: '644'
 
 - name: setup munin-node plugins link
   notify: restart munin-node
-  shell:
+  ansible.builtin.shell:
     cmd: munin-node-configure --shell --remove-also 2>&1 | sh -x
   # sh -x print executed cmd to stderr
   register: munin_plugin_linked

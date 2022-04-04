@@ -6,7 +6,7 @@
   tags: munin
   pre_tasks:
     - name: gather munin_node group facts
-      setup:
+      ansible.builtin.setup:
       delegate_to: "{{ item }}"
       delegate_facts: true
       with_items: "{{ groups['munin_node'] }}"

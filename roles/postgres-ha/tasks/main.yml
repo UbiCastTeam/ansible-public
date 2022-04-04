@@ -3,7 +3,7 @@
 # INSTALLATION
 
 - name: install packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ repmgr_packages }}"
@@ -61,14 +61,14 @@
         dport:
           - 5432
           - "{{ repmgr_repha_port }}"
-  include_role:
+  ansible.builtin.include_role:
     name: postgres
 
 # CONFIGURATION
 
 - name: configure repmgr
   notify: restart repmgrd
-  template:
+  ansible.builtin.template:
     src: repmgr.conf.j2
     dest: "{{ repmgr_config }}"
     owner: postgres
@@ -82,13 +82,13 @@
       value: 'yes'
     - key: REPMGRD_CONF
       value: "{{ repmgr_config }}"
-  replace:
+  ansible.builtin.replace:
     path: /etc/default/repmgrd
     regexp: '^#?{{ item.key }}=.*$'
     replace: '{{ item.key }}={{ item.value }}'
 
 - name: configure sudo
-  copy:
+  ansible.builtin.copy:
     dest: /etc/sudoers.d/postgres
     validate: visudo -cf %s
     mode: '440'
@@ -103,7 +103,7 @@
 # SSH
 
 - name: ensure postgres account have a ssh keypair
-  user:
+  ansible.builtin.user:
     name: postgres
     generate_ssh_key: true
     ssh_key_type: ed25519
@@ -111,21 +111,21 @@
 
 - name: fetch postgres ssh public key
   register: repmgr_postgres_ssh_pubkey
-  slurp:
+  ansible.builtin.slurp:
     path: ~postgres/.ssh/id_ed25519.pub
 
 - name: register postgres ssh public key as an ansible fact
-  set_fact:
+  ansible.builtin.set_fact:
     pubkey: "{{ repmgr_postgres_ssh_pubkey['content'] | b64decode }}"
 
 - name: share postgres ssh public key between cluster members
   loop: "{{ groups['postgres'] }}"
-  authorized_key:
+  ansible.posix.authorized_key:
     user: postgres
     key: "{{ hostvars[item]['pubkey'] }}"
 
 - name: postgres ssh client configuration
-  copy:
+  ansible.builtin.copy:
     dest: ~postgres/.ssh/config
     owner: postgres
     group: postgres
@@ -145,7 +145,7 @@
       become: true
       become_user: postgres
       register: repmgr_check_primary
-      postgresql_query:
+      community.general.postgresql_query:
         db: repmgr
         query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
 
@@ -154,10 +154,10 @@
       become_user: postgres
       when: repmgr_check_primary.query_result | length == 0
       notify: restart repmgrd
-      command:
+      ansible.builtin.command:
         cmd: repmgr --config-file={{ repmgr_config }} primary register
 
-- meta: flush_handlers  # noqa unnamed-task
+- ansible.builtin.meta: flush_handlers  # noqa unnamed-task
 
 # REGISTER STANDBY
 
@@ -169,19 +169,19 @@
       become: true
       become_user: postgres
       register: repmgr_check_standby
-      postgresql_query:
+      community.general.postgresql_query:
         db: repmgr
         query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
 
     - name: stop postgresql service
       when: repmgr_check_standby.query_result | length == 0
-      systemd:
+      ansible.builtin.systemd:
         name: postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
         state: stopped
 
     - name: remove existing pgdata
       when: repmgr_check_standby.query_result | length == 0
-      command:
+      ansible.builtin.command:
         cmd: mv -vf {{ repmgr_pg_data }} {{ repmgr_pg_data }}.save
         removes: "{{ repmgr_pg_data }}"
 
@@ -191,7 +191,7 @@
       when: repmgr_check_standby.query_result | length == 0
       ignore_errors: true
       register: repmgr_clone_standby
-      shell:
+      ansible.builtin.shell:
         cmd: |
           repmgr \
             --config-file={{ repmgr_config }} \
@@ -205,30 +205,30 @@
 
     - name: remove pgdata backup
       when: repmgr_clone_standby is succeeded
-      file:
+      ansible.builtin.file:
         path: "{{ repmgr_pg_data }}.save"
         state: absent
 
     - name: remove failed clone pgdata
       when: repmgr_clone_standby is failed
-      file:
+      ansible.builtin.file:
         path: "{{ repmgr_pg_data }}"
         state: absent
 
     - name: restore pgdata backup
       when: repmgr_clone_standby is failed
-      command:
+      ansible.builtin.command:
         cmd: mv -vf {{ repmgr_pg_data }}.save {{ repmgr_pg_data }}
         removes: "{{ repmgr_pg_data }}.save"
 
     - name: start postgresql service
-      systemd:
+      ansible.builtin.systemd:
         name: postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
         state: started
 
     - name: standby clone failed
       when: repmgr_clone_standby is failed
-      fail:
+      ansible.builtin.fail:
         msg: "{{ repmgr_clone_standby.stderr }}"
 
     - name: register standby
@@ -236,10 +236,10 @@
       become_user: postgres
       when: repmgr_check_standby.query_result | length == 0
       notify: restart repmgrd
-      command:
+      ansible.builtin.command:
         cmd: repmgr --config-file={{ repmgr_config }} standby register
 
-- meta: flush_handlers  # noqa unnamed-task
+- ansible.builtin.meta: flush_handlers  # noqa unnamed-task
 
 # REGISTER WITNESS
 
@@ -251,7 +251,7 @@
       become: true
       become_user: postgres
       register: repmgr_check_witness
-      postgresql_query:
+      community.general.postgresql_query:
         db: repmgr
         query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
 
@@ -260,26 +260,26 @@
       become_user: postgres
       when: repmgr_check_witness.query_result | length == 0
       notify: restart repmgrd
-      command:
+      ansible.builtin.command:
         cmd: repmgr --config-file={{ repmgr_config }} --host={{ repmgr_primary_node }} witness register
 
-- meta: flush_handlers  # noqa unnamed-task
+- ansible.builtin.meta: flush_handlers  # noqa unnamed-task
 
 # REPHACHECK
 
 - name: install rephacheck
-  template:
+  ansible.builtin.template:
     src: rephacheck.py.j2
     dest: /usr/bin/rephacheck
     mode: 0755
 
 - name: register variables needed by rephacheck as facts
-  set_fact:
+  ansible.builtin.set_fact:
     repmgr_node_name: "{{ repmgr_node_name }}"
     repmgr_node_id: "{{ repmgr_node_id }}"
 
 - name: configure rephacheck
-  template:
+  ansible.builtin.template:
     src: rephacheck.conf.j2
     dest: /etc/postgresql/{{ repmgr_pg_version }}/{{ repmgr_pg_cluster }}/rephacheck.conf
     owner: postgres
@@ -290,7 +290,7 @@
   notify:
     - reload systemd
     - restart rephacheck
-  copy:
+  ansible.builtin.copy:
     dest: /etc/systemd/system/rephacheck.socket
     mode: '644'
     content: |
@@ -308,7 +308,7 @@
   notify:
     - reload systemd
     - restart rephacheck
-  copy:
+  ansible.builtin.copy:
     dest: /etc/systemd/system/rephacheck@.service
     mode: '644'
     content: |
@@ -322,7 +322,7 @@
       Group=postgres
 
 - name: enable and start rephacheck
-  service:
+  ansible.builtin.service:
     name: rephacheck.socket
     state: started
     enabled: true
@@ -334,7 +334,7 @@
     ferm_input_rules: "{{ pg_ferm_input_rules }}"
     ferm_output_rules: "{{ pg_ferm_output_rules }}"
     ferm_global_settings: "{{ pg_ferm_global_settings }}"
-  include_role:
+  ansible.builtin.include_role:
     name: ferm-configure
 
 ...

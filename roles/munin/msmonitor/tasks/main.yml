@@ -1,7 +1,7 @@
 ---
 
 - name: install ubicast msmonitor
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     state: latest
@@ -13,13 +13,13 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: set msmonitor account password
-  user:
+  ansible.builtin.user:
     name: msmonitor
     password: "{{ monitor_shell_pwd | password_hash('sha512', 'monitor') }}"
 
 - name: configure domain name in nginx
   notify: restart nginx
-  replace:
+  ansible.builtin.replace:
     path: /etc/nginx/sites-available/msmonitor.conf
     regexp: '^(\s*server_name).*;$'
     replace: '\1 {{ monitor_hostname }};'
@@ -27,19 +27,19 @@
 
 - name: resolve domain name to localhost ipv4
   notify: restart nginx
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/hosts
     line: '127.0.1.1 {{ monitor_hostname }}'
     backup: true
 
 - name: ensure msmonitor is running
-  service:
+  ansible.builtin.service:
     name: msmonitor
     enabled: true
     state: started
 
 - name: set directory permissions
-  file:
+  ansible.builtin.file:
     path: /home/msmonitor/msmonitor
     mode: 0755
     state: directory
@@ -53,7 +53,7 @@
     ferm_input_rules: "{{ monitor_ferm_input_rules }}"
     ferm_output_rules: "{{ monitor_ferm_output_rules }}"
     ferm_global_settings: "{{ monitor_ferm_global_settings }}"
-  include_role:
+  ansible.builtin.include_role:
     name: ferm-configure
 
 ...

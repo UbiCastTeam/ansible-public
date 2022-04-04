@@ -4,23 +4,23 @@
   hosts: postgres_fenced
   tasks:
     - name: fail if node status if not fenced
-      fail:
+      ansible.builtin.fail:
         msg: "Current status {{ rephacheck['stdout'] }} must be fenced."
       when: rephacheck['stdout'] != "fenced"
 
     - name: stop postgresql
-      systemd:
+      ansible.builtin.systemd:
         name: postgresql
         state: stopped
 
     - name: delete postgresql data directory
-      file:
+      ansible.builtin.file:
         path: /var/lib/postgresql/11/main/
         state: absent
         force: true
 
     - name: copy data from primary
-      command: >
+      ansible.builtin.command: >
         repmgr -f /etc/postgresql/11/main/repmgr.conf
           --force --verbose
           standby clone
@@ -33,13 +33,13 @@
       changed_when: false
 
     - name: start postgresql
-      systemd:
+      ansible.builtin.systemd:
         name: postgresql
         state: started
       when: copy_from_primary is succeeded
 
     - name: register node as standby
-      command: "repmgr -f /etc/postgresql/11/main/repmgr.conf --force --verbose standby register"
+      ansible.builtin.command: "repmgr -f /etc/postgresql/11/main/repmgr.conf --force --verbose standby register"
       become: true
       become_user: postgres
       when: copy_from_primary is succeeded

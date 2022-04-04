@@ -1,7 +1,7 @@
 ---
 
 - name: Live packages installation
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ debian_packages }}"
@@ -21,7 +21,7 @@
 
 - name: Changing the rights on the TMPFS directory
   notify: restart nginx
-  file:
+  ansible.builtin.file:
     path: /var/tmp/nginx-rtmp
     owner: nginx
     group: root

@@ -1,6 +1,6 @@
 ---
 - name: install logs packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ sysconfig_logs_packages }}"
@@ -9,13 +9,13 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: start rsyslog
-  systemd:
+  ansible.builtin.systemd:
     name: rsyslog
     enabled: true
     state: started
 
 - name: ensure journald logs persistence is enabled
-  file:
+  ansible.builtin.file:
     path: /var/log/journal
     state: directory
     mode: '755'

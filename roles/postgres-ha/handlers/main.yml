@@ -1,21 +1,21 @@
 ---
 
 - name: reload systemd
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: restart postgresql
-  systemd:
+  ansible.builtin.systemd:
     name: postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
     state: restarted
 
 - name: restart repmgrd
-  systemd:
+  ansible.builtin.systemd:
     name: repmgrd
     state: restarted
 
 - name: restart rephacheck
-  systemd:
+  ansible.builtin.systemd:
     name: rephacheck.socket
     state: restarted
 

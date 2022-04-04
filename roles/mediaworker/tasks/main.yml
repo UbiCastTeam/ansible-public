@@ -1,7 +1,7 @@
 ---
 
 - name: install celerity worker
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: celerity-workers
@@ -11,13 +11,13 @@
 
 - name: config celerity worker
   notify: restart celerity-workers
-  template:
+  ansible.builtin.template:
     src: celerity-config.py.j2
     dest: /etc/celerity/config.py
     mode: '644'
 
 - name: ensure celerity worker is running
-  service:
+  ansible.builtin.service:
     name: celerity-workers
     enabled: true
     state: started
@@ -31,10 +31,10 @@
     ferm_input_rules: "{{ worker_ferm_input_rules }}"
     ferm_output_rules: "{{ worker_ferm_output_rules }}"
     ferm_global_settings: "{{ worker_ferm_global_settings }}"
-  include_role:
+  ansible.builtin.include_role:
     name: ferm-configure
 
 - name: flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 ...

@@ -1,14 +1,14 @@
 ---
 
 - name: create postfix dir
-  file:
+  ansible.builtin.file:
     path: /etc/postfix
     state: directory
     mode: '755'
 
 - name: postfix main config
   notify: restart postfix
-  template:
+  ansible.builtin.template:
     backup: true
     src: main.cf.j2
     dest: /etc/postfix/main.cf
@@ -16,7 +16,7 @@
 
 - name: postfix mailname
   notify: restart postfix
-  copy:
+  ansible.builtin.copy:
     backup: true
     dest: /etc/mailname
     content: "{{ postfix_mailname }}"
@@ -26,7 +26,7 @@
   notify:
     - newaliases
     - restart postfix
-  copy:
+  ansible.builtin.copy:
     backup: true
     dest: /etc/aliases
     mode: '644'
@@ -39,7 +39,7 @@
   notify:
     - postmap virtual
     - restart postfix
-  copy:
+  ansible.builtin.copy:
     backup: true
     dest: /etc/postfix/virtual
     mode: '644'
@@ -52,7 +52,7 @@
   notify:
     - postmap generic
     - restart postfix
-  copy:
+  ansible.builtin.copy:
     backup: true
     dest: /etc/postfix/generic
     mode: '644'
@@ -71,14 +71,14 @@
   notify:
     - postmap sasl
     - restart postfix
-  copy:
+  ansible.builtin.copy:
     backup: true
     dest: /etc/postfix/sasl-passwords
     mode: '644'
     content: "{{ postfix_relay_host }} {{ postfix_relay_user }}:{{ postfix_relay_pass }}"
 
 - name: install postfix
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ postfix_packages }}"
@@ -88,7 +88,7 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: ensure postfix is running
-  service:
+  ansible.builtin.service:
     name: postfix
     enabled: true
     state: started

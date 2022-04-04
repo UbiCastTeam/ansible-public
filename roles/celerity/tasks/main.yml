@@ -1,7 +1,7 @@
 ---
 
 - name: celerity server install
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: celerity-server
@@ -11,13 +11,13 @@
 
 - name: config celerity server
   notify: restart celerity-server
-  template:
+  ansible.builtin.template:
     src: celerity-config.py.j2
     dest: /etc/celerity/config.py
     mode: '644'
 
 - name: ensure celerity server is running
-  service:
+  ansible.builtin.service:
     name: celerity-server
     enabled: true
     state: started
@@ -31,10 +31,10 @@
     ferm_input_rules: "{{ celerity_ferm_input_rules }}"
     ferm_output_rules: "{{ celerity_ferm_output_rules }}"
     ferm_global_settings: "{{ celerity_ferm_global_settings }}"
-  include_role:
+  ansible.builtin.include_role:
     name: ferm-configure
 
 - name: flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 ...

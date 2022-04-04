@@ -1,7 +1,7 @@
 ---
 
 - name: mirismanager dependencies install
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ dependencies_packages }}"
@@ -10,12 +10,12 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: start postgresql
-  systemd:
+  ansible.builtin.systemd:
     name: postgresql
     state: started
 
 - name: mirismanager install
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ manager_packages }}"
@@ -25,7 +25,7 @@
 
 - name: configure domain name in nginx conf
   notify: restart nginx
-  replace:
+  ansible.builtin.replace:
     path: /etc/nginx/sites-available/skyreach.conf
     regexp: '^(\s*server_name).*;$'
     replace: '\1 {{ manager_hostname }};'
@@ -33,7 +33,7 @@
 
 - name: configure domain name in settings
   notify: restart skyreach
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /home/skyreach/skyreach_data/private/settings_override.py
     regexp: '^#? ?SITE_URL.*'
     line: "SITE_URL = 'https://{{ manager_hostname }}'"
@@ -41,7 +41,7 @@
 
 - name: configure site title in settings
   notify: restart skyreach
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /home/skyreach/skyreach_data/private/settings_override.py
     regexp: '^#? ?SITE_TITLE.*'
     line: "SITE_TITLE = '{{ manager_hostname }}'"
@@ -49,7 +49,7 @@
 
 - name: configure site name in settings
   notify: restart skyreach
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /home/skyreach/skyreach_data/private/settings_override.py
     regexp: '^#? ?SITE_NAME.*'
     line: "SITE_NAME = '{{ manager_hostname }}'"
@@ -57,7 +57,7 @@
 
 - name: configure email sender address in settings
   notify: restart skyreach
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /home/skyreach/skyreach_data/private/settings_override.py
     regexp: '^#? ?DEFAULT_FROM_EMAIL.*'
     line: "DEFAULT_FROM_EMAIL = '{{ manager_email_sender }}'"
@@ -65,20 +65,20 @@
 
 - name: resolve domain name to localhost ipv4
   notify: restart nginx
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/hosts
     line: '127.0.0.1 {{ manager_hostname }}'
     backup: true
 
 - name: ensure skyreach is running
-  service:
+  ansible.builtin.service:
     name: skyreach
     enabled: true
     state: started
 
 - name: check apt cacher ng config exists
   register: manager_apt_cacher_conf
-  stat:
+  ansible.builtin.stat:
     path: /etc/apt-cacher-ng/acng.conf
 
 - name: configure apt-cacher-ng
@@ -86,13 +86,13 @@
     - manager_apt_cacher_conf.stat.exists
     - manager_proxy_http | d(false)
   notify: restart apt-cacher-ng
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/apt-cacher-ng/acng.conf
     regexp: '^Proxy: .*'
     line: 'Proxy: {{ manager_proxy_http }}'
 
 - name: ensure apt-cacher-ng is running
-  service:
+  ansible.builtin.service:
     name: apt-cacher-ng
     enabled: true
     state: started
@@ -106,10 +106,10 @@
     ferm_input_rules: "{{ manager_ferm_input_rules }}"
     ferm_output_rules: "{{ manager_ferm_output_rules }}"
     ferm_global_settings: "{{ manager_ferm_global_settings }}"
-  include_role:
+  ansible.builtin.include_role:
     name: ferm-configure
 
 - name: flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 ...

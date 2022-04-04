@@ -1,7 +1,7 @@
 ---
 
 - name: packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ f2b_packages }}"
@@ -12,13 +12,13 @@
 
 - name: jail defaults
   notify: restart fail2ban
-  template:
+  ansible.builtin.template:
     src: jail.local.j2
     dest: /etc/fail2ban/jail.local
     mode: '644'
 
 - name: service
-  systemd:
+  ansible.builtin.systemd:
     name: fail2ban
     enabled: true
     state: started

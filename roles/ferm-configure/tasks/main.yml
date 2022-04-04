@@ -1,7 +1,7 @@
 ---
 
 - name: populate service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: directories
   loop:
@@ -9,7 +9,7 @@
     - /etc/ferm/input.d
     - /etc/ferm/output.d
     - /etc/ferm/forward.d
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: '755'
@@ -19,7 +19,7 @@
   notify:
     - restart ferm
     - restart fail2ban
-  copy:
+  ansible.builtin.copy:
     dest: /etc/ferm/ferm.d/{{ ferm_rules_filename }}.conf
     content: "{{ ferm_global_settings }}"
     mode: '644'
@@ -29,7 +29,7 @@
   notify:
     - restart ferm
     - restart fail2ban
-  template:
+  ansible.builtin.template:
     src: ferm_rules_input.conf.j2
     dest: /etc/ferm/input.d/{{ ferm_rules_filename }}.conf
     mode: '644'
@@ -39,7 +39,7 @@
   notify:
     - restart ferm
     - restart fail2ban
-  template:
+  ansible.builtin.template:
     src: ferm_rules_output.conf.j2
     dest: /etc/ferm/output.d/{{ ferm_rules_filename }}.conf
     mode: '644'
@@ -49,7 +49,7 @@
   notify:
     - restart ferm
     - restart fail2ban
-  template:
+  ansible.builtin.template:
     src: ferm_rules_forward.conf.j2
     dest: /etc/ferm/forward.d/{{ ferm_rules_filename }}.conf
     mode: '644'

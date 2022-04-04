@@ -1,7 +1,7 @@
 ---
 
 - name: install locale packages
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: "{{ locale_packages }}"
@@ -16,7 +16,7 @@
 
 - name: set locale
   notify: update locale
-  copy:
+  ansible.builtin.copy:
     dest: /etc/default/locale
     mode: '644'
     content: |
@@ -26,7 +26,7 @@
 
 - name: set locale.gen
   notify: update locale
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/locale.gen
     regexp: '^(?:# )?({{ init_locale }}.*)$'
     backrefs: true
