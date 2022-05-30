@@ -18,6 +18,10 @@
     dest: /etc/munin/munin.conf
     mode: '644'
 
+# Force munin-server restart to avoid default localdomain graph creation after remove
+- name: flush handlers
+  meta: flush_handlers
+
 - name: "remove default localdomain files"
   ansible.builtin.file:
     path: /var/cache/munin/www/localdomain
