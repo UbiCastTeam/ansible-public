@@ -1,5 +1,5 @@
 ansible<5.3
 netaddr
 pyyaml
-openstacksdk
+openstacksdk==0.61.0
 ovh
