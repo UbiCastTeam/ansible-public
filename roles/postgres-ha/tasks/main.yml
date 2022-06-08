@@ -18,27 +18,27 @@
     pg_hba:
       - type: local
         method: peer
-      - type: host
+      - type: hostssl
         address: 127.0.0.1/32
-      - type: host
+      - type: hostssl
         address: ::1/128
-      - type: host
+      - type: hostssl
         address: 0.0.0.0/0
-      - type: host
+      - type: hostssl
         address: ::/0
       - type: local
         database: replication
         method: peer
-      - type: host
+      - type: hostssl
         database: replication
         address: 127.0.0.1/32
-      - type: host
+      - type: hostssl
         database: replication
         address: ::1/128
-      - type: host
+      - type: hostssl
         database: replication
         address: 0.0.0.0/0
-      - type: host
+      - type: hostssl
         database: replication
         address: ::/0
     pg_conf:

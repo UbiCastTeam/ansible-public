@@ -18,17 +18,17 @@ pg_conf:
 pg_hba:
   - type: local
     method: peer
-  - type: host
+  - type: hostssl
     address: 127.0.0.1/32
-  - type: host
+  - type: hostssl
     address: ::1/128
   - type: local
     database: replication
     method: peer
-  - type: host
+  - type: hostssl
     database: replication
     address: 127.0.0.1/32
-  - type: host
+  - type: hostssl
     database: replication
     address: ::1/128
 
