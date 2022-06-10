@@ -44,7 +44,7 @@
 
     - name: Extracting the application secret
       ansible.builtin.set_fact:
-        live_secret: "{{ ms_live_config.content|b64decode|from_json | json_query('RTMP_APP') }}"
+        live_secret: "{{ ms_live_config.content | b64decode | from_json | json_query('RTMP_APP') }}"
       when: ms_conf_live.stat.exists
 
     - name: Declaring the application secret
