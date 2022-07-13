@@ -12,6 +12,7 @@ checkpf:
     DEPLOY_HA: "$DEPLOY_HA"
     DESTROY_STD: "$DESTROY_STD"
     DESTROY_HA: "$DESTROY_HA"
+    LINT: "$LINT"
   # Register the job in a resource group to prevent having multiple running pipelines in parallel
   resource_group: deployment
   rules:
