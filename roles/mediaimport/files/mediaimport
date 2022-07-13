@@ -1,6 +1,0 @@
-# purge mediaimport files that are older than 60 days
-0 23 * * * root /usr/bin/find /home/ftp/storage/incoming/ -type f -mtime +60 -delete
-
-# purge empty folders
-0 23 * * * root /usr/bin/find /home/ftp/storage -type d -empty -name thumbnails -delete
-0 23 * * * root /usr/bin/find /home/ftp/storage -type d -empty -name "*20*-*" -delete

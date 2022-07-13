@@ -29,8 +29,4 @@
     name: fail2ban
     state: restarted
 
-- name: sftp-verif
-  ansible.builtin.command:
-    cmd: timeout 30 sftp-verif
-
 ...

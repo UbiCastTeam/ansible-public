@@ -5,31 +5,11 @@ mediaimport_users:
     passwd: "{{ envsetup_mediaimport_password | d() }}"
 
 mediaimport_packages:
-  - clamav
-  - mysecureshell
   - openssh-server
-  - openssl
-  - pure-ftpd
-  - python3-unidecode
+  - mysecureshell  # unreleased version that includes CallbackUpload, packaged by UbiCast
+  - pure-ftpd  # must be installed before ubicast-mediaimport so that config can be tweaked by the postinst
+  - ssl-cert  # for optionnal FTPS support (the mediaimport postinst will will use the snakeoil certificate for pure-ftpd)
   - ubicast-mediaimport
-  # required by ansible tasks
-  - python3-openssl
-
-mediaimport_pureftpd_config:
-  - key: AllowDotFiles
-    value: "no"
-  - key: CallUploadScript
-    value: "yes"
-  - key: ChrootEveryone
-    value: "yes"
-  - key: DontResolve
-    value: "yes"
-  - key: PAMAuthentication
-    value: "yes"
-  - key: TLS
-    value: "1"
-
-mediaimport_virus_scan_on_upload: false
 
 mediaimport_ms_api_key: "{{ envsetup_ms_api_key | d() }}"
 mediaimport_ms_server_name: "{{ envsetup_ms_server_name | d() }}"
