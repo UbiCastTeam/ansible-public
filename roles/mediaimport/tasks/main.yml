@@ -8,38 +8,17 @@
 
 ## USERS
 
-- name: create ftp folders
-  loop:
-    - /home/ftp/storage/incoming
-    - /home/ftp/storage/watchfolder
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    mode: '755'
-
-- name: deploy users management script
-  ansible.builtin.copy:
-    src: files/mediaimport.py
-    dest: /usr/local/bin/mediaimport
-    mode: '755'
-
 - name: create users
   loop: "{{ mediaimport_users }}"
   when:
     - item.name | d(false)
     - item.passwd | d(false)
   no_log: true
-  ansible.builtin.command: mediaimport add --yes --user {{ item.name }} --passwd {{ item.passwd }}
+  ansible.builtin.command: /usr/bin/mediaimportctl.py add --yes --user {{ item.name }} --passwd {{ item.passwd }}
   args:
     creates: /home/ftp/storage/incoming/{{ item.name }}
 
-- name: deploy on-upload script with setuid
-  ansible.builtin.copy:
-    src: files/on-upload
-    dest: /home/ftp/on-upload
-    mode: 04755
-
-## MYSECURESHELL
+## MEDIAIMPORT
 
 - name: enable password login for ssh
   notify: restart sshd
@@ -47,97 +26,6 @@
     dest: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication no"
     replace: "#PasswordAuthentication yes"
-
-- name: set the setuid on mysecureshell
-  ansible.builtin.file:
-    path: /usr/bin/mysecureshell
-    mode: 04755
-
-- name: configure mysecureshell
-  notify:
-    - restart mysecureshell
-    - sftp-verif
-  ansible.builtin.template:
-    src: sftp_config.j2
-    dest: /etc/ssh/sftp_config
-    mode: '644'
-
-## PURE-FTPD
-
-- name: set pure-ftpd default config
-  notify: restart pure-ftpd
-  ansible.builtin.copy:
-    dest: /etc/default/pure-ftpd-common
-    mode: '644'
-    content: |
-      STANDALONE_OR_INETD=standalone
-      VIRTUALCHROOT=false
-      UPLOADSCRIPT="/home/ftp/on-upload{% if mediaimport_virus_scan_on_upload %} --scan-virus{% endif %}"
-      UPLOADUID=0
-      UPLOADGID=0
-
-- name: configure pure-ftpd
-  notify: restart pure-ftpd
-  loop: "{{ mediaimport_pureftpd_config }}"
-  ansible.builtin.copy:
-    dest: /etc/pure-ftpd/conf/{{ item.key }}
-    content: "{{ item.value }}"
-    mode: '644'
-
-## PURE-FTPD CERTIFICATES
-
-- name: create certificate directory
-  ansible.builtin.file:
-    path: /etc/ssl/{{ ansible_fqdn }}
-    state: directory
-    mode: '755'
-
-- name: generate an private key
-  register: mediaimport_privkey
-  community.crypto.openssl_privatekey:
-    path: /etc/ssl/{{ ansible_fqdn }}/key.pem
-    mode: '600'
-
-- name: generate an csr
-  when: mediaimport_privkey is changed  # noqa no-handler
-  register: mediaimport_csr
-  openssl_csr:
-    path: /etc/ssl/{{ ansible_fqdn }}/csr.pem
-    privatekey_path: /etc/ssl/{{ ansible_fqdn }}/key.pem
-    common_name: "{{ ansible_fqdn }}"
-    mode: '600'
-
-- name: generate a self-signed certificate
-  when: mediaimport_csr is changed  # noqa no-handler
-  register: mediaimport_cert
-  openssl_certificate:
-    path: /etc/ssl/{{ ansible_fqdn }}/cert.pem
-    privatekey_path: /etc/ssl/{{ ansible_fqdn }}/key.pem
-    csr_path: /etc/ssl/{{ ansible_fqdn }}/csr.pem
-    provider: selfsigned
-    mode: '600'
-
-- name: concatenate key and certificate
-  when: mediaimport_cert is changed  # noqa no-handler
-  notify: restart pure-ftpd
-  ansible.builtin.shell: >
-    cat /etc/ssl/{{ ansible_fqdn }}/key.pem /etc/ssl/{{ ansible_fqdn }}/cert.pem > /etc/ssl/private/pure-ftpd.pem;
-    chmod 600 /etc/ssl/private/pure-ftpd.pem;
-
-- name: generate dhparams
-  notify: restart pure-ftpd
-  openssl_dhparam:
-    path: /etc/ssl/private/pure-ftpd-dhparams.pem
-    size: 1024
-    mode: '600'
-
-## MEDIAIMPORT
-
-- name: setup cron job
-  ansible.builtin.copy:
-    src: files/mediaimport
-    dest: /etc/cron.d/mediaimport
-    mode: '644'
 
 - name: configure mediaimport
   when:
@@ -153,6 +41,11 @@
 - name: enable mediaimport service
   ansible.builtin.systemd:
     name: mediaimport
+    enabled: true
+
+- name: enable mediaimport-cleanup timer
+  ansible.builtin.systemd:
+    name: mediaimport-cleanup.timer
     enabled: true
 
 # FAIL2BAN
