@@ -6,18 +6,6 @@
     install_recommends: false
     name: "{{ mediaimport_packages }}"
 
-## USERS
-
-- name: create users
-  loop: "{{ mediaimport_users }}"
-  when:
-    - item.name | d(false)
-    - item.passwd | d(false)
-  no_log: true
-  ansible.builtin.command: /usr/bin/mediaimportctl.py add --yes --user {{ item.name }} --passwd {{ item.passwd }}
-  args:
-    creates: /home/ftp/storage/incoming/{{ item.name }}
-
 ## MEDIAIMPORT
 
 - name: enable password login for ssh
@@ -26,17 +14,6 @@
     dest: /etc/ssh/sshd_config
     regexp: "^PasswordAuthentication no"
     replace: "#PasswordAuthentication yes"
-
-- name: configure mediaimport
-  when:
-    - mediaimport_ms_api_key | d(false)
-    - mediaimport_ms_server_name | d(false)
-  notify: restart mediaimport
-  ansible.builtin.template:
-    src: mediaimport.json.j2
-    dest: /etc/mediaserver/mediaimport.json
-    backup: true
-    mode: 0640
 
 - name: enable mediaimport service
   ansible.builtin.systemd:
@@ -47,6 +24,16 @@
   ansible.builtin.systemd:
     name: mediaimport-cleanup.timer
     enabled: true
+
+- name: configure mediaimport admin emails
+  when:
+    - envsetup_email_admins | d(false)
+  notify: restart mediaimport
+  ansible.builtin.template:
+    src: mediaimport.json.j2
+    dest: /etc/mediaserver/mediaimport.json
+    backup: true
+    mode: 0640
 
 # FAIL2BAN
 
