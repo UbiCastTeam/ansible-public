@@ -15,13 +15,13 @@
 
     - name: delete postgresql data directory
       ansible.builtin.file:
-        path: /var/lib/postgresql/11/main/
+        path: /var/lib/postgresql/13/main/
         state: absent
         force: true
 
     - name: copy data from primary
       ansible.builtin.command: >
-        repmgr -f /etc/postgresql/11/main/repmgr.conf
+        repmgr -f /etc/postgresql/13/main/repmgr.conf
           --force --verbose
           standby clone
           -h {{ hostvars[groups['postgres_primary'][0]]['ansible_default_ipv4']['address'] }}
@@ -39,7 +39,7 @@
       when: copy_from_primary is succeeded
 
     - name: register node as standby
-      ansible.builtin.command: "repmgr -f /etc/postgresql/11/main/repmgr.conf --force --verbose standby register"
+      ansible.builtin.command: "repmgr -f /etc/postgresql/13/main/repmgr.conf --force --verbose standby register"
       become: true
       become_user: postgres
       when: copy_from_primary is succeeded

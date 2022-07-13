@@ -20,6 +20,15 @@
 
 # CONFIGURATION
 
+- name: update logrotate config
+  ansible.builtin.copy:
+    src: logrotate-postgresql
+    dest: "/etc/logrotate.d/postgresql-common"
+    owner: root
+    group: root
+    backup: false
+    mode: '644'
+
 - name: ensure conf directory exists
   ansible.builtin.file:
     path: "{{ pg_conf_dir }}/conf.d"

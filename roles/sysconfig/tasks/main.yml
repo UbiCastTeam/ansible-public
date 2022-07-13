@@ -86,12 +86,13 @@
     replace: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";'
   notify: restart unattended-upgrades
 
-- name: allow automatic updates for ubicast security
+- name: allow automatic updates for ubicast security repo
   ansible.builtin.lineinfile:
     path: /etc/apt/apt.conf.d/50unattended-upgrades
     insertafter: '^Unattended-Upgrade::Origins-Pattern {$'
     line: '        "origin=UbiCast,label=UbiCast-Security";'
     backup: true
+  notify: restart unattended-upgrades
 
 - name: enable root login via ssh with key
   ansible.builtin.replace:

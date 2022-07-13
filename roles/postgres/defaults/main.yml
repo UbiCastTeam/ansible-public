@@ -4,7 +4,7 @@ pg_packages:
   - acl
   - postgresql
 
-pg_version: 11
+pg_version: 13
 pg_cluster: main
 
 pg_password: "{{ envsetup_db_pg_root_pwd | d() }}"

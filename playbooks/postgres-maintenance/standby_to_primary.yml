@@ -8,13 +8,13 @@
         msg: "Current status {{ rephacheck['stdout'] }} must be standby."
       when: rephacheck['stdout'] != "standby"
     - name: check if node is currently in standby
-      ansible.builtin.command: "repmgr standby switchover -f /etc/postgresql/11/main/repmgr.conf --siblings-follow --dry-run"
+      ansible.builtin.command: "repmgr standby switchover -f /etc/postgresql/13/main/repmgr.conf --siblings-follow --dry-run"
       become: true
       become_user: postgres
       when: rephacheck['stdout'] == "standby"
       register: standby_dry_run
     - name: switch standby node to primary
-      ansible.builtin.command: "repmgr standby switchover -f /etc/postgresql/11/main/repmgr.conf --siblings-follow"
+      ansible.builtin.command: "repmgr standby switchover -f /etc/postgresql/13/main/repmgr.conf --siblings-follow"
       become: true
       become_user: postgres
       when:
