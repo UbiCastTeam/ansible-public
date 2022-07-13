@@ -1,29 +1,17 @@
 ---
-- name: create systemd-timesync service config directory
-  ansible.builtin.file:
-    path: /lib/systemd/system/systemd-timesyncd.service.d
-    state: directory
-    mode: 0755
 
-- name: ntp add condition to systemd-timesyncd service
-  notify: systemd daemon reload
-  ansible.builtin.copy:
-    dest: /lib/systemd/system/systemd-timesyncd.service.d/disable-with-time-daemon.conf
-    mode: '644'
-    content: |
-      [Unit]
-      # don't run timesyncd if we have another NTP daemon installed
-      ConditionFileIsExecutable=!/usr/sbin/ntpd
-      ConditionFileIsExecutable=!/usr/sbin/openntpd
-      ConditionFileIsExecutable=!/usr/sbin/chronyd
-      ConditionFileIsExecutable=!/usr/sbin/VBoxService
+- name: gathering services
+  ansible.builtin.service_facts:
 
 - name: ntp disable systemd-timesyncd service
   notify: restart ntp
   ansible.builtin.systemd:
     name: systemd-timesyncd
     enabled: false
+    daemon_reload: true
     state: stopped
+  when: ('systemd-timesyncd.service' in ansible_facts.services)
+        and (ansible_facts.services['systemd-timesyncd.service'].status != 'not-found')
 
 - name: ntp install
   ansible.builtin.apt:

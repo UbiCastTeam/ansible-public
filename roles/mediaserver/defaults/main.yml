@@ -6,7 +6,6 @@ server_packages:
   - memcached
   - nginx
   - postfix
-  - celerity-utils
   - ubicast-mediaserver
 
 server_default_email_sender: "noreply@{{ server_hostname }}"

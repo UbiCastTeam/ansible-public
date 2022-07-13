@@ -1,23 +1,10 @@
 ---
 
-- name: ubuntu apt repo sources list
-  when:
-    - not offline_mode | d(false)
-    - ansible_distribution == 'Ubuntu'
-  notify: update cache
-  ansible.builtin.copy:
-    dest: /etc/apt/sources.list
-    mode: '644'
-    content: |
-      deb {{ repos_prefix }}archive.ubuntu.com/ubuntu/ {{ repos_release }} main restricted universe multiverse
-      deb {{ repos_prefix }}archive.ubuntu.com/ubuntu/ {{ repos_release }}-updates main restricted universe multiverse
-      deb {{ repos_prefix }}archive.ubuntu.com/ubuntu/ {{ repos_release }}-backports main restricted universe multiverse
-      deb {{ repos_prefix }}security.ubuntu.com/ubuntu {{ repos_release }}-security main restricted universe multiverse
-
-- name: debian apt repo sources list
+- name: debian 10 apt repo sources list
   when:
     - not offline_mode | d(false)
     - ansible_distribution == 'Debian'
+    - ansible_distribution_major_version == '10'
   notify: update cache
   ansible.builtin.copy:
     dest: /etc/apt/sources.list
@@ -26,6 +13,20 @@
       deb {{ repos_prefix }}{{ repos_deb }}/debian {{ repos_release }} main contrib non-free
       deb {{ repos_prefix }}{{ repos_deb }}/debian {{ repos_release }}-updates main contrib non-free
       deb {{ repos_prefix }}{{ repos_deb_sec }}/debian-security {{ repos_release }}/updates main contrib non-free
+
+- name: debian 11 apt repo sources list
+  when:
+    - not offline_mode | d(false)
+    - ansible_distribution == 'Debian'
+    - ansible_distribution_major_version == '11'
+  notify: update cache
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list
+    mode: '644'
+    content: |
+      deb {{ repos_prefix }}{{ repos_deb }}/debian {{ repos_release }} main contrib non-free
+      deb {{ repos_prefix }}{{ repos_deb }}/debian {{ repos_release }}-updates main contrib non-free
+      deb {{ repos_prefix }}{{ repos_deb_sec }}/debian-security {{ repos_release }}-security main contrib non-free
 
 - name: add ubicast apt repo key
   when: not offline_mode | d(false)
@@ -36,15 +37,41 @@
   when:
     - not offline_mode | d(false)
     - repos_skyreach_token | d(false)
+    - ansible_distribution == 'Debian'
+    - ansible_distribution_major_version == '10'
   ansible.builtin.apt_repository:
     repo: deb https://{{ repos_skyreach_host }} packaging/apt/{{ repos_skyreach_token }}/
     filename: ubicast
     update_cache: true
 
+- name: add ubicast apt repo
+  when:
+    - not offline_mode | d(false)
+    - repos_skyreach_token | d(false)
+    - ansible_distribution == 'Debian'
+    - ansible_distribution_major_version == '11'
+  ansible.builtin.apt_repository:
+    repo: deb https://{{ repos_skyreach_host }} packaging/apt/{{ repos_skyreach_token }}/bullseye/
+    filename: ubicast
+    update_cache: true
+
 - name: add ubicast security apt repo
-  when: not offline_mode | d(false)
+  when:
+    - not offline_mode | d(false)
+    - ansible_distribution == 'Debian'
+    - ansible_distribution_major_version == '10'
   ansible.builtin.apt_repository:
     repo: deb https://{{ repos_skyreach_host }} packaging/apt/ubicast-security-updates/
+    filename: ubicast-secu
+    update_cache: true
+
+- name: add ubicast security apt repo
+  when:
+    - not offline_mode | d(false)
+    - ansible_distribution == 'Debian'
+    - ansible_distribution_major_version == '11'
+  ansible.builtin.apt_repository:
+    repo: deb https://{{ repos_skyreach_host }} packaging/apt/ubicast-security-updates/bullseye/
     filename: ubicast-secu
     update_cache: true
 

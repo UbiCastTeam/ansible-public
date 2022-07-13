@@ -1,48 +1,28 @@
 ---
 
 - name: install ubicast msmonitor
+  environment:
+    MONITOR_SERVER_NAME: "{{ monitor_hostname }}"
+    MONITOR_SHELL_PWD: "{{ monitor_shell_pwd | password_hash('sha512', 'monitor') }}"
+    MONITOR_ADMIN_PWD: "{{ monitor_admin_pwd | password_hash('sha512', 'monitor') }}"
+    MONITOR_SUPERUSER_PWD: "{{ monitor_superuser_pwd  }}"
+    SSH_MAINTENANCE_PORT: "{{ ssh_maintenance_port }}"
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     state: latest
     name:
-      - ubicast-monitor
-      - ubicast-monitor-runtime
+      - ubicast-webmonitor
+      - ubicast-webmonitor-runtime
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
-- name: set msmonitor account password
-  ansible.builtin.user:
-    name: msmonitor
-    password: "{{ monitor_shell_pwd | password_hash('sha512', 'monitor') }}"
-
-- name: configure domain name in nginx
-  notify: restart nginx
-  ansible.builtin.replace:
-    path: /etc/nginx/sites-available/msmonitor.conf
-    regexp: '^(\s*server_name).*;$'
-    replace: '\1 {{ monitor_hostname }};'
-    backup: true
-
-- name: resolve domain name to localhost ipv4
-  notify: restart nginx
-  ansible.builtin.lineinfile:
-    path: /etc/hosts
-    line: '127.0.1.1 {{ monitor_hostname }}'
-    backup: true
-
 - name: ensure msmonitor is running
   ansible.builtin.service:
-    name: msmonitor
+    name: webmonitor
     enabled: true
     state: started
-
-- name: set directory permissions
-  ansible.builtin.file:
-    path: /home/msmonitor/msmonitor
-    mode: 0755
-    state: directory
 
 # FIREWALL
 

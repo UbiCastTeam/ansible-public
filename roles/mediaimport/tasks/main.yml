@@ -41,6 +41,13 @@
 
 ## MYSECURESHELL
 
+- name: enable password login for ssh
+  notify: restart sshd
+  ansible.builtin.replace:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication no"
+    replace: "#PasswordAuthentication yes"
+
 - name: set the setuid on mysecureshell
   ansible.builtin.file:
     path: /usr/bin/mysecureshell

@@ -7,7 +7,7 @@ repmgr_packages:
   - python3-psycopg2
   - python3-toml
 
-repmgr_pg_version: "{{ pg_version | default('11') }}"
+repmgr_pg_version: "{{ pg_version | default('13') }}"
 repmgr_pg_cluster: "{{ pg_cluster | default('main') }}"
 repmgr_pg_data: /var/lib/postgresql/{{ repmgr_pg_version }}/{{ repmgr_pg_cluster }}
 

@@ -1,6 +1,9 @@
 ---
 
 monitor_shell_pwd: "{{ envsetup_monitor_shell_pwd | d() }}"
+monitor_admin_pwd: "{{ envsetup_monitor_admin_pwd | d() }}"
+monitor_superuser_pwd: "{{ envsetup_monitor_superuser_pwd | d() }}"
+ssh_maintenance_port: "{{ envsetup_ssh_maintenance_port | d() }}"
 monitor_hostname: "{{ envsetup_monitor_server_name | d('monitor', true) }}"
 
 monitor_firewall_enabled: true

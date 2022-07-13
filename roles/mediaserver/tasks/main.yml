@@ -27,14 +27,6 @@
     key: "{{ hostvars[item]['pubkey'] }}"
   tags: always
 
-- name: resolve domain name to localhost
-  notify: restart nginx
-  loop: "{{ server_instances }}"
-  ansible.builtin.lineinfile:
-    path: /etc/hosts
-    line: '127.0.1.1 {{ item.ms_server_name }}'
-    backup: true
-
 - name: Update the MS configuration with the celerity server IP
   ansible.builtin.lineinfile:
     path: /etc/mediaserver/msconf.py
@@ -60,7 +52,6 @@
     mode: '0644'
 
 - name: create instances
-  when: inventory_hostname == groups['mediaserver'][0]
   loop: "{{ server_instances }}"
   environment:
     MS_ID: "{{ item.ms_id }}"
@@ -69,24 +60,12 @@
     CM_SERVER_NAME: "{{ item.cm_server_name }}"
     MS_SUPERUSER_PWD: "{{ item.ms_superuser_pwd }}"
     MS_ADMIN_PWD: "{{ item.ms_admin_pwd }}"
+    DB_HOST: "{{ envsetup_db_host | d('127.0.0.1') }}"
+    DB_PORT: "{{ envsetup_db_port | d('5432') }}"
+    DB_PG_ROOT_PWD: "{{ envsetup_db_pg_root_pwd | d('') }}"
+    MS_SECRET: "{{ envsetup_ms_secret | d('') }}"
   ansible.builtin.command:
-    cmd: msinstaller.py {{ item.name }} --no-input
-    creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
-
-- name: create instances for secondary servers
-  when:
-    - groups['mediaserver'] | length > 1
-    - inventory_hostname != groups['mediaserver'][0]
-  loop: "{{ server_instances }}"
-  environment:
-    MS_ID: "{{ item.ms_id }}"
-    MS_SERVER_NAME: "{{ item.ms_server_name }}"
-    MS_API_KEY: "{{ item.ms_api_key }}"
-    CM_SERVER_NAME: "{{ item.cm_server_name }}"
-    MS_SUPERUSER_PWD: "{{ item.ms_superuser_pwd }}"
-    MS_ADMIN_PWD: "{{ item.ms_admin_pwd }}"
-  ansible.builtin.command:
-    cmd: msinstaller.py {{ item.name }} --no-input
+    cmd: mscontroller.py add -u {{ item.name }}
     creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
   throttle: 1
 
