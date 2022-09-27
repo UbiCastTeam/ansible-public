@@ -1,5 +1,4 @@
 ---
-
 worker_celerity_signing_key: "{{ envsetup_celerity_signing_key | d('change-me', true) }}"
 worker_celerity_server: "{{ envsetup_celerity_server | d(envsetup_ms_server_name, true) | d('127.0.0.1', true) }}"
 
@@ -25,5 +24,3 @@ worker_ferm_output_rules:
     dport:
       - 6200
 worker_ferm_global_settings:
-
-...

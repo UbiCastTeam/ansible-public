@@ -1,8 +1,5 @@
 ---
-
 - name: restart celerity-workers
   ansible.builtin.service:
     name: celerity-workers
     state: restarted
-
-...

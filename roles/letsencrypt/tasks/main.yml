@@ -1,5 +1,4 @@
 ---
-
 - name: install certbot
   ansible.builtin.package:
     force_apt_get: true
@@ -29,19 +28,19 @@
       {% for domain in letsencrypt_domains %}
       {{ domain }}
       {% endfor %}
-    mode: '644'
+    mode: "644"
 
 - name: create webroot directory
   ansible.builtin.file:
     path: "{{ letsencrypt_webroot }}"
     state: directory
-    mode: '755'
+    mode: "755"
 
 - name: create pre hook directory
   ansible.builtin.file:
     path: /etc/letsencrypt/renewal-hooks/pre
     state: directory
-    mode: '755'
+    mode: "755"
 
 - name: create pre hook script
   ansible.builtin.copy:
@@ -57,7 +56,7 @@
   ansible.builtin.file:
     path: /etc/letsencrypt/renewal-hooks/deploy
     state: directory
-    mode: '755'
+    mode: "755"
 
 - name: create deploy hook script
   ansible.builtin.copy:
@@ -65,7 +64,6 @@
     mode: 0755
     content: |
       #!/usr/bin/env bash
-      nginx -t > /dev/null 2>&1
       systemctl reload nginx
 
 - name: test generate certificates
@@ -92,7 +90,6 @@
 - name: exit in case of failure
   when: letsencrypt_dry_run is failed
   ansible.builtin.fail:
-
 - name: generate certificates
   notify: restart nginx
   when:
@@ -116,8 +113,8 @@
   notify: restart nginx
   ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
-    regexp: 'ssl_certificate\s+([\w/\-\_\.]+);'
-    line: 'ssl_certificate /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/fullchain.pem;'
+    regexp: ssl_certificate\s+([\w/\-\_\.]+);
+    line: ssl_certificate /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/fullchain.pem;
 
 - name: update nginx certificate key configuration
   when:
@@ -127,7 +124,5 @@
   notify: restart nginx
   ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
-    regexp: 'ssl_certificate_key\s+([\w/\-\_\.]+);'
-    line: 'ssl_certificate_key /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem;'
-
-...
+    regexp: ssl_certificate_key\s+([\w/\-\_\.]+);
+    line: ssl_certificate_key /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem;

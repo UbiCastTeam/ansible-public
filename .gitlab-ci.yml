@@ -1,5 +1,4 @@
 ---
-
 checkpf:
   # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html
   trigger:
@@ -7,21 +6,21 @@ checkpf:
     strategy: depend
   # Sends the current branch to the ubicast-environment triggered pipeline as a variable
   variables:
-    ANSIBLE_BRANCH: "$CI_COMMIT_BRANCH"
-    DEPLOY_STD: "$DEPLOY_STD"
-    DEPLOY_HA: "$DEPLOY_HA"
-    DESTROY_STD: "$DESTROY_STD"
-    DESTROY_HA: "$DESTROY_HA"
-    LINT: "$LINT"
+    ANSIBLE_BRANCH: $CI_COMMIT_BRANCH
+    DEPLOY_STD: $DEPLOY_STD
+    DEPLOY_HA: $DEPLOY_HA
+    DESTROY_STD: $DESTROY_STD
+    DESTROY_HA: $DESTROY_HA
+    LINT: $LINT
   # Register the job in a resource group to prevent having multiple running pipelines in parallel
   resource_group: deployment
   rules:
     # Only triggers the pipeline if it's launched manually from the GitLab webinterface
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: $CI_PIPELINE_SOURCE == "web"
     # Only triggers the pipeline if it's launched by a scheduled job
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: $CI_PIPELINE_SOURCE == "schedule"
     # Only if push on the main branch
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"'
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
 
 lint:
   # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html
@@ -30,12 +29,10 @@ lint:
     strategy: depend
   # Sends the current branch to the ubicast-environment triggered pipeline as a variable
   variables:
-    ANSIBLE_BRANCH: "$CI_COMMIT_BRANCH"
+    ANSIBLE_BRANCH: $CI_COMMIT_BRANCH
     DEPLOY_STD: "false"
     DEPLOY_HA: "false"
   resource_group: deployment
   rules:
     # Only if push in a branch other than main
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main"'
-
-...
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main"

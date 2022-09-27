@@ -1,5 +1,4 @@
 ---
-
 nginx_packages:
   - nginx
   - uwsgi
@@ -7,5 +6,3 @@ nginx_packages:
 
 nginx_ssl_certificate: /etc/ssl/certs/ssl-cert-snakeoil.pem
 nginx_ssl_certificate_key: /etc/ssl/private/ssl-cert-snakeoil.key
-
-...

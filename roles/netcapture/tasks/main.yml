@@ -1,5 +1,4 @@
 ---
-
 - name: netcapture install
   ansible.builtin.apt:
     force_apt_get: true
@@ -13,13 +12,13 @@
   ansible.builtin.template:
     src: netcapture.json.j2
     dest: /etc/miris/netcapture.json
-    mode: '644'
+    mode: "644"
 
 - name: netcapture miris
   ansible.builtin.template:
     src: miris-api.json.j2
     dest: /etc/miris/conf/api.json
-    mode: '644'
+    mode: "644"
 
 - name: netcapture config dir
   ansible.builtin.file:
@@ -41,5 +40,3 @@
     path: "{{ netcapture_pkg_folder }}"
     mode: u=rwX,g=rwX,o=rx
     state: directory
-
-...

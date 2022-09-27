@@ -8,5 +8,3 @@
   ansible.builtin.service:
     name: apm-server
     state: restarted
-
-...

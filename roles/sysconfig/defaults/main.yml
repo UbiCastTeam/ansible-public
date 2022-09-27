@@ -1,5 +1,4 @@
 ---
-
 repos_prefix: "{{ envsetup_apt_cache_url | d('http://', true) }}"
 repos_deb: deb.debian.org
 repos_deb_sec: security.debian.org
@@ -46,7 +45,6 @@ sysconfig_ferm_input_rules:
       - 9090
 sysconfig_ferm_output_rules: []
 sysconfig_ferm_global_settings:
-
 locale_packages:
   - locales
   - tzdata
@@ -59,5 +57,3 @@ sysconfig_logs_packages:
   - rsyslog
 
 ntp_servers: "{{ envsetup_ntp_server | d('0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org', true) }}"
-
-...

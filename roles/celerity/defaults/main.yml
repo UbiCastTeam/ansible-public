@@ -1,5 +1,4 @@
 ---
-
 celerity_signing_key: "{{ envsetup_celerity_signing_key | d('change-me', true) }}"
 celerity_server: "{{ envsetup_celerity_server | d(envsetup_ms_server_name, true) | d('127.0.0.1', true) }}"
 
@@ -20,5 +19,3 @@ celerity_ferm_input_rules:
       - 6200
 celerity_ferm_output_rules: []
 celerity_ferm_global_settings:
-
-...

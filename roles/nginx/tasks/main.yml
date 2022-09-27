@@ -1,5 +1,4 @@
 ---
-
 - name: nginx install
   ansible.builtin.apt:
     force_apt_get: true
@@ -45,8 +44,8 @@
   notify: restart nginx
   ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
-    regexp: 'ssl_certificate\s+([\w/\-\_\.]+);'
-    line: 'ssl_certificate {{ nginx_ssl_certificate }};'
+    regexp: ssl_certificate\s+([\w/\-\_\.]+);
+    line: ssl_certificate {{ nginx_ssl_certificate }};
 
 - name: nginx update ssl certificate key conf
   when:
@@ -55,7 +54,5 @@
   notify: restart nginx
   ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
-    regexp: 'ssl_certificate_key\s+([\w/\-\_\.]+);'
-    line: 'ssl_certificate_key {{ nginx_ssl_certificate_key }};'
-
-...
+    regexp: ssl_certificate_key\s+([\w/\-\_\.]+);
+    line: ssl_certificate_key {{ nginx_ssl_certificate_key }};

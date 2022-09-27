@@ -1,14 +1,11 @@
 ---
-
 proxy_http: "{{ envsetup_proxy_http | d() }}"
 proxy_https: "{{ envsetup_proxy_https | d() }}"
 proxy_exclude:
-  - "localhost"
-  - "127.0.0.1"
-  - "::1"
+  - localhost
+  - 127.0.0.1
+  - ::1
   - "{{ envsetup_proxy_exclude | d() }}"
   - "{{ envsetup_ms_server_name | d() }}"
   - "{{ envsetup_monitor_server_name | d() }}"
   - "{{ envsetup_cm_server_name | d() }}"
-
-...

@@ -1,5 +1,4 @@
 ---
-
 - name: install packages
   ansible.builtin.package:
     force_apt_get: true
@@ -12,7 +11,7 @@
   notify: restart sshd
   ansible.builtin.replace:
     dest: /etc/ssh/sshd_config
-    regexp: "^PasswordAuthentication no"
+    regexp: ^PasswordAuthentication no
     replace: "#PasswordAuthentication yes"
 
 - name: enable mediaimport service
@@ -61,5 +60,3 @@
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
-
-...

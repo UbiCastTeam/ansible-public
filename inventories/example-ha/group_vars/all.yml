@@ -1,5 +1,4 @@
 ---
-
 # customer name
 customer_short_name: customer
 
@@ -16,7 +15,7 @@ repmgr_primary_node: "{{ hostvars['pg1']['ansible_default_ipv4']['address'] }}"
 # ha proxy configuration
 hap_config_listen:
   - name: pgsql-primary
-    content: |2
+    content: |
       bind localhost:54321
       default-server inter 2s fall 3 rise 2 on-marked-down shutdown-sessions
       option tcp-check
@@ -24,5 +23,3 @@ hap_config_listen:
       maxconn 500
       server pg1 192.168.122.1:5432 maxconn 500 check port 8543
       server pg2 192.168.122.2:5432 maxconn 500 check port 8543 backup
-
-...

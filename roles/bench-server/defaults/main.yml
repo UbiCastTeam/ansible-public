@@ -1,5 +1,4 @@
 ---
-
 bench_server_packages:
   - ubicast-benchmark
 
@@ -14,5 +13,3 @@ bench_dl_streams: false
 
 bench_stream_repo: https://git.ubicast.net/mediaserver/ms-testing-suite.git
 bench_host_api_key: "{{ envsetup_ms_api_key | d() }}"
-
-...

@@ -1,5 +1,4 @@
 ---
-
 - name: NETCAPTURE
   hosts: netcapture
   tags: netcapture
@@ -15,8 +14,7 @@
     server_ferm_global_settings:
   tasks:
     - name: firewall
-      when: ((server_firewall_enabled is defined) and server_firewall_enabled)
-            or (server_firewall_enabled is undefined)
+      when: ((server_firewall_enabled is defined) and server_firewall_enabled) or (server_firewall_enabled is undefined)
       vars:
         ferm_rules_filename: "{{ server_ferm_rules_filename }}"
         ferm_input_rules: "{{ server_ferm_input_rules }}"
@@ -27,5 +25,3 @@
 
 - import_playbook: deploy-minimal.yml
   tags: netcapture
-
-...

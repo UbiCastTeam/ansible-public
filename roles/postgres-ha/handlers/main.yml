@@ -1,5 +1,4 @@
 ---
-
 - name: reload systemd
   ansible.builtin.systemd:
     daemon_reload: true
@@ -18,5 +17,3 @@
   ansible.builtin.systemd:
     name: rephacheck.socket
     state: restarted
-
-...

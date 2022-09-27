@@ -1,8 +1,5 @@
 ---
-
 - name: restart celerity-server
   ansible.builtin.service:
     name: celerity-server
     state: restarted
-
-...

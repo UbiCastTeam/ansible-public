@@ -1,6 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-
 - name: Munin server
   hosts: munin_server
   tags: munin
@@ -12,5 +11,3 @@
       with_items: "{{ groups['munin_node'] }}"
   roles:
     - munin/munin-server
-
-...

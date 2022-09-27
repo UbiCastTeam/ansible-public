@@ -1,5 +1,4 @@
 ---
-
 - name: Checking the live(s) server(s) live configuration state
   hosts: live
   gather_facts: false
@@ -66,8 +65,7 @@
     - name: Comparing the app secrets from MS an live servers with the reference
       ansible.builtin.set_fact:
         app_secret_diff: true
-      when: base_live_secret is defined
-            and hostvars[item].live_secret != base_live_secret
+      when: base_live_secret is defined and hostvars[item].live_secret != base_live_secret
       with_items:
         - "{{ groups['live'] }}"
         - "{{ groups['mediaserver'] }}"
@@ -79,9 +77,8 @@
       register: secret
       args:
         executable: /bin/bash
-      failed_when: false  # Ansible-lint requires pipefail, but the return is then non-null so we have to force this
-      when: base_live_secret is not defined
-            or app_secret_diff
+      failed_when: false # Ansible-lint requires pipefail, but the return is then non-null so we have to force this
+      when: base_live_secret is not defined or app_secret_diff
 
     - name: Deciding the application secret to use
       ansible.builtin.set_fact:
@@ -110,7 +107,7 @@
         owner: nginx
         group: root
         state: directory
-        mode: '0700'
+        mode: "0700"
 
     - name: Create the nginx RTMP web directory symlink
       notify: Reload nginx
@@ -167,7 +164,7 @@
     - name: Set the RTMP_PLAYBACK_URL in lives configuration
       vars:
         rtmp_playback_line:
-          RTMP_PLAYBACK_URL: null
+          RTMP_PLAYBACK_URL:
       ansible.builtin.set_fact:
         lives_config: "{{ lives_config | combine(rtmp_playback_line) }}"
 
@@ -182,15 +179,13 @@
       notify: Restart mediaserver
       ansible.builtin.copy:
         content: "{{ lives_config | to_nice_json }}"
-        dest: "/home/{{ live_app_name }}/msinstance/conf/lives.json"
+        dest: /home/{{ live_app_name }}/msinstance/conf/lives.json
         owner: "{{ live_app_name }}"
         group: "{{ live_app_name }}"
-        mode: '0600'
+        mode: "0600"
 
   handlers:
     - name: Restart mediaserver
       ansible.builtin.systemd:
         name: mediaserver
         state: restarted
-
-...

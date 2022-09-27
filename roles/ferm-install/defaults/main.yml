@@ -1,5 +1,4 @@
 ---
-
 # packages to install
 ferm_packages:
   - ferm
@@ -21,5 +20,3 @@ ferm_forward_log_prefix: "{{ ferm_forward_policy }} FORWARD "
 
 # enable anti-lockout rule
 ferm_antilockout_enabled: true
-
-...

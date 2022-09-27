@@ -1,5 +1,4 @@
 ---
-
 postfix_packages:
   - postfix
   - bsd-mailx
@@ -11,5 +10,3 @@ postfix_relay_host: "{{ envsetup_email_smtp_server | d() }}"
 postfix_relay_user: "{{ envsetup_email_smtp_user | d() }}"
 postfix_relay_pass: "{{ envsetup_email_smtp_pwd | d() }}"
 postfix_admin: sysadmin@ubicast.eu
-
-...

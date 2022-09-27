@@ -1,14 +1,13 @@
 ---
-
 mediaimport_users:
   - name: "{{ envsetup_mediaimport_user | d() }}"
     passwd: "{{ envsetup_mediaimport_password | d() }}"
 
 mediaimport_packages:
   - openssh-server
-  - mysecureshell  # unreleased version that includes CallbackUpload, packaged by UbiCast
-  - pure-ftpd  # must be installed before ubicast-mediaimport so that config can be tweaked by the postinst
-  - ssl-cert  # for optionnal FTPS support (the mediaimport postinst will will use the snakeoil certificate for pure-ftpd)
+  - mysecureshell # unreleased version that includes CallbackUpload, packaged by UbiCast
+  - pure-ftpd # must be installed before ubicast-mediaimport so that config can be tweaked by the postinst
+  - ssl-cert # for optionnal FTPS support (the mediaimport postinst will will use the snakeoil certificate for pure-ftpd)
   - ubicast-mediaimport
 
 mediaimport_ms_api_key: "{{ envsetup_ms_api_key | d() }}"
@@ -28,5 +27,3 @@ mediaimport_ferm_input_rules:
     helper: ftp
 mediaimport_ferm_output_rules: []
 mediaimport_ferm_global_settings:
-
-...

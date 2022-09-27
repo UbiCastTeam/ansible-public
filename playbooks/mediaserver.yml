@@ -1,6 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-
 - name: MEDIASERVER
   hosts: mediaserver
   tags: mediaserver
@@ -19,5 +18,3 @@
       when: proxy_apply | d(false)
       ansible.builtin.include_role:
         name: proxy
-
-...

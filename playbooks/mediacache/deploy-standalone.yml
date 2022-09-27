@@ -1,6 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-
 - name: MEDIACACHE
   hosts: mediacache
   tags: mediacache
@@ -35,5 +34,3 @@
 
 - import_playbook: deploy-minimal.yml
   tags: mediacache
-
-...

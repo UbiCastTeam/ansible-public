@@ -1,5 +1,4 @@
 ---
-
 - name: packages
   ansible.builtin.apt:
     force_apt_get: true
@@ -15,12 +14,10 @@
   ansible.builtin.template:
     src: jail.local.j2
     dest: /etc/fail2ban/jail.local
-    mode: '644'
+    mode: "644"
 
 - name: service
   ansible.builtin.systemd:
     name: fail2ban
     enabled: true
     state: started
-
-...

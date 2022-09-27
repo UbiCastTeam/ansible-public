@@ -1,5 +1,4 @@
 ---
-
 - name: install bench-worker packages
   ansible.builtin.apt:
     force_apt_get: true
@@ -15,7 +14,7 @@
   ansible.builtin.file:
     path: /etc/mediaserver
     state: directory
-    mode: '755'
+    mode: "755"
 
 - name: benchmark configuration settings
   ansible.builtin.copy:
@@ -30,7 +29,7 @@
       "DL_STREAMS":{{ bench_dl_streams }},
       "TIME_STATS":{{ bench_time_stat }}
       }
-    mode: '644'
+    mode: "644"
 
 - name: reload systemd daemon
   ansible.builtin.systemd:
@@ -40,5 +39,3 @@
   ansible.builtin.systemd:
     name: bench-worker
     state: restarted
-
-...

@@ -1,6 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-
 - name: CELERITY SERVER
   hosts: celerity
   tags: celerity
@@ -15,5 +14,3 @@
       when: proxy_apply | d(false)
       ansible.builtin.include_role:
         name: proxy
-
-...

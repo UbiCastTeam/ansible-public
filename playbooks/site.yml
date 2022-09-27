@@ -1,6 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-
 - name: PYTHON
   hosts: all
   gather_facts: false
@@ -50,5 +49,3 @@
 
 - import_playbook: tester.yml
   tags: tester
-
-...

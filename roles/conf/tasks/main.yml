@@ -1,5 +1,4 @@
 ---
-
 - name: proxy
   when:
     - proxy_http | d()
@@ -83,7 +82,7 @@
     return_content: true
     validate_certs: "{{ conf_valid_cert }}"
 
-- name: save generated conf  # noqa no-handler
+- name: save generated conf # noqa no-handler
   loop:
     - "{{ conf_dl_ak }}"
     - "{{ conf_dl_sk }}"
@@ -93,7 +92,7 @@
     dest: "{{ conf_dir }}/auto-generated-conf.sh"
     force: true
     backup: true
-    mode: '644'
+    mode: "644"
 
 - name: check if auto-generated-conf.sh exists
   check_mode: false
@@ -129,5 +128,3 @@
   when: conf_debug
   ansible.builtin.debug:
     var: ansible_facts
-
-...

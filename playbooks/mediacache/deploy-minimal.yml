@@ -1,5 +1,4 @@
 ---
-
 - name: MEDIACACHE
   hosts: mediacache
   tags: mediacache
@@ -14,8 +13,8 @@
       notify: restart nginx on mediaservers
       ansible.builtin.lineinfile:
         path: /etc/nginx/conf.d/mediaserver-securelink.conf
-        line: "{{'\t'}}{{ securelink_ip }} 1;"  # noqa: no-tabs
-        insertafter: '^geo'
+        line: "{{'\t'}}{{ securelink_ip }} 1;"  # noqa no-tabs jinja[spacing]
+        insertafter: ^geo
       delegate_to: "{{ item }}"
       delegate_facts: true
       loop: "{{ groups['mediaserver'] }}"
@@ -28,5 +27,3 @@
       delegate_to: "{{ item }}"
       delegate_facts: true
       loop: "{{ groups['mediaserver'] }}"
-
-...
