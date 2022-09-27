@@ -1,5 +1,4 @@
 ---
-
 conf_req_packages:
   - ca-certificates
   - openssh-client
@@ -18,5 +17,3 @@ skyreach_system_key: "{{ lookup('env', 'SKYREACH_SYSTEM_KEY') }}"
 conf_update: false
 
 conf_debug: false
-
-...

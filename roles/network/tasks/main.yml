@@ -1,5 +1,4 @@
 ---
-
 - name: if network settings are set
   when:
     - network_apply | bool
@@ -8,7 +7,6 @@
     - network_gateway | d(false)
     - network_dns | d(false)
   block:
-
     - name: packages
       ansible.builtin.apt:
         force_apt_get: true
@@ -24,7 +22,7 @@
       ansible.builtin.copy:
         dest: /etc/network/interfaces
         backup: true
-        mode: '644'
+        mode: "644"
         content: |
           # This file describes the network interfaces available on your system
           # and how to activate them. For more information, se interfaces(5).
@@ -44,7 +42,7 @@
 
     - name: interface
       nmcli:
-        conn_name: "envsetup-{{ ansible_default_ipv4.interface }}"
+        conn_name: envsetup-{{ ansible_default_ipv4.interface }}
         type: ethernet
         ifname: "{{ ansible_default_ipv4.interface }}"
         ip4: "{{ network_ip_mask_cidr | ipv4 }}"
@@ -53,5 +51,3 @@
         autoconnect: true
         activate: false
         state: present
-
-...

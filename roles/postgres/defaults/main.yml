@@ -1,5 +1,4 @@
 ---
-
 pg_packages:
   - acl
   - postgresql
@@ -33,9 +32,7 @@ pg_hba:
     address: ::1/128
 
 pg_users: []
-
 pg_databases: []
-
 pg_firewall_enabled: true
 pg_ferm_rules_filename: postgres
 pg_ferm_input_rules:
@@ -45,5 +42,3 @@ pg_ferm_input_rules:
       - 5432
 pg_ferm_output_rules: []
 pg_ferm_global_settings:
-
-...

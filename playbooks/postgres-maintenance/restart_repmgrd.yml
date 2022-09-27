@@ -4,7 +4,7 @@
   hosts: postgres
   tasks:
     - name: kill repmgrd
-      ansible.builtin.command: "pkill repmgrd"
+      ansible.builtin.command: pkill repmgrd
       # TOFIX: implement a proper verification
       changed_when: false
       failed_when: false
@@ -13,5 +13,3 @@
       ansible.builtin.systemd:
         name: repmgrd
         state: restarted
-
-...

@@ -1,5 +1,4 @@
 ---
-
 - name: MediaCache packages installation
   ansible.builtin.apt:
     force_apt_get: true
@@ -13,73 +12,71 @@
 - name: resolve domain name to localhost
   ansible.builtin.lineinfile:
     path: /etc/hosts
-    line: '127.0.1.1 {{ mediacache_url }}'
+    line: 127.0.1.1 {{ mediacache_url }}
     backup: true
 
 - name: create mediacache VOD data directory
   ansible.builtin.file:
-    dest: '{{ role_mc_vod_folder }}'
+    dest: "{{ role_mc_vod_folder }}"
     state: directory
     owner: nginx
     group: root
-    mode: '0700'
+    mode: "0700"
 
 - name: create mediacache live data directory
   ansible.builtin.file:
-    dest: '{{ role_mc_live_folder }}'
+    dest: "{{ role_mc_live_folder }}"
     state: directory
     owner: nginx
     group: root
-    mode: '0700'
+    mode: "0700"
   when: live_url is defined
 
 - name: fill the vhost file
   notify: restart nginx
   ansible.builtin.replace:
     path: /etc/nginx/sites-available/mediacache.conf
-    regexp: '^(\s+server_name)\s+.*(;)$'
-    replace: '\1 {{ mediacache_url }}\2'
+    regexp: ^(\s+server_name)\s+.*(;)$
+    replace: \1 {{ mediacache_url }}\2
 
 - name: fill the mediacache zones file - VOD folder
   notify: restart nginx
   ansible.builtin.replace:
     path: /etc/mediacache/nginx-zones.conf
-    regexp: '/var/cache/nginx/mediacache-vod'
-    replace: '{{ role_mc_vod_folder }}'
+    regexp: /var/cache/nginx/mediacache-vod
+    replace: "{{ role_mc_vod_folder }}"
 
 - name: fill the mediacache zones file - Live folder
   notify: restart nginx
   ansible.builtin.replace:
     path: /etc/mediacache/nginx-zones.conf
-    regexp: '/var/cache/nginx/mediacache-live'
-    replace: '{{ role_mc_live_folder }}'
+    regexp: /var/cache/nginx/mediacache-live
+    replace: "{{ role_mc_live_folder }}"
 
 - name: fill the mediacache zones file - VOD folder size
   notify: restart nginx
   ansible.builtin.replace:
     path: /etc/mediacache/nginx-zones.conf
-    regexp: '(?P<key>keys_zone=mediacache-vod.*max_size=).*(?P<unit>g)'
-    replace: '\g<key>{{ role_mc_vod_size }}\g<unit>'
+    regexp: (?P<key>keys_zone=mediacache-vod.*max_size=).*(?P<unit>g)
+    replace: \g<key>{{ role_mc_vod_size }}\g<unit>
 
 - name: fill the mediacache zones file - Live folder size
   notify: restart nginx
   ansible.builtin.replace:
     path: /etc/mediacache/nginx-zones.conf
-    regexp: '(?P<key>keys_zone=mediacache-live.*max_size=).*(?P<unit>g)'
-    replace: '\g<key>{{ role_mc_live_size }}\g<unit>'
+    regexp: (?P<key>keys_zone=mediacache-live.*max_size=).*(?P<unit>g)
+    replace: \g<key>{{ role_mc_live_size }}\g<unit>
 
 - name: fill the nginx VOD proxypass
   notify: restart nginx
   ansible.builtin.replace:
     path: /etc/mediacache/nginx-proxy-mediaserver.conf
-    regexp: '^(proxy_pass)\s+.*(;)$'
-    replace: '\1 https://{{ ms_url }}\2'
+    regexp: ^(proxy_pass)\s+.*(;)$
+    replace: \1 https://{{ ms_url }}\2
 
 - name: fill the nginx Live proxypass
   notify: restart nginx
   ansible.builtin.replace:
     path: /etc/mediacache/nginx-proxy-live.conf
-    regexp: '^(proxy_pass)\s+.*(;)$'
-    replace: '\1 https://{{ live_url }}\2'
-
-...
+    regexp: ^(proxy_pass)\s+.*(;)$
+    replace: \1 https://{{ live_url }}\2

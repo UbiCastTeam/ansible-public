@@ -1,5 +1,4 @@
 ---
-
 # ubicast-skyreach-runtime packages: todo: manage the database in inventory (/!\ can be idenpendent of the MS database)
 dependencies_packages:
   - apt-cacher-ng
@@ -13,7 +12,7 @@ manager_packages:
 
 manager_testing: false
 manager_hostname: "{{ envsetup_cm_server_name | d('mirismanager', true) }}"
-manager_default_email_sender: "noreply@{{ manager_hostname }}"
+manager_default_email_sender: noreply@{{ manager_hostname }}
 manager_email_sender: "{{ envsetup_email_sender | default(manager_default_email_sender, true) }}"
 manager_proxy_http: "{{ envsetup_proxy_http | d() }}"
 
@@ -31,5 +30,3 @@ manager_ferm_input_rules:
       - 3142
 manager_ferm_output_rules: []
 manager_ferm_global_settings:
-
-...

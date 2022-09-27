@@ -1,5 +1,4 @@
 ---
-
 - name: restart ferm
   when: ansible_facts.services['ferm.service'] is defined
   ansible.builtin.systemd:
@@ -11,4 +10,3 @@
   ansible.builtin.systemd:
     name: fail2ban
     state: started
-...

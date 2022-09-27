@@ -1,19 +1,13 @@
 ---
-
 # filename into which rules will be written
 # /etc/ferm/{ferm|input|output|forward}.d/<filename>.conf
 ferm_rules_filename: default
 
 # input rule
 ferm_input_rules: []
-
 # ouput rule
 ferm_output_rules: []
-
 # forward rule
 ferm_forward_rules: []
-
 # global settings to be put in ferm.d directory
 ferm_global_settings:
-
-...

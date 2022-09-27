@@ -1,5 +1,4 @@
 ---
-
 - name: Live vhost setup
   hosts: live
   tags: live
@@ -8,15 +7,15 @@
     - name: resolve domain name to localhost
       ansible.builtin.lineinfile:
         path: /etc/hosts
-        line: '127.0.1.1 {{ live_domain }}'
+        line: 127.0.1.1 {{ live_domain }}
         backup: true
 
     - name: fill the vhost file
       notify: Restart nginx
       ansible.builtin.replace:
         path: /etc/nginx/sites-available/live-rtmp.conf
-        regexp: '^(\s+server_name)\s+.*(;)$'
-        replace: '\1 {{ live_domain }}\2'
+        regexp: ^(\s+server_name)\s+.*(;)$
+        replace: \1 {{ live_domain }}\2
 
     - name: Activating the live vhost configuration
       notify: Restart nginx
@@ -34,8 +33,8 @@
 - import_playbook: ../functions/create-live-app.yml
   vars:
     live_app_name: msuser
-    rtmp_hls_url: "https://{{ hostvars[groups['live'][0]].live_domain }}/streaming-rtmp/%(rtmp_name)s/%(stream_id)s.m3u8"
-    rtmp_pub_url: "rtmp://{{ hostvars[groups['live'][0]].live_domain }}/%(rtmp_app)s/%(stream_id)s"
+    rtmp_hls_url: https://{{ hostvars[groups['live'][0]].live_domain }}/streaming-rtmp/%(rtmp_name)s/%(stream_id)s.m3u8
+    rtmp_pub_url: rtmp://{{ hostvars[groups['live'][0]].live_domain }}/%(rtmp_app)s/%(stream_id)s
     deploy_case: ha
 
 - hosts: mediaserver
@@ -52,5 +51,3 @@
       args:
         warn: false
       when: rtmp_conf_dir.stat.exists
-
-...

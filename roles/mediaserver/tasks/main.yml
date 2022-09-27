@@ -1,5 +1,4 @@
 ---
-
 - name: mediaserver install
   ansible.builtin.apt:
     force_apt_get: true
@@ -30,26 +29,26 @@
 - name: Update the MS configuration with the celerity server IP
   ansible.builtin.lineinfile:
     path: /etc/mediaserver/msconf.py
-    regexp: '^CELERITY_SERVER_URL = '
-    line: "CELERITY_SERVER_URL = 'https://{{ server_celerity_server_url }}:6200'"
+    regexp: "^CELERITY_SERVER_URL = "
+    line: CELERITY_SERVER_URL = 'https://{{ server_celerity_server_url }}:6200'
     create: true
     owner: root
     group: root
     # 644 as all the instances must reach this file
     # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
-    mode: '0644'
+    mode: "0644"
 
 - name: Update the MS configuration with the celerity server secret
   ansible.builtin.lineinfile:
     path: /etc/mediaserver/msconf.py
-    regexp: '^CELERITY_SIGNING_KEY = '
-    line: "CELERITY_SIGNING_KEY = '{{ server_celerity_signing_key }}'"
+    regexp: "^CELERITY_SIGNING_KEY = "
+    line: CELERITY_SIGNING_KEY = '{{ server_celerity_signing_key }}'
     create: true
     owner: root
     group: root
     # 644 as all the instances must reach this file
     # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
-    mode: '0644'
+    mode: "0644"
 
 - name: create instances
   loop: "{{ server_instances }}"
@@ -69,9 +68,9 @@
     creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
   throttle: 1
 
-- name: synchronize configuration between servers  # noqa 303
+- name: synchronize configuration between servers # noqa command-instead-of-module
   # Cannot use the ansible synchronization module, cause there is no way to set a destination IP intead of the destination ansible hostname
-  # noqa 303 = warn to use the synchronization module instead of rsync in the command module
+  # noqa command-instead-of-module = warn to use the synchronization module instead of rsync in the command module
   when:
     - groups['mediaserver'] | length > 1
     - inventory_hostname != groups['mediaserver'][0]
@@ -96,9 +95,9 @@
   changed_when: false
   tags: mediaserver-synchronize
 
-- name: synchronize letsencrypt configuration between servers  # noqa 303
+- name: synchronize letsencrypt configuration between servers # noqa command-instead-of-module
   # Cannot use the ansible synchronization module, cause there is no way to set a destination IP intead of the destination ansible hostname
-  # noqa 303 = warn to use the synchronization module instead of rsync in the command module
+  # noqa command-instead-of-module = warn to use the synchronization module instead of rsync in the command module
   when:
     - groups['mediaserver'] | length > 1
     - inventory_hostname != groups['mediaserver'][0]
@@ -128,9 +127,9 @@
     group: root
     # 644 as all the instances must reach this file
     # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
-    mode: '0644'
-    regexp: '^#? ?DEFAULT_FROM_EMAIL.*'
-    line: "DEFAULT_FROM_EMAIL = '{{ server_email_sender }}'"
+    mode: "0644"
+    regexp: ^#? ?DEFAULT_FROM_EMAIL.*
+    line: DEFAULT_FROM_EMAIL = '{{ server_email_sender }}'
     validate: python3 -m py_compile %s
 
 - name: configure domain name in nginx conf
@@ -138,8 +137,8 @@
   loop: "{{ server_instances }}"
   ansible.builtin.replace:
     path: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
-    regexp: '^(\s*server_name).*;$'
-    replace: '\1 {{ item.ms_server_name }};'
+    regexp: ^(\s*server_name).*;$
+    replace: \1 {{ item.ms_server_name }};
     backup: true
 
 - name: configure domain name in database
@@ -168,7 +167,7 @@
   ansible.builtin.template:
     src: realip.conf.j2
     dest: /etc/nginx/conf.d/realip.conf
-    mode: '644'
+    mode: "644"
 
 - name: ensure mediaserver is running
   ansible.builtin.service:
@@ -190,5 +189,3 @@
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
-
-...

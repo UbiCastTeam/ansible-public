@@ -1,6 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-
 - name: MEDIAVAULT
   hosts: mediavault
   tags: mediavault
@@ -15,5 +14,3 @@
       when: proxy_apply | d(false)
       ansible.builtin.include_role:
         name: proxy
-
-...

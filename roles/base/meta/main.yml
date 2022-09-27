@@ -1,5 +1,4 @@
 ---
-
 dependencies:
   - role: conf
   - role: init
@@ -9,5 +8,3 @@ dependencies:
   - role: ferm-install
   - role: ferm-configure
   - role: fail2ban
-
-...

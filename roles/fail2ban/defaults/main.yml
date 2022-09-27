@@ -1,5 +1,4 @@
 ---
-
 f2b_packages:
   - fail2ban
   - rsyslog
@@ -28,5 +27,3 @@ f2b_destemail_admins: >
   {% endif %}"
 
 f2b_action: "{% if envsetup_fail2ban_send_email | default(false) %}action_mwl{% else %}action_{% endif %}"
-
-...

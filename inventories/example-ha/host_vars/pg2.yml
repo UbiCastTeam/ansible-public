@@ -1,8 +1,5 @@
 ---
-
 skyreach_system_key: changeme
 
 db_role: standby
 repmgr_node_id: 2
-
-...

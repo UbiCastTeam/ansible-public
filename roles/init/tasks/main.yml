@@ -1,5 +1,4 @@
 ---
-
 - name: install initial packages
   ansible.builtin.apt:
     force_apt_get: true
@@ -14,5 +13,3 @@
   ansible.builtin.include_role:
     name: proxy
     allow_duplicates: true
-
-...

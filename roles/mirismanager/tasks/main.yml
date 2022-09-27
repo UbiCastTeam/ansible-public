@@ -1,5 +1,4 @@
 ---
-
 - name: mirismanager dependencies install
   ansible.builtin.apt:
     force_apt_get: true
@@ -29,8 +28,8 @@
   notify: restart skyreach
   ansible.builtin.lineinfile:
     path: /home/skyreach/skyreach_data/private/settings_override.py
-    regexp: '^#? ?DEFAULT_FROM_EMAIL.*'
-    line: "DEFAULT_FROM_EMAIL = '{{ manager_email_sender }}'"
+    regexp: ^#? ?DEFAULT_FROM_EMAIL.*
+    line: DEFAULT_FROM_EMAIL = '{{ manager_email_sender }}'
     backup: true
 
 - name: ensure skyreach is running
@@ -51,8 +50,8 @@
   notify: restart apt-cacher-ng
   ansible.builtin.lineinfile:
     path: /etc/apt-cacher-ng/acng.conf
-    regexp: '^Proxy: .*'
-    line: 'Proxy: {{ manager_proxy_http }}'
+    regexp: "^Proxy: .*"
+    line: "Proxy: {{ manager_proxy_http }}"
 
 - name: ensure apt-cacher-ng is running
   ansible.builtin.service:
@@ -74,5 +73,3 @@
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
-
-...

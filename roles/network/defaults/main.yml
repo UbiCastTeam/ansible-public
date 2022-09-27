@@ -1,5 +1,4 @@
 ---
-
 network_apply: false
 
 network_packages:
@@ -15,5 +14,3 @@ network_ip_mask: "{{ network_ip }}/{{ network_mask }}"
 network_ip_mask_cidr: "{{ network_ip_mask | ipaddr }}"
 network_gateway: "{{ envsetup_network_gateway | d() }}"
 network_dns: "{{ envsetup_network_dns.split(',') | d() }}"
-
-...

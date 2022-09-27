@@ -1,9 +1,6 @@
 ---
-
 tester_packages:
   - ubicast-env
   - ubicast-tester
   - ubicast-tester-nudgis
   - ubicast-tester-system
-
-...

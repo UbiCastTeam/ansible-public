@@ -1,5 +1,4 @@
 ---
-
 mvt_packages:
   - ubicast-mediavault
 
@@ -20,5 +19,3 @@ mvt_ferm_output_rules:
     dport:
       - 22
 mvt_ferm_global_settings:
-
-...

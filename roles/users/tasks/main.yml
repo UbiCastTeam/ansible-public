@@ -1,5 +1,4 @@
 ---
-
 - name: create users groups
   loop: "{{ users }}"
   ansible.builtin.group:
@@ -32,28 +31,28 @@
   ansible.builtin.copy:
     src: .bashrc
     dest: ~{{ item.name }}/.bashrc
-    mode: '644'
+    mode: "644"
 
 - name: copy .vimrc
   loop: "{{ users }}"
   ansible.builtin.copy:
     src: .vimrc
     dest: ~{{ item.name }}/.vimrc
-    mode: '644'
+    mode: "644"
 
 - name: copy .bashrc for root
   when: users_root_change
   ansible.builtin.copy:
     src: .bashrc
     dest: ~root/.bashrc
-    mode: '644'
+    mode: "644"
 
 - name: copy .vimrc for root
   when: users_root_change
   ansible.builtin.copy:
     src: .vimrc
     dest: ~root/.vimrc
-    mode: '644'
+    mode: "644"
 
 - name: set users allowed ssh keys
   loop: "{{ users | product(users_ssh_authorized_keys) | list }}"
@@ -71,7 +70,7 @@
   ansible.builtin.copy:
     dest: /etc/sudoers.d/nopasswd
     validate: visudo -cf %s
-    mode: '440'
+    mode: "440"
     content: |
       %sudo ALL=(ALL) NOPASSWD: ALL
 
@@ -80,10 +79,8 @@
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
-    name: "ubicast-ssh-access"
+    name: ubicast-ssh-access
     state: latest
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
-
-...

@@ -1,5 +1,4 @@
 ---
-
 users:
   - name: ubicast
     passwd: "{{ envsetup_shell_ubicast_pwd | password_hash('sha512', 'ubicastsalt') }}"
@@ -10,5 +9,3 @@ users_ssh_authorized_keys:
   - "{{ envsetup_ssh_allowed_keys | d('') }}"
 
 users_root_change: true
-
-...

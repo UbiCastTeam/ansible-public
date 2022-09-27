@@ -1,5 +1,4 @@
 ---
-
 - name: install packages
   ansible.builtin.package:
     force_apt_get: true
@@ -28,6 +27,4 @@
   ansible.builtin.include_role:
     name: ferm-configure
 
-- ansible.builtin.meta: flush_handlers  # noqa unnamed-task
-
-...
+- ansible.builtin.meta: flush_handlers # noqa name[missing]

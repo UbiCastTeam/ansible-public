@@ -1,7 +1,5 @@
 ---
-
 dependencies:
   - role: conf
   - role: init
   - role: sysconfig
-...

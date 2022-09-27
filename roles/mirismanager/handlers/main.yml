@@ -1,5 +1,4 @@
 ---
-
 - name: restart nginx
   ansible.builtin.service:
     name: nginx
@@ -14,5 +13,3 @@
   ansible.builtin.service:
     name: apt-cacher-ng
     state: restarted
-
-...

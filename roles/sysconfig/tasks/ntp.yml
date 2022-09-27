@@ -1,8 +1,6 @@
 ---
-
 - name: gathering services
   ansible.builtin.service_facts:
-
 - name: ntp disable systemd-timesyncd service
   notify: restart ntp
   ansible.builtin.systemd:
@@ -10,8 +8,7 @@
     enabled: false
     daemon_reload: true
     state: stopped
-  when: ('systemd-timesyncd.service' in ansible_facts.services)
-        and (ansible_facts.services['systemd-timesyncd.service'].status != 'not-found')
+  when: ('systemd-timesyncd.service' in ansible_facts.services) and (ansible_facts.services['systemd-timesyncd.service'].status != 'not-found')
 
 - name: ntp install
   ansible.builtin.apt:
@@ -29,12 +26,10 @@
     backup: true
     src: ntp.conf.j2
     dest: /etc/ntp.conf
-    mode: '644'
+    mode: "644"
 
 - name: ensure ntp is running
   ansible.builtin.service:
     name: ntp
     enabled: true
     state: started
-
-...

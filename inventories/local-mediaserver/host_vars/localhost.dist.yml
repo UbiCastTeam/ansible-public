@@ -1,5 +1,4 @@
 ---
-
 # customer name
 customer_short_name: customer
 
@@ -12,5 +11,3 @@ conf_update: false
 # activation keys
 skyreach_system_key:
 skyreach_activation_key:
-
-...

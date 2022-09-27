@@ -1,5 +1,4 @@
 ---
-
 repmgr_packages:
   - repmgr
   # rephacheck:
@@ -22,7 +21,7 @@ repmgr_primary_node: "{{ hostvars[groups['postgres'][0]]['ansible_default_ipv4']
 
 repmgr_timeout: 5
 
-repmgr_node_id: "{{ (groups['postgres'].index(inventory_hostname))+1 | int }}"
+repmgr_node_id: "{{ (groups['postgres'].index(inventory_hostname)) + 1 | int }}"
 repmgr_node_name: "{{ ansible_hostname }}"
 repmgr_conninfo: host={{ ansible_default_ipv4.address }} dbname={{ repmgr_db }} user={{ repmgr_user }} connect_timeout={{ repmgr_timeout }}
 
@@ -43,5 +42,3 @@ pg_ferm_output_rules:
       - 54321
       - 54322
 pg_ferm_global_settings:
-
-...

@@ -1,10 +1,8 @@
 #!/usr/bin/env ansible-playbook
 ---
-
 - name: UPGRADE SERVERS
   hosts: all
   tasks:
-
     - name: apt-get dist-upgrade
       when: ansible_os_family == "Debian"
       ansible.builtin.apt:
@@ -21,5 +19,3 @@
       ansible.builtin.yum:
         name: "*"
         state: latest
-
-...

@@ -1,11 +1,10 @@
 ---
-
 - name: install ubicast msmonitor
   environment:
     MONITOR_SERVER_NAME: "{{ monitor_hostname }}"
     MONITOR_SHELL_PWD: "{{ monitor_shell_pwd | password_hash('sha512', 'monitor') }}"
     MONITOR_ADMIN_PWD: "{{ monitor_admin_pwd | password_hash('sha512', 'monitor') }}"
-    MONITOR_SUPERUSER_PWD: "{{ monitor_superuser_pwd  }}"
+    MONITOR_SUPERUSER_PWD: "{{ monitor_superuser_pwd }}"
     SSH_MAINTENANCE_PORT: "{{ ssh_maintenance_port }}"
   ansible.builtin.apt:
     force_apt_get: true
@@ -35,5 +34,3 @@
     ferm_global_settings: "{{ monitor_ferm_global_settings }}"
   ansible.builtin.include_role:
     name: ferm-configure
-
-...

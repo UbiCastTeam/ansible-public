@@ -5,7 +5,7 @@
   tasks:
     - name: fail if node status if not fenced
       ansible.builtin.fail:
-        msg: "Current status {{ rephacheck['stdout'] }} must be fenced."
+        msg: Current status {{ rephacheck['stdout'] }} must be fenced.
       when: rephacheck['stdout'] != "fenced"
 
     - name: stop postgresql
@@ -39,9 +39,7 @@
       when: copy_from_primary is succeeded
 
     - name: register node as standby
-      ansible.builtin.command: "repmgr -f /etc/postgresql/13/main/repmgr.conf --force --verbose standby register"
+      ansible.builtin.command: repmgr -f /etc/postgresql/13/main/repmgr.conf --force --verbose standby register
       become: true
       become_user: postgres
       when: copy_from_primary is succeeded
-
-...

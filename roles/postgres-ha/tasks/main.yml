@@ -1,5 +1,4 @@
 ---
-
 # INSTALLATION
 
 - name: install packages
@@ -73,25 +72,25 @@
     dest: "{{ repmgr_config }}"
     owner: postgres
     group: postgres
-    mode: '644'
+    mode: "644"
 
 - name: configure debian default
   notify: restart repmgrd
   loop:
     - key: REPMGRD_ENABLED
-      value: 'yes'
+      value: "yes"
     - key: REPMGRD_CONF
       value: "{{ repmgr_config }}"
   ansible.builtin.replace:
     path: /etc/default/repmgrd
-    regexp: '^#?{{ item.key }}=.*$'
-    replace: '{{ item.key }}={{ item.value }}'
+    regexp: ^#?{{ item.key }}=.*$
+    replace: "{{ item.key }}={{ item.value }}"
 
 - name: configure sudo
   ansible.builtin.copy:
     dest: /etc/sudoers.d/postgres
     validate: visudo -cf %s
-    mode: '440'
+    mode: "440"
     content: |
       Defaults:postgres !requiretty
       postgres ALL=NOPASSWD: \
@@ -129,7 +128,7 @@
     dest: ~postgres/.ssh/config
     owner: postgres
     group: postgres
-    mode: '640'
+    mode: "640"
     content: |
       IdentityFile ~/.ssh/id_ed25519
       StrictHostKeyChecking no
@@ -140,7 +139,6 @@
 - name: setup primary
   when: (db_role is defined and db_role == "primary") or (db_role is undefined and inventory_hostname == groups['postgres'][0])
   block:
-
     - name: check if primary already joined
       become: true
       become_user: postgres
@@ -157,14 +155,13 @@
       ansible.builtin.command:
         cmd: repmgr --config-file={{ repmgr_config }} primary register
 
-- ansible.builtin.meta: flush_handlers  # noqa unnamed-task
+- ansible.builtin.meta: flush_handlers # noqa name[missing]
 
 # REGISTER STANDBY
 
 - name: setup standby
   when: (db_role is defined and db_role == "standby") or (db_role is undefined and inventory_hostname == groups['postgres'][1])
   block:
-
     - name: check if standby already joined
       become: true
       become_user: postgres
@@ -239,14 +236,13 @@
       ansible.builtin.command:
         cmd: repmgr --config-file={{ repmgr_config }} standby register
 
-- ansible.builtin.meta: flush_handlers  # noqa unnamed-task
+- ansible.builtin.meta: flush_handlers # noqa name[missing]
 
 # REGISTER WITNESS
 
 - name: setup witness
   when: (db_role is defined and db_role == "witness") or (db_role is undefined and inventory_hostname == groups['postgres'][2])
   block:
-
     - name: check if witness already joined
       become: true
       become_user: postgres
@@ -263,7 +259,7 @@
       ansible.builtin.command:
         cmd: repmgr --config-file={{ repmgr_config }} --host={{ repmgr_primary_node }} witness register
 
-- ansible.builtin.meta: flush_handlers  # noqa unnamed-task
+- ansible.builtin.meta: flush_handlers # noqa name[missing]
 
 # REPHACHECK
 
@@ -292,7 +288,7 @@
     - restart rephacheck
   ansible.builtin.copy:
     dest: /etc/systemd/system/rephacheck.socket
-    mode: '644'
+    mode: "644"
     content: |
       [Unit]
       Description=RepHACheck socket
@@ -310,7 +306,7 @@
     - restart rephacheck
   ansible.builtin.copy:
     dest: /etc/systemd/system/rephacheck@.service
-    mode: '644'
+    mode: "644"
     content: |
       [Unit]
       Description=RepHACheck - Health check for PostgreSQL cluster managed by repmgr
@@ -336,5 +332,3 @@
     ferm_global_settings: "{{ pg_ferm_global_settings }}"
   ansible.builtin.include_role:
     name: ferm-configure
-
-...

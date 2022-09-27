@@ -1,5 +1,4 @@
 ---
-
 - name: create mailer script
   when: mvt_mailer_enabled
   ansible.builtin.template:
@@ -13,6 +12,4 @@
   ansible.builtin.template:
     src: systemd-mailer-service.j2
     dest: "{{ mvt_mailer_service_path }}"
-    mode: '644'
-
-...
+    mode: "644"

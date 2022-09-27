@@ -1,10 +1,7 @@
 #!/usr/bin/env ansible-playbook
 ---
-
 - name: BASE
   hosts: all
   tags: all
   roles:
     - base
-
-...

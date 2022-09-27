@@ -1,5 +1,4 @@
 ---
-
 - name: ansible postgresql requirements install
   ansible.builtin.apt:
     force_apt_get: true
@@ -23,11 +22,11 @@
 - name: update logrotate config
   ansible.builtin.copy:
     src: logrotate-postgresql
-    dest: "/etc/logrotate.d/postgresql-common"
+    dest: /etc/logrotate.d/postgresql-common
     owner: root
     group: root
     backup: false
-    mode: '644'
+    mode: "644"
 
 - name: ensure conf directory exists
   ansible.builtin.file:
@@ -35,21 +34,21 @@
     owner: postgres
     group: postgres
     state: directory
-    mode: '755'
+    mode: "755"
 
 - name: ensure conf directory is included
   ansible.builtin.replace:
     path: "{{ pg_conf_dir }}/postgresql.conf"
     backup: true
-    regexp: "^#?include_dir = '[A-Za-z\\.]+'(\\s+.*)$"
-    replace: "include_dir = 'conf.d'\\1"
+    regexp: ^#?include_dir = '[A-Za-z\.]+'(\s+.*)$
+    replace: include_dir = 'conf.d'\1
 
 - name: change max connections value
   ansible.builtin.replace:
     path: "{{ pg_conf_dir }}/postgresql.conf"
     backup: true
-    regexp: "^#?max_connections = [0-9]+"
-    replace: "max_connections = {{ pg_conf_max_connections }}"
+    regexp: ^#?max_connections = [0-9]+
+    replace: max_connections = {{ pg_conf_max_connections }}
   when: pg_conf_max_connections is defined
 
 - name: configure custom settings
@@ -62,7 +61,7 @@
     group: postgres
     backup: true
     content: "{{ item.content }}"
-    mode: '644'
+    mode: "644"
 
 - name: configure authentication
   notify: restart postgresql
@@ -105,7 +104,7 @@
 - name: set .pgpass to allow passwordless connection
   loop: "{{ query('nested', ['root', 'postgres'], pg_users) }}"
   ansible.builtin.blockinfile:
-    path: "~{{ item.0 }}/.pgpass"
+    path: ~{{ item.0 }}/.pgpass
     block: "*:*:*:{{ item.1.name }}:{{ item.1.password }}"
     marker: "# {mark} {{ item.1.name }}"
     create: true
@@ -137,5 +136,3 @@
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
-
-...
