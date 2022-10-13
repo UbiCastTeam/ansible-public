@@ -90,7 +90,7 @@
   tags: live
   tasks:
     - name: Check the existence of the RTMP app
-      ansible.builtin.command: ubicast-livectl get {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
+      ansible.builtin.command: ubicast-livectl checkuid {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
       register: app_status
       changed_when: false
       failed_when: false
