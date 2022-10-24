@@ -52,19 +52,17 @@
 
 - name: create instances
   loop: "{{ server_instances }}"
-  environment:
-    MS_ID: "{{ item.ms_id }}"
-    MS_SERVER_NAME: "{{ item.ms_server_name }}"
-    MS_API_KEY: "{{ item.ms_api_key }}"
-    CM_SERVER_NAME: "{{ item.cm_server_name }}"
-    MS_SUPERUSER_PWD: "{{ item.ms_superuser_pwd }}"
-    MS_ADMIN_PWD: "{{ item.ms_admin_pwd }}"
-    DB_HOST: "{{ envsetup_db_host | d('127.0.0.1') }}"
-    DB_PORT: "{{ envsetup_db_port | d('5432') }}"
-    DB_PG_ROOT_PWD: "{{ envsetup_db_pg_root_pwd | d('') }}"
-    MS_SECRET: "{{ envsetup_ms_secret | d('') }}"
   ansible.builtin.command:
-    cmd: mscontroller.py add -u {{ item.name }}
+    cmd: >
+      mscontroller.py add -u '{{ item.name }}' -t '{
+        "id": "{{ item.ms_id }}",
+        "domain": "{{ item.ms_server_name }}",
+        "api_key": "{{ item.ms_api_key }}",
+        "secret": "{{ envsetup_ms_secret | d("") }}",
+        "superuser_pwd": "{{ item.ms_superuser_pwd }}",
+        "admin_pwd": "{{ item.ms_admin_pwd }}",
+        "skyreach_url": "{{ item.cm_server_name }}"
+      }'
     creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
   throttle: 1
 

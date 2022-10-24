@@ -14,8 +14,6 @@
     state: started
 
 - name: mirismanager install
-  environment:
-    CM_SERVER_NAME: "{{ manager_hostname }}"
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false

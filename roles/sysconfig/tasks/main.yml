@@ -1,5 +1,7 @@
 ---
-- include_tasks: repos.yml
+
+- name: REPOS
+  ansible.builtin.include_tasks: repos.yml
 
 # Upgrade already installed packages to latest version and clean system
 
@@ -121,8 +123,11 @@
   ansible.builtin.include_role:
     name: ferm-configure
 
-- include_tasks: logs.yml
+- name: LOGS
+  ansible.builtin.include_tasks: logs.yml
 
-- include_tasks: locale.yml
+- name: LOCALE
+  ansible.builtin.include_tasks: locale.yml
 
-- include_tasks: ntp.yml
+- name: NTP
+  ansible.builtin.include_tasks: ntp.yml
