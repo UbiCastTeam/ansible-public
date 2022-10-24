@@ -1,11 +1,5 @@
 ---
 - name: install ubicast msmonitor
-  environment:
-    MONITOR_SERVER_NAME: "{{ monitor_hostname }}"
-    MONITOR_SHELL_PWD: "{{ monitor_shell_pwd | password_hash('sha512', 'monitor') }}"
-    MONITOR_ADMIN_PWD: "{{ monitor_admin_pwd | password_hash('sha512', 'monitor') }}"
-    MONITOR_SUPERUSER_PWD: "{{ monitor_superuser_pwd }}"
-    SSH_MAINTENANCE_PORT: "{{ ssh_maintenance_port }}"
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false

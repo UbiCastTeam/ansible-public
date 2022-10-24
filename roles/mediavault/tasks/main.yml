@@ -14,7 +14,8 @@
     ssh_key_file: .ssh/id_ed25519
 
 # MAILER
-- include_tasks: mailer.yml
+- name: MAILER
+  ansible.builtin.include_tasks: mailer.yml
 
 # FIREWALL
 - name: firewall
