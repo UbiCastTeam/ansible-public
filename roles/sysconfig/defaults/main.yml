@@ -8,27 +8,17 @@ repos_skyreach_token: "{{ envsetup_skyreach_apt_token | d('') }}"
 repos_skyreach_host: "{{ envsetup_skyreach_host | d('mirismanager.ubicast.eu', true) }}"
 
 sysconfig_packages:
+  - openssh-server
   - bash-completion
+  - man
+  - sudo
+  - vim
+  - ifupdown
+  - lm-sensors
+  - smartmontools
   - curl
   - host
   - htop
-  - iftop
-  - ifupdown
-  - iotop
-  - ipython3
-  - lm-sensors
-  - make
-  - man
-  - net-tools
-  - netcat
-  - nfs-client
-  - openssh-server
-  - pciutils
-  - pwgen
-  - rsync
-  - smartmontools
-  - sudo
-  - vim
 
 sysconfig_firewall_enabled: true
 sysconfig_ferm_rules_filename: sysutils

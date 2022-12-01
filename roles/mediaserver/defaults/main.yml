@@ -6,6 +6,7 @@ server_packages:
   - nginx
   - postfix
   - ubicast-mediaserver
+  - rsync  # used for HA only (copy of instance data)
 
 server_default_email_sender: noreply@{{ server_hostname }}
 server_email_sender: "{{ envsetup_email_sender | default(server_default_email_sender, true) }}"
@@ -41,4 +42,4 @@ server_ferm_input_rules:
       - 443
 server_ferm_output_rules: []
 server_ferm_global_settings:
-real_ip_from: "" # default for OVH is 10.108.0.0/14
+real_ip_from: "" # default for OVH LB is 10.108.0.0/14
