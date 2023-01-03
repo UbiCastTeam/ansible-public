@@ -5,7 +5,7 @@ ferm_packages:
 
 # default filtering and logging policy for input traffic
 ferm_input_policy: DROP
-ferm_input_log: true
+ferm_input_log: false
 ferm_input_log_prefix: "{{ ferm_input_policy }} INPUT "
 
 # default filtering and logging for output traffic
@@ -15,7 +15,7 @@ ferm_output_log_prefix: "{{ ferm_output_policy }} OUTPUT "
 
 # default filtering and logging for forward traffic
 ferm_forward_policy: DROP
-ferm_forward_log: true
+ferm_forward_log: false
 ferm_forward_log_prefix: "{{ ferm_forward_policy }} FORWARD "
 
 # enable anti-lockout rule
