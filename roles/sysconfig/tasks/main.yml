@@ -99,7 +99,7 @@
 - name: enable root login via ssh with key
   ansible.builtin.replace:
     dest: /etc/ssh/sshd_config
-    regexp: ^#PermitRootLogin (yes|without-password|prohibit-password)
+    regexp: ^#?PermitRootLogin.*
     replace: PermitRootLogin without-password
   notify: restart sshd
 
