@@ -1,8 +1,8 @@
 ---
-- name: get {{ item.name  }} backup information
-  stat: path={{ item.dest }}/backup.marker
+- name: get {{ item.name }} backup information
+  ansible.builtin.stat: path={{ item.dest }}/backup.marker
   register: backup_marker
 
 - name: create {{ item.name }} backup
-  ansible.builtin.shell: mediavaultctl add --backup-name "{{ item.name }}" --source-folder "{{ item.source  }}" --dest-folder "{{ item.dest }}"
+  ansible.builtin.command: mediavaultctl add --backup-name "{{ item.name }}" --source-folder "{{ item.source }}" --dest-folder "{{ item.dest }}"
   when: not backup_marker.stat.exists

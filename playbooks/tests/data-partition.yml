@@ -5,15 +5,16 @@
   gather_facts: false
   tasks:
     - name: verify /data partition existence
-      ansible.builtin.shell: findmnt /data
+      ansible.builtin.command: findmnt /data
       register: data_exist
       failed_when: false
       changed_when: false
 
     # /data exist
-    - block:
+    - name: Verify if /data exist
+      block:
         - name: get /data size
-          ansible.builtin.shell: df -BG /data --output=size | tail -n1 | grep -o '[0-9]*'
+          ansible.builtin.command: df -BG /data --output=size | tail -n1 | grep -o '[0-9]*'
           register: data_size
           failed_when: false
           changed_when: false
@@ -48,9 +49,10 @@
       when: data_exist.rc == 0
 
     # /data missing
-    - block:
+    - name: Verify if /home is big enough
+      block:
         - name: get /home size
-          ansible.builtin.shell: df -BG /home --output=size | tail -n1 | grep -o '[0-9]*'
+          ansible.builtin.command: df -BG /home --output=size | tail -n1 | grep -o '[0-9]*'
           register: home_size
           failed_when: false
           changed_when: false
