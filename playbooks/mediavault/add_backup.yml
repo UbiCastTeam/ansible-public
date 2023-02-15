@@ -4,5 +4,6 @@
   hosts: mediavault
   tags: mediavault
   tasks:
-    - include_tasks: ressources/add_backup_task.yml
+    - name: Add backup
+      ansible.builtin.include_tasks: ressources/add_backup_task.yml
       loop: "{{ mvt_backups }}"

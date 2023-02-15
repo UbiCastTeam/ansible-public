@@ -115,7 +115,7 @@
   ansible.builtin.copy:
     content: |
       \e{lightblue} © UBICAST\e{reset}
-      
+
       IP Address:
       \e{bold}\4\e{reset}
 
