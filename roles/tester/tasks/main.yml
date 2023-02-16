@@ -1,4 +1,5 @@
 ---
+
 - name: install tester packages
   ansible.builtin.apt:
     force_apt_get: true
@@ -8,3 +9,18 @@
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: tester configuration
+  ansible.builtin.replace:
+    path: /etc/ubicast-tester/config.yml
+    regexp: '^(\s*)#?{{ item.name }}:(\s*).*$'
+    replace: '\1{{item.name}}:\2{{ item.value }}'
+  loop:
+    - { name: 'name',    value: '"{{ tester_system_name | d() }}"' }
+    - { name: 'from',    value: '"{{ tester_email_from | d() }}"'  }
+    - { name: 'to',      value: '"{{ tester_email_to | d() }}"'    }
+    - { name: 'admin',   value: '"{{ tester_email_admin | d() }}"' }
+    - { name: 'ignored', value: '{{ tester_tests_ignored | d() }}' }
+  when: item.value != "" and item.value != '""'
+
+...
