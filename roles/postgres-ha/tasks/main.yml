@@ -267,7 +267,7 @@
   ansible.builtin.template:
     src: rephacheck.py.j2
     dest: /usr/bin/rephacheck
-    mode: 0755
+    mode: "0755"
 
 - name: register variables needed by rephacheck as facts
   ansible.builtin.set_fact:
@@ -280,7 +280,7 @@
     dest: /etc/postgresql/{{ repmgr_pg_version }}/{{ repmgr_pg_cluster }}/rephacheck.conf
     owner: postgres
     group: postgres
-    mode: 0644
+    mode: "0644"
 
 - name: configure rephacheck socket
   notify:

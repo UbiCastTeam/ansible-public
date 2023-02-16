@@ -8,20 +8,20 @@ tester_packages:
   - ubicast-tester-system
 
 # Name of the system in the reports
-#tester_system_name: "hostname"
+# tester_system_name: "hostname"
 
 # Sender of the email report
-#tester_email_from: "ubicast.tester"
+# tester_email_from: "ubicast.tester"
 
 # Reciever of the email report
-#tester_email_to: "customer@email.com"
+# tester_email_to: "customer@email.com"
 
 # UbiCast admin reciever of the email report for premiums
-#tester_email_admin: "sysadmin+premium@ubicast.eu"
+# tester_email_admin: "sysadmin+premium@ubicast.eu"
 
 # List of tests to ignore when executing the ubicast-tester
-#tester_tests_ignored:
-#  - ntp.sh
-#  - email.sh
+# tester_tests_ignored:
+#   - ntp.sh
+#   - email.sh
 
 ...

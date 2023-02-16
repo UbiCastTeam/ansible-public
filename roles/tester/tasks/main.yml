@@ -14,12 +14,12 @@
   ansible.builtin.replace:
     path: /etc/ubicast-tester/config.yml
     regexp: '^(\s*)#?{{ item.name }}:(\s*).*$'
-    replace: '\1{{item.name}}:\2{{ item.value }}'
+    replace: '\1{{ item.name }}:\2{{ item.value }}'
   loop:
-    - { name: 'name',    value: '"{{ tester_system_name | d() }}"' }
-    - { name: 'from',    value: '"{{ tester_email_from | d() }}"'  }
-    - { name: 'to',      value: '"{{ tester_email_to | d() }}"'    }
-    - { name: 'admin',   value: '"{{ tester_email_admin | d() }}"' }
+    - { name: 'name', value: '"{{ tester_system_name | d() }}"' }
+    - { name: 'from', value: '"{{ tester_email_from | d() }}"' }
+    - { name: 'to', value: '"{{ tester_email_to | d() }}"' }
+    - { name: 'admin', value: '"{{ tester_email_admin | d() }}"' }
     - { name: 'ignored', value: '{{ tester_tests_ignored | d() }}' }
   when: item.value != "" and item.value != '""'
 

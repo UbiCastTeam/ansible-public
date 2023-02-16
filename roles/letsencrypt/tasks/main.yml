@@ -45,7 +45,7 @@
 - name: create pre hook script
   ansible.builtin.copy:
     dest: /etc/letsencrypt/renewal-hooks/pre/mkdir
-    mode: 0755
+    mode: "0755"
     content: |
       #!/usr/bin/env bash
       CERTBOT_DOCROOT=/var/www/letsencrypt
@@ -61,7 +61,7 @@
 - name: create deploy hook script
   ansible.builtin.copy:
     dest: /etc/letsencrypt/renewal-hooks/deploy/nginx
-    mode: 0755
+    mode: "0755"
     content: |
       #!/usr/bin/env bash
       systemctl reload nginx

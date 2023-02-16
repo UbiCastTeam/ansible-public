@@ -32,7 +32,7 @@
     src: mediaimport.json.j2
     dest: /etc/mediaserver/mediaimport.json
     backup: true
-    mode: 0640
+    mode: "0640"
 
 # FAIL2BAN
 
@@ -41,7 +41,7 @@
   ansible.builtin.template:
     src: fail2ban_ftpd.conf.j2
     dest: /etc/fail2ban/jail.d/pure-ftpd.conf
-    mode: 0644
+    mode: "0644"
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers

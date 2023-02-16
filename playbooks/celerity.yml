@@ -6,10 +6,6 @@
   roles:
     - celerity
   post_tasks:
-    - name: configure network
-      when: network_apply | d(false)
-      ansible.builtin.include_role:
-        name: network
     - name: configure proxy
       when: proxy_apply | d(false)
       ansible.builtin.include_role:
