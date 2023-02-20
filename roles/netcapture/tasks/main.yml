@@ -8,24 +8,29 @@
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
-- name: netcapture config
+- name: create netcapture config
   ansible.builtin.template:
     src: netcapture.json.j2
     dest: /etc/miris/netcapture.json
-    mode: "644"
+    mode: u=rw,g=r,o=r
 
-- name: netcapture miris
+- name: check if miris api config exists
+  ansible.builtin.stat:
+    path: "{{ netcapture_conf_folder }}/api.json"
+  register: miris_config_file
+
+- name: create netcapture miris api config
   ansible.builtin.template:
     src: miris-api.json.j2
-    dest: /etc/miris/conf/api.json
-    mode: "644"
+    dest: "{{ netcapture_conf_folder }}/api.json"
+    mode: u=rw,g=r,o=r
+  when: miris_config_file.stat.exists == false
 
 - name: netcapture config dir
   ansible.builtin.file:
     path: "{{ netcapture_conf_folder }}"
     group: video
     mode: u=rwX,g=rwX,o=r
-    recurse: true
     state: directory
 
 - name: netcapture media dir
