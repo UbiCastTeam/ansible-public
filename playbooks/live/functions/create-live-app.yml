@@ -73,11 +73,11 @@
     - name: Generating an application secret on localhost with /dev/urandom
       ansible.builtin.shell: >
         set -o pipefail && \
-        cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 30 | head -n 1
+        head /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 30 | head -n 1
       register: secret
       args:
         executable: /bin/bash
-      failed_when: false # Ansible-lint requires pipefail, but the return is then non-null so we have to force this
+      changed_when: false
       when: base_live_secret is not defined or app_secret_diff
 
     - name: Deciding the application secret to use
@@ -97,7 +97,9 @@
 
     - name: (Re)create the RTMP app configuration
       notify: Reload nginx
-      ansible.builtin.command: ubicast-livectl add {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
+      ansible.builtin.command:
+        cmd: ubicast-livectl add {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
+        creates: /etc/nginx/rtmp.d/{{ live_app_name }}.conf
       when: app_status.rc == 1
 
     - name: Prepare the nginx RTMP temporary directory

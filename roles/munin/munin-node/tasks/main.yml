@@ -21,7 +21,7 @@
 - name: setup munin-node plugins link
   notify: restart munin-node
   ansible.builtin.shell:
-    cmd: munin-node-configure --shell --remove-also 2>&1 | sh -x
+    munin-node-configure --shell --remove-also 2>&1 || true | sh -x  # noqa risky-shell-pipe
   # sh -x print executed cmd to stderr
   register: munin_plugin_linked
   changed_when: munin_plugin_linked.stderr | length > 0

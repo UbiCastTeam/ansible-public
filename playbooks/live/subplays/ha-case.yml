@@ -47,7 +47,9 @@
       register: rtmp_conf_dir
 
     - name: Remove unused MediaServer(s) rtmp configurations
-      ansible.builtin.shell: /bin/rm -f /etc/nginx/rtmp.d/*
+      ansible.builtin.command:
+        cmd: /bin/rm -r /etc/nginx/rtmp.d
+        removes: /etc/nginx/rtmp.d
       args:
         warn: false
       when: rtmp_conf_dir.stat.exists

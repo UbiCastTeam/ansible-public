@@ -42,4 +42,5 @@
       ansible.builtin.command: repmgr -f /etc/postgresql/13/main/repmgr.conf --force --verbose standby register
       become: true
       become_user: postgres
+      changed_when: false
       when: copy_from_primary is succeeded

@@ -150,6 +150,7 @@
     - name: register primary
       become: true
       become_user: postgres
+      changed_when: true
       when: repmgr_check_primary.query_result | length == 0
       notify: restart repmgrd
       ansible.builtin.command:
@@ -185,6 +186,7 @@
     - name: clone from primary to standby
       become: true
       become_user: postgres
+      changed_when: true
       when: repmgr_check_standby.query_result | length == 0
       ignore_errors: true
       register: repmgr_clone_standby
@@ -231,6 +233,7 @@
     - name: register standby
       become: true
       become_user: postgres
+      changed_when: true
       when: repmgr_check_standby.query_result | length == 0
       notify: restart repmgrd
       ansible.builtin.command:
@@ -254,6 +257,7 @@
     - name: register witness
       become: true
       become_user: postgres
+      changed_when: true
       when: repmgr_check_witness.query_result | length == 0
       notify: restart repmgrd
       ansible.builtin.command:
@@ -332,3 +336,5 @@
     ferm_global_settings: "{{ pg_ferm_global_settings }}"
   ansible.builtin.include_role:
     name: ferm-configure
+
+...

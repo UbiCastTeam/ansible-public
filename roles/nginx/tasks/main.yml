@@ -18,19 +18,20 @@
     path: "{{ item }}"
     state: absent
 
-- name: nginx check old ssl conf exists
-  register: nginx_old_ssl_conf
-  ansible.builtin.stat:
-    path: /etc/nginx/conf.d/ssl.conf
-
-- name: nginx migrate old ssl certificate conf
-  when: nginx_old_ssl_conf.stat.exists
-  notify: restart nginx
-  loop:
-    - grep ssl_certificate /etc/nginx/conf.d/ssl.conf > /etc/nginx/conf.d/ssl_certificate.conf
-    - mv /etc/nginx/conf.d/ssl.conf /etc/nginx/conf.d/ssl.conf.old
-  ansible.builtin.command:
-    cmd: "{{ item }}"
+# NOTE: /etc/nginx/conf.d/ssl.conf does not exist after current nginx package installation
+# - name: nginx check old ssl conf exists
+#   register: nginx_old_ssl_conf
+#   ansible.builtin.stat:
+#     path: /etc/nginx/conf.d/ssl.conf
+#
+# - name: nginx migrate old ssl certificate conf
+#   when: nginx_old_ssl_conf.stat.exists
+#   notify: restart nginx
+#   loop:
+#     - grep ssl_certificate /etc/nginx/conf.d/ssl.conf > /etc/nginx/conf.d/ssl_certificate.conf
+#     - mv /etc/nginx/conf.d/ssl.conf /etc/nginx/conf.d/ssl.conf.old
+#   ansible.builtin.command:
+#     cmd: "{{ item }}"
 
 - name: nginx check ssl cert conf exists
   register: nginx_ssl_cert_conf
