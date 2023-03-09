@@ -36,7 +36,9 @@
   notify: restart metricbeat
 
 - name: enable metricbeat dashboard
-  ansible.builtin.command: metricbeat setup
+  ansible.builtin.command:
+    cmd: metricbeat setup
+  changed_when: false
   when: inventory_hostname == groups['mediaserver'][0]
 
 - name: enable sql metricbeat configuration

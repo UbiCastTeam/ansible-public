@@ -72,6 +72,7 @@
     - letsencrypt_save_list is changed
   register: letsencrypt_dry_run
   ignore_errors: true
+  changed_when: false
   ansible.builtin.command:
     cmd: >
       certbot certonly
@@ -90,6 +91,7 @@
 - name: exit in case of failure
   when: letsencrypt_dry_run is failed
   ansible.builtin.fail:
+
 - name: generate certificates
   notify: restart nginx
   when:
@@ -104,6 +106,7 @@
         --webroot -w {{ letsencrypt_webroot }}
         --expand
         -d {{ letsencrypt_domains | join(',') }}
+    creates: "/etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem"
 
 - name: update nginx certificate configuration
   when:
@@ -113,7 +116,7 @@
   notify: restart nginx
   ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
-    regexp: ssl_certificate\s+([\w/\-\_\.]+);
+    regexp: 'ssl_certificate\s+([\w/\-\_\.]+);'
     line: ssl_certificate /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/fullchain.pem;
 
 - name: update nginx certificate key configuration
@@ -124,5 +127,5 @@
   notify: restart nginx
   ansible.builtin.lineinfile:
     path: /etc/nginx/conf.d/ssl_certificate.conf
-    regexp: ssl_certificate_key\s+([\w/\-\_\.]+);
+    regexp: 'ssl_certificate_key\s+([\w/\-\_\.]+);'
     line: ssl_certificate_key /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem;

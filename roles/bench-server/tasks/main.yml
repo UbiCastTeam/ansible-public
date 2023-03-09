@@ -99,4 +99,5 @@
   ansible.builtin.command:
     cmd: make build_docker_img
     chdir: /usr/share/ms-testing-suite
+  changed_when: false
   run_once: true
