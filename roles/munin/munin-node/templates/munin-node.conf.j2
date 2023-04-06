@@ -18,6 +18,7 @@ ignore_file %$
 ignore_file \.dpkg-(tmp|new|old|dist)$
 ignore_file \.rpm(save|new)$
 ignore_file \.pod$
+ignore_file ^if_(err_)*(veth|docker|br|lxcbr)
 
 host_name {{ inventory_hostname }}.{{ customer_short_name }}
 
