@@ -1,8 +1,4 @@
 ---
-- name: mscontroller restart
-  ansible.builtin.command:
-    cmd: mscontroller.py restart
-
 - name: restart nginx
   ansible.builtin.systemd:
     name: nginx

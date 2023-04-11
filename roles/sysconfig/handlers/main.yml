@@ -14,6 +14,8 @@
 
 - name: update locale
   ansible.builtin.command: locale-gen
+  # we want to execute locale generation at every execution
+  changed_when: false
 
 - name: restart cron
   ansible.builtin.service:
