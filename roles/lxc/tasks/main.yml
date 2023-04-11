@@ -21,7 +21,7 @@
         src: lxc-net.host_bridge
         dest: /etc/default/lxc-net
         mode: "644"
- 
+
     - name: Ask confirmation
       ansible.builtin.pause:
         prompt: |
