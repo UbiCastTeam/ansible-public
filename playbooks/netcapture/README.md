@@ -28,7 +28,6 @@ Netcapture rely on LXC, the network can be configured in different ways.
 | All  | netcapture_conf_folder     | /etc/miris/conf                 | Netcaptures configuration folder on host                             |
 | All  | netcapture_media_folder    | /data/netcapture/media          | Netcaptures media folder on host                                     |
 | All  | netcapture_pkg_folder      | /data/netcapture/packages       | Netcaptures package folder on host                                   |
-| All  | netcapture_hw_acceleration | false                           | Netcaptures hardware acceleration                                    |
 | All  | netcapture_miris_user_pwd  | ?                               | Netcaptures authentification on MiriManager                          |
 | All  | netcapture_miris_auth      | true                            | Netcaptures authentification on MiriManager                          |   
 
