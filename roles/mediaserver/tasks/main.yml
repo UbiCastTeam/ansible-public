@@ -75,7 +75,6 @@
   loop:
     - /etc/mediaserver
     - /etc/nginx
-    - /etc/celerity
     - /etc/sysusers.d
     - /var/www
   ansible.builtin.command: |
