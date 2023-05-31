@@ -1,5 +1,6 @@
-ansible<5.3
+ansible<8.0.0
+passlib
 netaddr
 pyyaml
-openstacksdk==0.61.0
+openstacksdk>=0.36,<0.99.0
 ovh
