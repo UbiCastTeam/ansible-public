@@ -1,4 +1,5 @@
 ---
+
 - name: MEDIACACHE
   hosts: mediacache
   tags: mediacache
@@ -27,3 +28,5 @@
       delegate_to: "{{ item }}"
       delegate_facts: true
       loop: "{{ groups['mediaserver'] }}"
+
+...

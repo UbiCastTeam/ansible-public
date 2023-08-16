@@ -1,9 +1,12 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: MEDIAVAULT
   hosts: mediavault
   tags: mediavault
   tasks:
     - name: Add backup
       ansible.builtin.include_tasks: ressources/add_backup_task.yml
-      loop: "{{ mvt_backups }}"
+      loop: "{{ vault_backups }}"
+
+...

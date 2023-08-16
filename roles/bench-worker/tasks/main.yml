@@ -1,11 +1,12 @@
 ---
+
 - name: install bench-worker packages
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     update_cache: true
     name: "{{ bench_worker_packages }}"
-    state: latest
+    state: present
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -39,3 +40,5 @@
   ansible.builtin.systemd:
     name: bench-worker
     state: restarted
+
+...

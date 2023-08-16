@@ -1,45 +1,20 @@
 ---
-server_packages:
-  - postgresql-client
-  - cron
-  - memcached
-  - nginx
-  - postfix
-  - ubicast-mediaserver
-  - rsync  # used for HA only (copy of instance data)
 
-server_default_email_sender: noreply@{{ server_hostname }}
-server_email_sender: "{{ envsetup_email_sender | default(server_default_email_sender, true) }}"
+nudgis_front_domain: "nudgis.example.com"
+nudgis_front_email_from: "noreply@{{ nudgis_front_domain }}"
+nudgis_front_system_user: "msuser"
+manager_domain: "manager.example.com"
+nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+nudgis_front_user_ubicast_password: "changeit"
+nudgis_front_user_admin_password: "changeit"
 
-server_id: "{{ envsetup_ms_id | d() }}"
-server_instance_name: "{{ server_id.split('_')[-1] }}"
-server_hostname: "{{ envsetup_ms_server_name | d('mediaserver', true) }}"
-server_campusmanager: "{{ envsetup_cm_server_name | d() }}"
-server_api_key: "{{ envsetup_ms_api_key | d() }}"
-server_superuser_passwd: "{{ envsetup_ms_superuser_pwd | d() }}"
-server_admin_passwd: "{{ envsetup_ms_admin_pwd | d() }}"
-server_instances:
-  - name: "{{ server_instance_name }}"
-    ms_server_name: "{{ server_hostname }}"
-    ms_id: "{{ server_id }}"
-    ms_api_key: "{{ server_api_key }}"
-    cm_server_name: "{{ server_campusmanager }}"
-    ms_superuser_pwd: "{{ server_superuser_passwd }}"
-    ms_admin_pwd: "{{ server_admin_passwd }}"
+nudgis_front_database_domain: "database.nudgis.example.com"
+nudgis_front_database_port: "5432"
+nudgis_front_database_password: "changeit"
+nudgis_front_instances_dir: "/data"
 
-server_celerity_server_url: "{{ envsetup_celerity_server | d(hostvars[groups['celerity'][0]]['ansible_default_ipv4']['address']) }}"
-server_celerity_signing_key: "{{ envsetup_celerity_signing_key | d('change-me', true) }}"
+celerity_signing_key: "changeit"
+celerity_server_domain: "celerity.example.com"
 
-server_live_host: "{{ envsetup_live_host | d() }}"
-
-server_firewall_enabled: true
-server_ferm_rules_filename: server
-server_ferm_input_rules:
-  - proto:
-      - tcp
-    dport:
-      - 80
-      - 443
-server_ferm_output_rules: []
-server_ferm_global_settings:
 real_ip_from: "" # default for OVH LB is 10.108.0.0/14
+...

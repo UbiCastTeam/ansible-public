@@ -1,4 +1,5 @@
 ---
+
 - name: Live vhost setup
   hosts: live
   tags: live
@@ -53,3 +54,5 @@
       args:
         warn: false
       when: rtmp_conf_dir.stat.exists
+
+...

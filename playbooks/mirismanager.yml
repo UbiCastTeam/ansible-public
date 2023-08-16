@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: MIRIS MANAGER
   hosts: mirismanager
   tags: mirismanager
@@ -14,3 +15,5 @@
       when: proxy_apply | d(false)
       ansible.builtin.include_role:
         name: proxy
+
+...

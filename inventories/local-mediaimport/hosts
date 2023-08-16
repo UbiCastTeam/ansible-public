@@ -1,6 +1,0 @@
-localhost ansible_connection=local
-
-[mediaimport]
-localhost
-
-; vim:ft=dosini

@@ -1,9 +1,9 @@
 ---
-netcapture_mm_url: https://{{ envsetup_cm_server_name | default('mirismanager.ubicast.eu', true) }}
+netcapture_mm_url: "mirismanager.example.com"
 netcapture_mm_ssl: true
-netcapture_conf_folder: /etc/miris/conf
-netcapture_media_folder: /data/netcapture/media
-netcapture_pkg_folder: /data/netcapture/packages
-netcapture_hw_acceleration: false
-netcapture_miris_user_pwd: "{{ lookup('password', '/tmp/passwordfile length=12 chars=ascii_letters,digits') }}"
+netcapture_conf_folder: "/etc/miris/conf"
+netcapture_media_folder: "/data/netcapture/media"
+netcapture_pkg_folder: "/data/netcapture/packages"
+netcapture_miris_user_pwd: "changeme"
 netcapture_miris_auth: true
+...

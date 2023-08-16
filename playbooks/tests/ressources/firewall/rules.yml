@@ -1,4 +1,5 @@
 ---
+
 listen:
   - groupname: mediaserver
     ports: ["80", "443"]
@@ -47,3 +48,5 @@ test:
   - groupname_src: localhost
     groupname_dst: mediaserver
     ports: ["80", "443"]
+
+...

@@ -1,30 +1,22 @@
 ---
+
 - name: install celerity worker
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
-    name: ubicast-celerity-workers
+    name: "{{ worker_packages }}"
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
-- name: config celerity worker
-  notify: restart celerity-workers
-  ansible.builtin.template:
-    src: celerity-config.py.j2
-    dest: /etc/celerity/config.py
-    mode: "644"
-
-- name: ensure celerity worker is running
-  ansible.builtin.service:
-    name: celerity-workers
-    enabled: true
-    state: started
+- name: configure celerity
+  ansible.builtin.include_tasks: celerity_base_config.yml
+  vars:
+    _celerity_service: "celerity-workers"
 
 # FIREWALL
 
 - name: firewall
-  when: worker_firewall_enabled
   vars:
     ferm_rules_filename: "{{ worker_ferm_rules_filename }}"
     ferm_input_rules: "{{ worker_ferm_input_rules }}"
@@ -35,3 +27,5 @@
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
+
+...

@@ -1,35 +1,27 @@
 ---
-- name: gathering services
-  ansible.builtin.service_facts:
-- name: ntp disable systemd-timesyncd service
-  notify: restart ntp
-  ansible.builtin.systemd:
-    name: systemd-timesyncd
-    enabled: false
-    daemon_reload: true
-    state: stopped
-  when: ('systemd-timesyncd.service' in ansible_facts.services) and (ansible_facts.services['systemd-timesyncd.service'].status != 'not-found')
 
-- name: ntp install
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: ntp
-    state: present
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+- name: verify systemd-timesyncd presence
+  ansible.builtin.stat:
+    path: /etc/systemd/timesyncd.conf
+  register: timesyncd_config
 
-- name: ntp config
-  notify: restart ntp
-  ansible.builtin.template:
-    backup: true
-    src: ntp.conf.j2
-    dest: /etc/ntp.conf
-    mode: "644"
+- name: verify ntp variable
+  when:
+    - timesyncd_config.stat.exists
+    - ntp_servers is defined
+    - ntp_servers | type_debug == 'list'
+    - ntp_servers | length > 0
+  block:
+    - name: configure systemd-timesyncd
+      notify: restart ntp
+      ansible.builtin.replace:
+        path: /etc/systemd/timesyncd.conf
+        regexp: '^(\s*)#?{{ item.name }}\s*=.*$'
+        replace: '\1{{ item.name }}={{ item.value }}'
+      loop:
+        - { name: 'NTP', value: '{{ ntp_servers | join(" ") }}' }
+      when:
+        - item.value != ""
+        - item.value != '""'
 
-- name: ensure ntp is running
-  ansible.builtin.service:
-    name: ntp
-    enabled: true
-    state: started
+...

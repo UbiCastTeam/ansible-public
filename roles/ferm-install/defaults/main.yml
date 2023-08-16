@@ -1,7 +1,4 @@
 ---
-# packages to install
-ferm_packages:
-  - ferm
 
 # default filtering and logging policy for input traffic
 ferm_input_policy: DROP
@@ -20,3 +17,5 @@ ferm_forward_log_prefix: "{{ ferm_forward_policy }} FORWARD "
 
 # enable anti-lockout rule
 ferm_antilockout_enabled: true
+
+...

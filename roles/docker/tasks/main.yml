@@ -1,4 +1,5 @@
 ---
+
 - name: requirements install
   ansible.builtin.apt:
     force_apt_get: true
@@ -34,7 +35,7 @@
     - not offline_mode | d(false)
   ansible.builtin.apt:
     name: docker-ce
-    state: latest
+    state: present
     update_cache: true
   register: apt_status
   retries: 60
@@ -53,8 +54,10 @@
     - not offline_mode | d(false)
   ansible.builtin.apt:
     name: python3-docker
-    state: latest
+    state: present
     update_cache: true
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+...

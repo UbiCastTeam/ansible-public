@@ -1,4 +1,5 @@
 ---
+
 - name: restart kibana
   ansible.builtin.service:
     name: kibana
@@ -8,3 +9,5 @@
   ansible.builtin.service:
     name: apm-server
     state: restarted
+
+...

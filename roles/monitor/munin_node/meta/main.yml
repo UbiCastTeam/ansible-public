@@ -1,0 +1,14 @@
+---
+
+dependencies:
+  - role: conf # get conf.sh
+  - role: init # setup keys pkgs
+  - role: sysconfig # setup repos
+
+# TODO:
+# - remove all uneeded dependencies
+# - only need :
+#     * ubicast repo
+#     * firewall input 4949
+
+...

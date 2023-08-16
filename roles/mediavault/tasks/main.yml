@@ -1,9 +1,10 @@
 ---
+
 - name: install packages
   ansible.builtin.package:
     force_apt_get: true
     install_recommends: false
-    name: "{{ mvt_packages }}"
+    name: "{{ vault_packages }}"
     state: present
 
 - name: generate ssh keys pair
@@ -19,13 +20,14 @@
 
 # FIREWALL
 - name: firewall
-  when: mvt_firewall_enabled
   vars:
-    ferm_rules_filename: "{{ mvt_ferm_rules_filename }}"
-    ferm_input_rules: "{{ mvt_ferm_input_rules }}"
-    ferm_output_rules: "{{ mvt_ferm_output_rules }}"
-    ferm_global_settings: "{{ mvt_ferm_global_settings }}"
+    ferm_rules_filename: "{{ vault_ferm_rules_filename }}"
+    ferm_input_rules: "{{ vault_ferm_input_rules }}"
+    ferm_output_rules: "{{ vault_ferm_output_rules }}"
+    ferm_global_settings: "{{ vault_ferm_global_settings }}"
   ansible.builtin.include_role:
     name: ferm-configure
 
 - ansible.builtin.meta: flush_handlers # noqa name[missing]
+
+...

@@ -1,0 +1,27 @@
+---
+
+- name: "({{ item }}) create user group"
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+
+- name: "({{ item }}) create user"
+  ansible.builtin.user:
+    name: "{{ item }}"
+    group: "{{ item }}"
+    shell: /bin/bash
+    generate_ssh_key: true
+    ssh_key_type: ed25519
+    ssh_key_file: .ssh/id_ed25519
+    append: true
+    groups:
+      - sudo
+    state: present
+
+- name: "({{ item }}) set password"
+  ansible.builtin.user:
+    name: "{{ item }}"
+    password: "{{ lookup('vars', 'sysuser_' + item + '_password') | password_hash('sha512', 'ubicastsalt') }}"
+    update_password: always
+
+...

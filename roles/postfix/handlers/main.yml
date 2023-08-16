@@ -1,4 +1,5 @@
 ---
+
 - name: postmap sasl
   ansible.builtin.command: postmap hash:/etc/postfix/sasl-passwords
   # we want to generate db file at every execution
@@ -23,3 +24,5 @@
   ansible.builtin.service:
     name: postfix
     state: restarted
+
+...

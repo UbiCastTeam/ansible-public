@@ -1,4 +1,5 @@
 ---
+
 - name: Checking the live(s) server(s) live configuration state
   hosts: live
   gather_facts: false
@@ -191,3 +192,5 @@
       ansible.builtin.systemd:
         name: mediaserver
         state: restarted
+
+...

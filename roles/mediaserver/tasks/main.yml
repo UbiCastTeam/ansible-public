@@ -1,9 +1,35 @@
 ---
+
+- name: ensure /etc/mediaserver directory exist
+  ansible.builtin.file:
+    path: /etc/mediaserver
+    state: directory
+    mode: "755"  # use mediaserver package post-install rights...
+- name: copy mediaserver install.ini file from sample
+  ansible.builtin.copy:
+    src: install.example.ini
+    dest: /etc/mediaserver/install.ini
+    force: false
+    mode: "640"  # use mediaserver package post-install rights...
+
+- name: prepare mediaserver variables in install.ini file
+  ansible.builtin.replace:
+    path: /etc/mediaserver/install.ini
+    regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
+    replace: '\1{{ item.name }} = {{ item.value }}'
+  loop:
+    - { name: 'DB_HOST',       value: '{{ nudgis_front_database_domain }}' }   # noqa: yaml[commas]
+    - { name: 'DB_PORT',       value: '{{ nudgis_front_database_port }}' }     # noqa: yaml[commas]
+    - { name: 'DB_ROOT_PWD',   value: '{{ nudgis_front_database_password }}' } # noqa: yaml[commas]
+    - { name: 'DATA_NEW_DIRS', value: '{{ nudgis_front_instances_dir }}' }     # noqa: yaml[commas]
+    - { name: 'DATA_DIRS',     value: '{{ nudgis_front_instances_dir }}' }     # noqa: yaml[commas]
+  when: item.value != "" and item.value != '""'
+
 - name: mediaserver install
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
-    name: "{{ server_packages }}"
+    name: "{{ nudgis_front_packages }}"
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -30,7 +56,7 @@
   ansible.builtin.lineinfile:
     path: /etc/mediaserver/msconf.py
     regexp: "^CELERITY_SERVER_URL = "
-    line: CELERITY_SERVER_URL = 'https://{{ server_celerity_server_url }}:6200'
+    line: CELERITY_SERVER_URL = 'https://{{ celerity_server_domain }}:6200'
     create: true
     owner: root
     group: root
@@ -42,7 +68,7 @@
   ansible.builtin.lineinfile:
     path: /etc/mediaserver/msconf.py
     regexp: "^CELERITY_SIGNING_KEY = "
-    line: CELERITY_SIGNING_KEY = '{{ server_celerity_signing_key }}'
+    line: CELERITY_SIGNING_KEY = '{{ celerity_signing_key }}'
     create: true
     owner: root
     group: root
@@ -50,20 +76,18 @@
     # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
     mode: "0644"
 
-- name: create instances
-  loop: "{{ server_instances }}"
+- name: create instance
   ansible.builtin.command:
     cmd: >
-      mscontroller.py add -u '{{ item.name }}' -t '{
-        "id": "{{ item.ms_id }}",
-        "domain": "{{ item.ms_server_name }}",
-        "api_key": "{{ item.ms_api_key }}",
-        "secret": "{{ envsetup_ms_secret | d("") }}",
-        "superuser_pwd": "{{ item.ms_superuser_pwd }}",
-        "admin_pwd": "{{ item.ms_admin_pwd }}",
-        "skyreach_url": "{{ item.cm_server_name }}"
+      mscontroller.py add -u "{{ nudgis_front_system_user }}" -t '{
+        "id": "1_{{ nudgis_front_system_user }}",
+        "domain": "{{ nudgis_front_domain }}",
+        "api_key": "{{ nudgis_front_api_key }}",
+        "superuser_pwd": "{{ nudgis_front_user_ubicast_password }}",
+        "admin_pwd": "{{ nudgis_front_user_admin_password }}",
+        "skyreach_url": "{{ manager_domain }}"
       }'
-    creates: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
+    creates: "/etc/nginx/sites-available/mediaserver-{{ nudgis_front_system_user }}.conf"
   throttle: 1
 
 - name: synchronize configuration between servers # noqa command-instead-of-module
@@ -127,45 +151,32 @@
     # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
     mode: "0644"
     regexp: ^#? ?DEFAULT_FROM_EMAIL.*
-    line: DEFAULT_FROM_EMAIL = '{{ server_email_sender }}'
+    line: DEFAULT_FROM_EMAIL = '{{ nudgis_front_email_from }}'
     validate: python3 -m py_compile %s
 
 - name: configure domain name in nginx conf
   notify: restart nginx
-  loop: "{{ server_instances }}"
   ansible.builtin.replace:
-    path: /etc/nginx/sites-available/mediaserver-{{ item.name }}.conf
+    path: /etc/nginx/sites-available/mediaserver-{{ nudgis_front_system_user }}.conf
     regexp: ^(\s*server_name).*;$
-    replace: \1 {{ item.ms_server_name }};
+    replace: \1 {{ nudgis_front_domain }};
     backup: true
 
 - name: configure domain name in database
-  loop: "{{ server_instances }}"
   ansible.builtin.shell:
     cmd: |
-      python3 /usr/lib/python3/dist-packages/mediaserver/scripts/mssiteconfig.py {{ item.name }} site_url=https://{{ item.ms_server_name }} ;
-      mscontroller.py restart -u {{ item.name }} ;
-      touch /etc/mediaserver/.{{ item.ms_server_name }}.mssiteconfig.log ;
-    creates: /etc/mediaserver/.{{ item.ms_server_name }}.mssiteconfig.log
+      python3 /usr/lib/python3/dist-packages/mediaserver/scripts/mssiteconfig.py {{ nudgis_front_system_user }} site_url=https://{{ nudgis_front_domain }} ;
+      mscontroller.py restart -u {{ nudgis_front_system_user }} ;
+      touch /etc/mediaserver/.{{ nudgis_front_domain }}.mssiteconfig.log ;
+    creates: /etc/mediaserver/.{{ nudgis_front_domain }}.mssiteconfig.log
 
 - name: reset service resources
-  loop: "{{ server_instances }}"
   ansible.builtin.shell:
     cmd: |
-      python3 /usr/lib/python3/dist-packages/mediaserver/scripts/reset_service_resources.py {{ item.name }} local ;
-      mscontroller.py restart -u {{ item.name }} ;
-      touch /etc/mediaserver/.{{ item.ms_server_name }}.reset_service_resources.log ;
-    creates: /etc/mediaserver/.{{ item.ms_server_name }}.reset_service_resources.log
-
-- name: add realip configuration for LoadBalancer in HA configuration
-  notify: restart nginx
-  when:
-    - groups['mediaserver'] | length > 1
-    - real_ip_from | length > 0
-  ansible.builtin.template:
-    src: realip.conf.j2
-    dest: /etc/nginx/conf.d/realip.conf
-    mode: "644"
+      python3 /usr/lib/python3/dist-packages/mediaserver/scripts/reset_service_resources.py {{ nudgis_front_system_user }} local ;
+      mscontroller.py restart -u {{ nudgis_front_system_user }} ;
+      touch /etc/mediaserver/.{{ nudgis_front_domain }}.reset_service_resources.log ;
+    creates: /etc/mediaserver/.{{ nudgis_front_domain }}.reset_service_resources.log
 
 - name: ensure mediaserver is running
   ansible.builtin.service:
@@ -176,14 +187,15 @@
 # FIREWALL
 
 - name: firewall
-  when: server_firewall_enabled
   vars:
-    ferm_rules_filename: "{{ server_ferm_rules_filename }}"
-    ferm_input_rules: "{{ server_ferm_input_rules }}"
-    ferm_output_rules: "{{ server_ferm_output_rules }}"
-    ferm_global_settings: "{{ server_ferm_global_settings }}"
+    ferm_rules_filename: "{{ nudgis_front_ferm_rules_filename }}"
+    ferm_input_rules: "{{ nudgis_front_ferm_input_rules }}"
+    ferm_output_rules: "{{ nudgis_front_ferm_output_rules }}"
+    ferm_global_settings: "{{ nudgis_front_ferm_output_global_settings }}"
   ansible.builtin.include_role:
     name: ferm-configure
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
+
+...

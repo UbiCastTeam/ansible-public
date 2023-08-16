@@ -50,7 +50,7 @@ def get_quorum_state(node_id):
 
 
 if __name__ == '__main__':
-    with open('/etc/postgresql/{{ repmgr_pg_version }}/{{ repmgr_pg_cluster }}/rephacheck.conf') as rephaconf:
+    with open('/etc/postgresql/{{ repmgr_database_version }}/{{ repmgr_database_cluster }}/rephacheck.conf') as rephaconf:
         conf = toml.load(rephaconf)
 
     NODES = conf.get('nodes')

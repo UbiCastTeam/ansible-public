@@ -1,16 +1,7 @@
 ---
+
 - name: populate service facts
   ansible.builtin.service_facts:
-- name: directories
-  loop:
-    - /etc/ferm/ferm.d
-    - /etc/ferm/input.d
-    - /etc/ferm/output.d
-    - /etc/ferm/forward.d
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    mode: "755"
 
 - name: global
   when: ferm_global_settings | d(false)
@@ -51,3 +42,5 @@
     src: ferm_rules_forward.conf.j2
     dest: /etc/ferm/forward.d/{{ ferm_rules_filename }}.conf
     mode: "644"
+
+...

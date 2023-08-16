@@ -1,12 +1,8 @@
 ---
-postfix_packages:
-  - postfix
-  - bsd-mailx
-
-postfix_mailname: "{{ envsetup_ms_server_name | d() }}"
-postfix_default_email_sender: noreply@{{ postfix_mailname }}
-postfix_email_sender: "{{ envsetup_email_sender | default(postfix_default_email_sender, true) }}"
-postfix_relay_host: "{{ envsetup_email_smtp_server | d() }}"
-postfix_relay_user: "{{ envsetup_email_smtp_user | d() }}"
-postfix_relay_pass: "{{ envsetup_email_smtp_pwd | d() }}"
-postfix_admin: sysadmin@ubicast.eu
+postfix_mailname: "domain.example.com"
+postfix_email_from: "noreply@{{ postfix_mailname }}"
+postfix_relay_host: ""
+postfix_relay_user: ""
+postfix_relay_pass: ""
+postfix_admin: "admin@example.com"
+...

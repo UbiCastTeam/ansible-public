@@ -1,4 +1,5 @@
 ---
+
 - name: if proxy settings are set
   when:
     - proxy_http | d(false)
@@ -52,8 +53,10 @@
           value: "{{ proxy_http }}"
         - name: https.proxy
           value: "{{ proxy_https }}"
-      git_config:
+      community.general.git_config:
         name: "{{ item.name }}"
         scope: global
         value: "{{ item.value }}"
         state: present
+
+...

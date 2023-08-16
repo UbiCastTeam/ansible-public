@@ -1,0 +1,9 @@
+---
+
+# UbiCast admin reciever of the email report for premiums
+tester_email_admin: "my-email@domain.com"
+
+# Reciever of the email report
+tester_email_to: "noreply@domain.com"
+
+...

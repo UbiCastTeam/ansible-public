@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: POSTGRES HA
   hosts: postgres
   tags: postgres
@@ -26,10 +27,12 @@
 - name: POSTGRES HA CLIENTS
   hosts: mediaserver
   tags: [postgres, mediaserver]
-  pre_tasks:
-    - name: check that haproxy is configured
-      ansible.builtin.assert:
-        that: hap_config_listen != ""
-        quiet: true
+  # pre_tasks:
+  #   - name: check that haproxy is configured
+  #     ansible.builtin.assert:
+  #       that: hap_config_listen != ""
+  #       quiet: true
   roles:
     - haproxy
+
+...

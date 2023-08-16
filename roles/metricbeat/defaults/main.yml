@@ -1,4 +1,7 @@
 ---
+
 elastic_host: localhost
 elastic_port: 9200
 kibana_server_host: localhost
+
+...

@@ -1,6 +1,9 @@
 ---
+
 dependencies:
   - role: base
   - role: nginx
   - when: "'postgres' in group_names"
     role: postgres
+
+...

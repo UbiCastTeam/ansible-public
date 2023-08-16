@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - import_playbook: postgres-maintenance/rephacheck_status.yml
   tags: [always]
 - import_playbook: postgres-maintenance/fenced_to_standby.yml
@@ -8,3 +9,5 @@
   tags: [never, standby-to-primary]
 - import_playbook: postgres-maintenance/restart_repmgrd.yml
   tags: [never, restart-repmgrd, standby-to-primary]
+
+...

@@ -5,7 +5,7 @@
     force_apt_get: true
     install_recommends: false
     name: "{{ tester_packages }}"
-    state: latest
+    state: present
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -16,10 +16,10 @@
     regexp: '^(\s*)#?{{ item.name }}:(\s*).*$'
     replace: '\1{{ item.name }}:\2{{ item.value }}'
   loop:
-    - { name: 'name', value: '"{{ tester_system_name | d() }}"' }
-    - { name: 'from', value: '"{{ tester_email_from | d() }}"' }
-    - { name: 'to', value: '"{{ tester_email_to | d() }}"' }
-    - { name: 'admin', value: '"{{ tester_email_admin | d() }}"' }
+    - { name: 'name',    value: '"{{ tester_system_name | d() }}"' } # noqa: yaml[commas]
+    - { name: 'from',    value: '"{{ tester_email_from | d() }}"' }  # noqa: yaml[commas]
+    - { name: 'to',      value: '"{{ tester_email_to | d() }}"' }    # noqa: yaml[commas]
+    - { name: 'admin',   value: '"{{ tester_email_admin | d() }}"' } # noqa: yaml[commas]
     - { name: 'ignored', value: '{{ tester_tests_ignored | d() }}' }
   when: item.value != "" and item.value != '""'
 

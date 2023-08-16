@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: GATHER ALL FACTS
   hosts: all
   tasks:
@@ -42,3 +43,5 @@
         loop_var: outer_item
       # execute loop only when group exists and host is in listen.groupname_src
       when: (outer_item.groupname_src in groups) and (inventory_hostname in groups[outer_item.groupname_src])
+
+...

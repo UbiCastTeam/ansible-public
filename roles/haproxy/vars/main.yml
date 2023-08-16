@@ -1,0 +1,6 @@
+---
+hap_packages:
+  - haproxy
+  - rsyslog
+  - logrotate
+...

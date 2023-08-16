@@ -2,7 +2,7 @@
 
 sendmail -t <<ERRMAIL
 To: $1
-From: {{ mvt_mailer_from }}
+From: {{ vault_email_from }}
 Subject: ({{ ansible_fqdn }}) $2 status
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=UTF-8

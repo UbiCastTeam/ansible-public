@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: PYTHON
   hosts: all
   gather_facts: false
@@ -44,8 +45,10 @@
 - import_playbook: bench.yml
   tags: bench
 
-- import_playbook: munin/all.yml
+- import_playbook: monitor/all.yml
   tags: monitor
 
 - import_playbook: tester.yml
   tags: tester
+
+...

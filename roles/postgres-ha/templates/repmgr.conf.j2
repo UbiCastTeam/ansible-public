@@ -8,7 +8,7 @@ node_name={{ repmgr_node_name }}
 # database connection information
 conninfo='{{ repmgr_conninfo }}'
 # repmgr data directory
-data_directory='/var/lib/postgresql/{{ repmgr_pg_version }}/{{ repmgr_pg_cluster }}'
+data_directory='/var/lib/postgresql/{{ repmgr_database_version }}/{{ repmgr_database_cluster }}'
 # log level
 log_level='INFO'
 # log to file
@@ -30,15 +30,15 @@ use_replication_slots=1
 #------------------------------------------------------------------------------
 # Environment/command settings
 #------------------------------------------------------------------------------
-# path to PostgreSQL binary directory ((location of pg_ctl, pg_basebackup etc.) 
-pg_bindir='/usr/lib/postgresql/{{ repmgr_pg_version }}/bin/'
+# path to PostgreSQL binary directory ((location of database_ctl, database_basebackup etc.) 
+pg_bindir='/usr/lib/postgresql/{{ repmgr_database_version }}/bin/'
 
 #------------------------------------------------------------------------------
 # external command options
 #------------------------------------------------------------------------------
-# options to append to "pg_ctl"
+# options to append to "database_ctl"
 pg_ctl_options='-s'
-# options to append to "pg_basebackup"
+# options to append to "database_basebackup"
 pg_basebackup_options='--label=repmgr_backup'
 
 #------------------------------------------------------------------------------
@@ -55,16 +55,16 @@ reconnect_attempts=6
 # Interval between attempts to reconnect to an unreachable primary (or other upstream node)
 reconnect_interval=5
 # command repmgrd executes when promoting a new primary
-promote_command='repmgr -f {{ repmgr_config }} standby promote'
+promote_command='repmgr -f {{ repmgr_conf_file }} standby promote'
 # command repmgrd executes when instructing a standby to follow a new primary
-follow_command='repmgr -f {{ repmgr_config }} standby follow -W'
+follow_command='repmgr -f {{ repmgr_conf_file }} standby follow -W'
 
 #------------------------------------------------------------------------------
 # service control commands
 #------------------------------------------------------------------------------
-# override the default pg_ctl commands used to stop, start, restart, reload and promote the PostgreSQL cluster
-service_start_command='sudo systemctl start postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}'
-service_stop_command='sudo systemctl stop postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}'
-service_restart_command='sudo systemctl restart postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}'
-service_reload_command='sudo systemctl reload postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}'
+# override the default database_ctl commands used to stop, start, restart, reload and promote the PostgreSQL cluster
+service_start_command='sudo systemctl start postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}'
+service_stop_command='sudo systemctl stop postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}'
+service_restart_command='sudo systemctl restart postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}'
+service_reload_command='sudo systemctl reload postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}'
 

@@ -1,5 +1,8 @@
 ---
+
 - name: restart postgresql
   ansible.builtin.systemd:
-    name: postgresql@{{ pg_version }}-{{ pg_cluster }}
+    name: postgresql@{{ database_version }}-{{ database_cluster }}
     state: restarted
+
+...

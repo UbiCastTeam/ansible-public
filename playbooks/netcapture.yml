@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: NETCAPTURE
   hosts: netcapture
   tags: netcapture
@@ -10,3 +11,5 @@
       when: proxy_apply | d(false)
       ansible.builtin.include_role:
         name: proxy
+
+...

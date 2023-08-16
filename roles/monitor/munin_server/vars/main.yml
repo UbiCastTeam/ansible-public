@@ -1,0 +1,4 @@
+---
+munin_server_packages:
+  - munin
+...

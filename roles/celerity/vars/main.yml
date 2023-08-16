@@ -1,0 +1,10 @@
+---
+celerity_ferm_rules_filename: celerity
+celerity_ferm_input_rules:
+  - proto:
+      - tcp
+    dport:
+      - 6200
+celerity_ferm_output_rules: []
+celerity_ferm_global_settings:
+...

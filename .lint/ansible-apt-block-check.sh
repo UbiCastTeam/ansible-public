@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 # config
 exclude_pattern=()

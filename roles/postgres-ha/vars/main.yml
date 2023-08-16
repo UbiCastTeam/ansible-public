@@ -1,0 +1,34 @@
+---
+repmgr_packages:
+  - repmgr
+  # rephacheck:
+  - python3
+  - python3-psycopg2
+  - python3-toml
+
+repmgr_database_version: "{{ database_version | default('15') }}"
+repmgr_database_cluster: "{{ database_cluster | default('main') }}"
+repmgr_database_data_dir: /var/lib/postgresql/{{ repmgr_database_version }}/{{ repmgr_database_cluster }}
+repmgr_conf_file: /etc/postgresql/{{ repmgr_database_version }}/{{ repmgr_database_cluster }}/repmgr.conf
+
+repmgr_primary_node: "{{ hostvars[groups['postgres'][0]]['ansible_default_ipv4']['address'] }}"
+repmgr_node_id: "{{ (groups['postgres'].index(inventory_hostname)) + 1 | int }}"
+repmgr_node_name: "{{ ansible_hostname }}"
+
+repmgr_conninfo: host={{ ansible_default_ipv4.address }} dbname={{ repmgr_database }} user={{ repmgr_user }} connect_timeout={{ repmgr_timeout }}
+
+database_ferm_rules_filename: postgres_ha
+database_ferm_input_rules:
+  - proto:
+      - tcp
+    dport:
+      - 5432
+      - 8543
+database_ferm_output_rules:
+  - proto:
+      - tcp
+    dport:
+      - 54321
+      - 54322
+database_ferm_global_settings:
+...

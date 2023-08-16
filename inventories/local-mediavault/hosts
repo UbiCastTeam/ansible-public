@@ -1,6 +1,0 @@
-localhost ansible_connection=local
-
-[mediavault]
-localhost
-
-; vim:ft=dosini

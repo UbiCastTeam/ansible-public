@@ -1,0 +1,6 @@
+---
+
+# Define if the deployment is an HA architecture (i.e. live domain is not handle by nudgis frontend server)
+live_ha: False
+
+...

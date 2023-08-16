@@ -1,0 +1,153 @@
+---
+
+# tester:
+#   Name of the system in the reports
+#tester_system_name: "{{ inventory_hostname }}"
+
+# tester:
+#   Sender of the email report
+#tester_email_from: "ubicast.tester"
+
+# tester:
+#   List of tests to ignore when executing the ubicast-tester
+tester_tests_ignored:
+  - uptime.sh
+
+# mediavault:
+#   From fields for email sending (as defined in RFC2822)
+#vault_email_from: "{{ ansible_fqdn }} <backup@{{ ansible_fqdn }}>"
+
+# postfix:
+#   Define the specified email address for the unix root account (in /etc/aliases)
+postfix_admin: "my-email@domain.com"
+
+# postfix:
+#   Default sender domain, used to complete both postfix configuration and the /etc/mailname content
+postfix_mailname: "ubica.st"
+
+# postfix:
+#   Email address used by postfix to send emails
+postfix_email_from: "noreply@domain.com"
+
+# postfix:
+#   SMTP host for the SASL account
+#postfix_relay_host: ""
+
+# postfix:
+#   User of the SMTP SASL account
+#postfix_relay_pass: ""
+
+# postfix:
+#   Password of the SMTP SASL account
+#postfix_relay_user: ""
+
+# mediacache:
+#   URL of the Nudgis Cache vhost
+cache_domain: "cache.ubica.st"
+
+# mediacache:
+#   Path of the folder to cache the VOD service data
+#cache_vod_folder: "/var/cache/nginx/mediacache-vod"
+
+# mediacache:
+#   Max size allowed for the VOD service data
+#cache_vod_size: "1"
+
+# mediacache:
+#   Path of the folder to cache the Live service data
+#cache_live_folder: "/var/cache/nginx/mediacache-live"
+
+# mediacache:
+#   Max size allowed for the Live service data
+#cache_live_size: "1"
+
+# netcapture:
+#   Password of the deployed netcapture miris API
+netcapture_miris_user_pwd: "my-password"
+
+# netcapture:
+#   Folder used to store the packages
+#netcapture_pkg_folder: "/data/netcapture/packages"
+
+# netcapture:
+#   Folder used to store the configurations
+#netcapture_conf_folder: "/etc/miris/conf"
+
+# netcapture:
+#   Folder used to store the medias
+#netcapture_media_folder: "/data/netcapture/media"
+
+# netcapture:
+#   Activates the SSL verification when calling the Nudgis Manager
+#netcapture_mm_ssl: True
+
+# netcapture:
+#   Activates the authentication for the deployed netcapture miris API
+#netcapture_miris_auth: True
+
+# sysuser:
+#   Do not configure any ubicast ssh public key
+# sysconfig:
+#   Do not configure any repository and use local repository
+#offline_mode: False
+
+# sysuser:
+#   Password for the system user ubicast
+sysuser_ubicast_password: "my-password"
+
+# sysuser:
+#   Password for the system user admin
+sysuser_admin_password: "my-password"
+
+# nginx:
+#   Path of the SSL certificate for nginx configuration
+#nginx_ssl_certificate: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+
+# nginx:
+#   Path of the SSL key for nginx configuration
+#nginx_ssl_certificate_key: "/etc/ssl/private/ssl-cert-snakeoil.key"
+
+# nginx:
+#   IPv4 address of the reverse-proxy or loadbalancer above the server(s)
+#nginx_real_ip_from: ""
+
+# sysconfig:
+#   Prefix of the debian repositories, with the protocol (example: "http://"). Used when the apt-cacher-ng of the Nudgis Manager proxifies the debian repositories.
+#repos_debian_prefix: "http://"
+
+# sysconfig:
+#   List of NTP servers to use on the systems
+ntp_servers:
+  - 0.debian.pool.ntp.org
+  - 1.debian.pool.ntp.org
+
+# sysconfig:
+#   Token used in the UbiCast debian repository URL
+repos_ubicast_packages_token: "UBICAST-APT-TOKEN"
+
+# sysconfig:
+#   Domain of the UbiCast debian packages repository URL
+repos_ubicast_packages_domain: "manager.ubica.st"
+
+# ferm-configure:
+#   Global settings to be put in ferm.d directory
+#ferm_global_settings: |
+
+
+# ferm-configure:
+#   List of input rules for the ferm firewall
+#ferm_input_rules: []
+
+# ferm-configure:
+#   List of output rules for the ferm firewall
+#ferm_output_rules: []
+
+# ferm-configure:
+#   Filename into which rules will be written
+#ferm_rules_filename: "default"
+
+# ferm-configure:
+#   List of forward rules for the ferm firewall
+#ferm_forward_rules: []
+
+...

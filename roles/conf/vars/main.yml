@@ -1,0 +1,5 @@
+---
+conf_req_packages:
+  - ca-certificates
+  - openssh-client
+...

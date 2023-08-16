@@ -1,4 +1,5 @@
 ---
+
 - name: LIVE
   hosts: live
   tags: live
@@ -10,27 +11,27 @@
 - hosts: live
   tags: live
   vars:
-    server_firewall_enabled: true
-    server_ferm_rules_filename: live
-    server_ferm_input_rules:
+    live_ferm_rules_filename: live
+    live_ferm_input_rules:
       - proto:
           - tcp
         dport:
           - 80
           - 443
           - 1935
-    server_ferm_output_rules: []
-    server_ferm_global_settings:
+    live_ferm_output_rules: []
+    live_ferm_global_settings:
   tasks:
     - name: firewall
-      when: server_firewall_enabled
       vars:
-        ferm_rules_filename: "{{ server_ferm_rules_filename }}"
-        ferm_input_rules: "{{ server_ferm_input_rules }}"
-        ferm_output_rules: "{{ server_ferm_output_rules }}"
-        ferm_global_settings: "{{ server_ferm_global_settings }}"
+        ferm_rules_filename: "{{ live_ferm_rules_filename }}"
+        ferm_input_rules: "{{ live_ferm_input_rules }}"
+        ferm_output_rules: "{{ live_ferm_output_rules }}"
+        ferm_global_settings: "{{ live_ferm_global_settings }}"
       ansible.builtin.include_role:
         name: ferm-configure
 
 - import_playbook: deploy-minimal.yml
   tags: live
+
+...

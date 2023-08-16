@@ -1,0 +1,6 @@
+---
+nginx_packages:
+  - nginx
+  - uwsgi
+  - uwsgi-plugin-python3
+...
