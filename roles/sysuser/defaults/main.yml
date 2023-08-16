@@ -1,0 +1,5 @@
+---
+offline_mode: false
+sysuser_ubicast_password: "changeit"
+sysuser_admin_password: "changeit"
+...

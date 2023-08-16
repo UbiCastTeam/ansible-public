@@ -1,49 +1,14 @@
 ---
-repos_prefix: "{{ envsetup_apt_cache_url | d('http://', true) }}"
-repos_deb: deb.debian.org
-repos_deb_sec: security.debian.org
+
+offline_mode: false
+
 repos_release: "{{ ansible_distribution_release }}"
+repos_ubicast_packages_domain: "manager.example.com"
+repos_ubicast_packages_token: "XXXX-XXXX-XXXX-XXXX-XXXX"
 
-repos_skyreach_token: "{{ envsetup_skyreach_apt_token | d('') }}"
-repos_skyreach_host: "{{ envsetup_skyreach_host | d('mirismanager.ubicast.eu', true) }}"
+init_locale: 'en_GB.UTF-8'
+init_timezone: "Europe/Paris"
 
-sysconfig_packages:
-  - openssh-server
-  - bash-completion
-  - man
-  - sudo
-  - vim
-  - ifupdown
-  - lm-sensors
-  - smartmontools
-  - curl
-  - host
-  - htop
+ntp_servers: "0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
 
-sysconfig_firewall_enabled: true
-sysconfig_ferm_rules_filename: sysutils
-sysconfig_ferm_input_rules:
-  # munin
-  - proto:
-      - tcp
-    dport:
-      - 4949
-  # cockpit
-  - proto:
-      - tcp
-    dport:
-      - 9090
-sysconfig_ferm_output_rules: []
-sysconfig_ferm_global_settings:
-locale_packages:
-  - locales
-  - tzdata
-
-init_locale: "{{ envsetup_locale | d('C.UTF-8', true) }}"
-
-init_timezone: "{{ envsetup_timezone | d('Etc/UTC', true) }}"
-
-sysconfig_logs_packages:
-  - rsyslog
-
-ntp_servers: "{{ envsetup_ntp_server | d('0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org', true) }}"
+...

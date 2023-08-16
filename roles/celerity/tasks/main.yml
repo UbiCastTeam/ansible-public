@@ -1,4 +1,5 @@
 ---
+
 - name: celerity server install
   ansible.builtin.apt:
     force_apt_get: true
@@ -8,23 +9,14 @@
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
-- name: config celerity server
-  notify: restart celerity-server
-  ansible.builtin.template:
-    src: celerity-config.py.j2
-    dest: /etc/celerity/config.py
-    mode: "644"
-
-- name: ensure celerity server is running
-  ansible.builtin.service:
-    name: celerity-server
-    enabled: true
-    state: started
+- name: configure celerity
+  ansible.builtin.include_tasks: celerity_base_config.yml
+  vars:
+    _celerity_service: "celerity-server"
 
 # FIREWALL
 
 - name: celerity firewall
-  when: celerity_firewall_enabled
   vars:
     ferm_rules_filename: "{{ celerity_ferm_rules_filename }}"
     ferm_input_rules: "{{ celerity_ferm_input_rules }}"
@@ -35,3 +27,5 @@
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
+
+...

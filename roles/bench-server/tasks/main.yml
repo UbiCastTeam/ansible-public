@@ -1,11 +1,12 @@
 ---
+
 - name: install bench-server packages
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     update_cache: true
     name: "{{ bench_server_packages }}"
-    state: latest
+    state: present
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -87,7 +88,7 @@
     install_recommends: false
     update_cache: true
     name: docker-ce
-    state: latest
+    state: present
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -101,3 +102,5 @@
     chdir: /usr/share/ms-testing-suite
   changed_when: false
   run_once: true
+
+...

@@ -1,0 +1,28 @@
+---
+# ubicast-skyreach-runtime packages: todo: manage the database in inventory (/!\ can be idenpendent of the MS database)
+dependencies_packages:
+  - apt-cacher-ng
+  - cron
+  - nginx
+  - postfix
+  - postgresql
+
+manager_packages:
+  - ubicast-skyreach
+
+manager_ferm_rules_filename: manager
+manager_ferm_input_rules:
+  # http + https rules
+  - proto:
+      - tcp
+    dport:
+      - 80
+      - 443
+  # apt-cacher rules
+  - proto:
+      - tcp
+    dport:
+      - 3142
+manager_ferm_output_rules: []
+manager_ferm_global_settings:
+...

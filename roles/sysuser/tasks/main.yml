@@ -1,0 +1,35 @@
+---
+
+- name: create users
+  ansible.builtin.include_tasks: create_user.yml
+  loop:
+    - ubicast
+    - admin
+
+- name: copy dotfiles
+  ansible.builtin.include_tasks: copy_dotfiles.yml
+  loop:
+    - ubicast
+    - admin
+    - root
+
+- name: sudoers without password
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/nopasswd
+    validate: visudo -cf %s
+    mode: "440"
+    content: |
+      %sudo ALL=(ALL) NOPASSWD: ALL
+
+- name: install ubicast ssh access
+  when: not offline_mode | d(false)
+  ansible.builtin.apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ users_packages }}"
+    state: present
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+...

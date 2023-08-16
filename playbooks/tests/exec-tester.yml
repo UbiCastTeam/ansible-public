@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: RUN TESTER
   hosts: all
   tags: tester
@@ -19,3 +20,5 @@
           python3 /root/envsetup/tests/tester.py 2>&1 | tee /root/envsetup/tests/logs/tester_pb.log
         creates: /root/envsetup/tests/logs/tester_pb.log
         executable: /bin/bash
+
+...

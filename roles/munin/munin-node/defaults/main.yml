@@ -1,3 +1,0 @@
----
-munin_node_logfile: /var/log/munin/munin-node.log
-munin_node_pidfile: /var/run/munin/munin-node.pid

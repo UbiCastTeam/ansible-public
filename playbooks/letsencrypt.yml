@@ -1,7 +1,10 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: Let's encrypt
   hosts: all
   tags: all
   roles:
     - letsencrypt
+
+...

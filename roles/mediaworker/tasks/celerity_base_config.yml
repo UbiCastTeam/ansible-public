@@ -1,0 +1,40 @@
+---
+
+- name: copy celerity example configuration
+  notify: "restart {{ _celerity_service }}"
+  ansible.builtin.copy:
+    remote_src: true
+    src: /etc/celerity/config.example.py
+    dest: /etc/celerity/config.py
+    mode: preserve
+    force: false
+
+- name: celerity base configuration
+  notify: "restart {{ _celerity_service }}"
+  ansible.builtin.replace:
+    path: /etc/celerity/config.py
+    regexp: '^(\s*)#?{{ item.name }}\s*=.*$'
+    replace: '\1{{ item.name }} = {{ item.value }}'
+  loop:
+    - { name: 'SERVER_URL',  value: '"https://{{ celerity_server_domain }}:6200"' } # noqa: yaml[commas]
+    - { name: 'SIGNING_KEY', value: '"{{ celerity_signing_key }}"' }
+  when: item.value != "" and item.value != '""'
+
+- name: celerity add nudgis portal
+  notify: "restart {{ _celerity_service }}"
+  ansible.builtin.command:
+    cmd: >
+      celerity-configurator add-portal
+        'ms_id=1_{{ nudgis_front_system_user }}'
+        'url=https://{{ nudgis_front_domain }}'
+        'api_key={{ nudgis_front_api_key }}'
+  register: celerity_add_portal
+  changed_when: celerity_add_portal.stdout != 'The configuration file is already up to date.'
+
+- name: "ensure {{ _celerity_service }} is running"
+  ansible.builtin.service:
+    name: "{{ _celerity_service }}"
+    enabled: true
+    state: started
+
+...

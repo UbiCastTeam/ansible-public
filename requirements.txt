@@ -1,6 +1,6 @@
-ansible<8.0.0
-passlib
+passlib  # deprecation of crypt module
+ansible>=8.0,<9.0
 netaddr
 pyyaml
-openstacksdk>=0.36,<0.99.0
-ovh
+openstacksdk>1.00 # ubicast-environment
+ovh               # ubicast-environment

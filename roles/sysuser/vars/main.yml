@@ -1,0 +1,5 @@
+---
+users_packages:
+  - ubicast-ssh-access-manager
+  - ubicast-ssh-access-support
+...

@@ -1,10 +1,15 @@
 ---
+cache_domain: "cache.example.com"
+nudgis_front_domain: "nudgis.example.com"
+live_domain: "nudgis.example.com"
+
 # MediaCache data folder - for VOD
-role_mc_vod_folder: "{{ mediacache_vod_folder | d('/var/cache/nginx/mediacache-vod') }}"
+cache_vod_folder: "/var/cache/nginx/mediacache-vod"
 # MediaCache size in Gb - for VOD
-role_mc_vod_size: "{{ mediacache_vod_size }}"
+cache_vod_size: "1"
 
 # MediaCache data folder - for live
-role_mc_live_folder: "{{ mediacache_live_folder | d('/var/cache/nginx/mediacache-live') }}"
+cache_live_folder: "/var/cache/nginx/mediacache-live"
 # MediaCache size in Gb - for live
-role_mc_live_size: "{{ mediacache_live_size | d('1') }}"
+cache_live_size: "1"
+...

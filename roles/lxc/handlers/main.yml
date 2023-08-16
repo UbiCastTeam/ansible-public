@@ -1,4 +1,5 @@
 ---
+
 - name: restart lxc
   ansible.builtin.systemd:
     name: lxc
@@ -10,3 +11,5 @@
   ansible.builtin.systemd:
     name: lxc-net
     state: restarted
+
+...

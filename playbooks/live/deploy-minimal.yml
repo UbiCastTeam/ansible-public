@@ -1,4 +1,5 @@
 ---
+
 - name: LIVE
   hosts: live
   gather_facts: false
@@ -7,7 +8,11 @@
     - live
 
 - import_playbook: subplays/standard-case.yml
-  when: groups['live'] | d('') | length >= 1 and ( hostvars[groups['live'][0]].ip_live is undefined or hostvars[groups['live'][0]].ip_live == "127.0.0.1" )
+  # playbook target mediaserver and live hosts
+  when: groups['live'] | d('') | length >= 1 and ( hostvars[groups['live'][0]].live_ha is undefined or hostvars[groups['live'][0]].live_ha == false )
 
 - import_playbook: subplays/ha-case.yml
-  when: groups['live'] | d('') | length >= 1 and ( hostvars[groups['live'][0]].ip_live is defined and hostvars[groups['live'][0]].ip_live != "127.0.0.1" )
+  # playbook target mediaserver and live hosts
+  when: groups['live'] | d('') | length >= 1 and ( hostvars[groups['live'][0]].live_ha is defined and hostvars[groups['live'][0]].live_ha == true )
+
+...

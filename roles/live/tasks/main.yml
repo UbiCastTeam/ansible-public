@@ -1,9 +1,10 @@
 ---
+
 - name: Live packages installation
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
-    name: "{{ debian_packages }}"
+    name: "{{ live_packages }}"
     state: present
   register: apt_status
   retries: 60
@@ -11,11 +12,11 @@
 
 - name: TMPFS creation to store the live chunks
   notify: restart nginx
-  mount:
+  ansible.posix.mount:
     path: /var/tmp/nginx-rtmp
     src: tmpfs
     fstype: tmpfs
-    opts: defaults,size={{ role_tmpfs_size }}
+    opts: defaults,size={{ live_tmpfs_size }}
     state: mounted
 
 - name: Changing the rights on the TMPFS directory
@@ -25,3 +26,5 @@
     owner: nginx
     group: root
     mode: "0700"
+
+...

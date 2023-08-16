@@ -14,7 +14,7 @@
 
 - name: postgresql
   vars:
-    pg_hba:
+    database_host_authentification:
       - type: local
         method: peer
       - type: hostssl
@@ -40,21 +40,21 @@
       - type: hostssl
         database: replication
         address: ::/0
-    pg_conf:
+    database_conf:
       - name: main
         content: |
           listen_addresses = '*'
       - name: modules
         content: |
           shared_preload_libraries = 'repmgr'
-    pg_users:
+    database_users:
       - name: "{{ repmgr_user }}"
         password: "{{ repmgr_password }}"
         roles: "{{ repmgr_roles }}"
-    pg_databases:
-      - name: "{{ repmgr_db }}"
+    database_databases:
+      - name: "{{ repmgr_database }}"
         owner: "{{ repmgr_user }}"
-    pg_ferm_input_rules:
+    database_ferm_input_rules:
       - proto:
           - tcp
         dport:
@@ -69,7 +69,7 @@
   notify: restart repmgrd
   ansible.builtin.template:
     src: repmgr.conf.j2
-    dest: "{{ repmgr_config }}"
+    dest: "{{ repmgr_conf_file }}"
     owner: postgres
     group: postgres
     mode: "644"
@@ -80,7 +80,7 @@
     - key: REPMGRD_ENABLED
       value: "yes"
     - key: REPMGRD_CONF
-      value: "{{ repmgr_config }}"
+      value: "{{ repmgr_conf_file }}"
   ansible.builtin.replace:
     path: /etc/default/repmgrd
     regexp: ^#?{{ item.key }}=.*$
@@ -94,10 +94,10 @@
     content: |
       Defaults:postgres !requiretty
       postgres ALL=NOPASSWD: \
-        /bin/systemctl start postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}, \
-        /bin/systemctl stop postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}, \
-        /bin/systemctl restart postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}, \
-        /bin/systemctl reload postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
+        /bin/systemctl start postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}, \
+        /bin/systemctl stop postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}, \
+        /bin/systemctl restart postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}, \
+        /bin/systemctl reload postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}
 
 # SSH
 
@@ -137,7 +137,10 @@
 # REGISTER PRIMARY
 
 - name: setup primary
-  when: (db_role is defined and db_role == "primary") or (db_role is undefined and inventory_hostname == groups['postgres'][0])
+  when: >
+    (database_role is defined and database_role == "primary") or
+    (database_role is undefined and inventory_hostname == groups['postgres'][0]) or
+    (database_role is defined and database_role == "" and inventory_hostname == groups['postgres'][0])
   block:
     - name: check if primary already joined
       become: true
@@ -154,14 +157,17 @@
       when: repmgr_check_primary.query_result | length == 0
       notify: restart repmgrd
       ansible.builtin.command:
-        cmd: repmgr --config-file={{ repmgr_config }} primary register
+        cmd: repmgr --config-file={{ repmgr_conf_file }} primary register
 
 - ansible.builtin.meta: flush_handlers # noqa name[missing]
 
 # REGISTER STANDBY
 
 - name: setup standby
-  when: (db_role is defined and db_role == "standby") or (db_role is undefined and inventory_hostname == groups['postgres'][1])
+  when: >
+    (database_role is defined and database_role == "standby") or
+    (database_role is undefined and inventory_hostname == groups['postgres'][1]) or
+    (database_role is defined and database_role == "" and inventory_hostname == groups['postgres'][1])
   block:
     - name: check if standby already joined
       become: true
@@ -174,14 +180,14 @@
     - name: stop postgresql service
       when: repmgr_check_standby.query_result | length == 0
       ansible.builtin.systemd:
-        name: postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
+        name: postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}
         state: stopped
 
     - name: remove existing pgdata
       when: repmgr_check_standby.query_result | length == 0
       ansible.builtin.command:
-        cmd: mv -vf {{ repmgr_pg_data }} {{ repmgr_pg_data }}.save
-        removes: "{{ repmgr_pg_data }}"
+        cmd: mv -vf {{ repmgr_database_data_dir }} {{ repmgr_database_data_dir }}.save
+        removes: "{{ repmgr_database_data_dir }}"
 
     - name: clone from primary to standby
       become: true
@@ -193,36 +199,36 @@
       ansible.builtin.shell:
         cmd: |
           repmgr \
-            --config-file={{ repmgr_config }} \
+            --config-file={{ repmgr_conf_file }} \
             --force \
-            --dbname={{ repmgr_db }} \
+            --dbname={{ repmgr_database }} \
             --host={{ repmgr_primary_node }} \
             --port=5432 \
             --username={{ repmgr_user }} \
-            --pgdata={{ repmgr_pg_data }} \
+            --pgdata={{ repmgr_database_data_dir }} \
             standby clone --fast-checkpoint
 
     - name: remove pgdata backup
       when: repmgr_clone_standby is succeeded
       ansible.builtin.file:
-        path: "{{ repmgr_pg_data }}.save"
+        path: "{{ repmgr_database_data_dir }}.save"
         state: absent
 
     - name: remove failed clone pgdata
       when: repmgr_clone_standby is failed
       ansible.builtin.file:
-        path: "{{ repmgr_pg_data }}"
+        path: "{{ repmgr_database_data_dir }}"
         state: absent
 
     - name: restore pgdata backup
       when: repmgr_clone_standby is failed
       ansible.builtin.command:
-        cmd: mv -vf {{ repmgr_pg_data }}.save {{ repmgr_pg_data }}
-        removes: "{{ repmgr_pg_data }}.save"
+        cmd: mv -vf {{ repmgr_database_data_dir }}.save {{ repmgr_database_data_dir }}
+        removes: "{{ repmgr_database_data_dir }}.save"
 
     - name: start postgresql service
       ansible.builtin.systemd:
-        name: postgresql@{{ repmgr_pg_version }}-{{ repmgr_pg_cluster }}
+        name: postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}
         state: started
 
     - name: standby clone failed
@@ -237,14 +243,17 @@
       when: repmgr_check_standby.query_result | length == 0
       notify: restart repmgrd
       ansible.builtin.command:
-        cmd: repmgr --config-file={{ repmgr_config }} standby register
+        cmd: repmgr --config-file={{ repmgr_conf_file }} standby register
 
 - ansible.builtin.meta: flush_handlers # noqa name[missing]
 
 # REGISTER WITNESS
 
 - name: setup witness
-  when: (db_role is defined and db_role == "witness") or (db_role is undefined and inventory_hostname == groups['postgres'][2])
+  when: >
+    (database_role is defined and database_role == "witness") or
+    (database_role is undefined and inventory_hostname == groups['postgres'][2]) or
+    (database_role is defined and database_role == "" and inventory_hostname == groups['postgres'][2])
   block:
     - name: check if witness already joined
       become: true
@@ -261,7 +270,7 @@
       when: repmgr_check_witness.query_result | length == 0
       notify: restart repmgrd
       ansible.builtin.command:
-        cmd: repmgr --config-file={{ repmgr_config }} --host={{ repmgr_primary_node }} witness register
+        cmd: repmgr --config-file={{ repmgr_conf_file }} --host={{ repmgr_primary_node }} witness register
 
 - ansible.builtin.meta: flush_handlers # noqa name[missing]
 
@@ -281,7 +290,7 @@
 - name: configure rephacheck
   ansible.builtin.template:
     src: rephacheck.conf.j2
-    dest: /etc/postgresql/{{ repmgr_pg_version }}/{{ repmgr_pg_cluster }}/rephacheck.conf
+    dest: /etc/postgresql/{{ repmgr_database_version }}/{{ repmgr_database_cluster }}/rephacheck.conf
     owner: postgres
     group: postgres
     mode: "0644"
@@ -328,12 +337,11 @@
     enabled: true
 
 - name: firewall
-  when: pg_firewall_enabled
   vars:
-    ferm_rules_filename: "{{ pg_ferm_rules_filename }}"
-    ferm_input_rules: "{{ pg_ferm_input_rules }}"
-    ferm_output_rules: "{{ pg_ferm_output_rules }}"
-    ferm_global_settings: "{{ pg_ferm_global_settings }}"
+    ferm_rules_filename: "{{ database_ferm_rules_filename }}"
+    ferm_input_rules: "{{ database_ferm_input_rules }}"
+    ferm_output_rules: "{{ database_ferm_output_rules }}"
+    ferm_global_settings: "{{ database_ferm_global_settings }}"
   ansible.builtin.include_role:
     name: ferm-configure
 

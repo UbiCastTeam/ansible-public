@@ -1,32 +1,12 @@
 ---
-# ubicast-skyreach-runtime packages: todo: manage the database in inventory (/!\ can be idenpendent of the MS database)
-dependencies_packages:
-  - apt-cacher-ng
-  - cron
-  - nginx
-  - postfix
-  - postgresql
+manager_domain: "manager.example.com"
+manager_email_from: "noreply@{{ manager_domain }}"
+proxy_http: ""
 
-manager_packages:
-  - ubicast-skyreach
+manager_database_domain: "database.manager.example.com"
+manager_database_port: "5432"
+manager_database_password: "changeit"
 
-manager_testing: false
-manager_hostname: "{{ envsetup_cm_server_name | d('mirismanager', true) }}"
-manager_default_email_sender: noreply@{{ manager_hostname }}
-manager_email_sender: "{{ envsetup_email_sender | default(manager_default_email_sender, true) }}"
-manager_proxy_http: "{{ envsetup_proxy_http | d() }}"
-
-manager_firewall_enabled: true
-manager_ferm_rules_filename: manager
-manager_ferm_input_rules:
-  - proto:
-      - tcp
-    dport:
-      - 80
-      - 443
-  - proto:
-      - tcp
-    dport:
-      - 3142
-manager_ferm_output_rules: []
-manager_ferm_global_settings:
+manager_user_ubicast_password: "changeit"
+manager_user_admin_password: "changeit"
+...

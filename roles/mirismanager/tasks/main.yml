@@ -1,4 +1,5 @@
 ---
+
 - name: mirismanager dependencies install
   ansible.builtin.apt:
     force_apt_get: true
@@ -12,6 +13,38 @@
   ansible.builtin.systemd:
     name: postgresql
     state: started
+
+- name: ensure /etc/skyreach directory exist
+  ansible.builtin.file:
+    path: /etc/skyreach
+    state: directory
+    mode: "750"  # use skyreach postinstall rights...
+# TOFIX: There is a problem with postgres password (mediaserver and mirismanager)
+- name: replace default database password with empty one
+  when: manager_database_password == "changeit"
+  ansible.builtin.set_fact:
+    manager_database_password: ""
+
+- name: copy mirismanager install.ini file from sample
+  ansible.builtin.copy:
+    src: install.example.ini
+    dest: /etc/skyreach/install.ini
+    force: false
+    mode: "640"  # use skyreach package post-install rights...
+
+- name: prepare mirismanager variables in install.ini file
+  ansible.builtin.replace:
+    path: /etc/skyreach/install.ini
+    regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
+    replace: '\1{{ item.name }} = {{ item.value }}'
+  loop:
+    - { name: 'DB_HOST',       value: '{{ manager_database_domain }}' }       # noqa: yaml[commas]
+    - { name: 'DB_PORT',       value: '{{ manager_database_port }}' }         # noqa: yaml[commas]
+    - { name: 'DB_ROOT_PWD',   value: '{{ manager_database_password }}' }     # noqa: yaml[commas]
+    - { name: 'DOMAIN'     ,   value: '{{ manager_domain }}' }                # noqa: yaml[commas]
+    - { name: 'SUPERUSER_PWD', value: '{{ manager_user_ubicast_password }}' } # noqa: yaml[commas]
+    - { name: 'ADMIN_PWD',     value: '{{ manager_user_admin_password }}' }   # noqa: yaml[commas]
+  when: item.value != "" and item.value != '""'
 
 - name: mirismanager install
   ansible.builtin.apt:
@@ -27,7 +60,7 @@
   ansible.builtin.lineinfile:
     path: /home/skyreach/skyreach_data/private/settings_override.py
     regexp: ^#? ?DEFAULT_FROM_EMAIL.*
-    line: DEFAULT_FROM_EMAIL = '{{ manager_email_sender }}'
+    line: DEFAULT_FROM_EMAIL = '{{ manager_email_from }}'
     backup: true
 
 - name: ensure skyreach is running
@@ -44,12 +77,12 @@
 - name: configure apt-cacher-ng
   when:
     - manager_apt_cacher_conf.stat.exists
-    - manager_proxy_http | d(false)
+    - proxy_http | d(false)
   notify: restart apt-cacher-ng
   ansible.builtin.lineinfile:
     path: /etc/apt-cacher-ng/acng.conf
     regexp: "^Proxy: .*"
-    line: "Proxy: {{ manager_proxy_http }}"
+    line: "Proxy: {{ proxy_http }}"
 
 - name: ensure apt-cacher-ng is running
   ansible.builtin.service:
@@ -60,7 +93,6 @@
 # FIREWALL
 
 - name: firewall
-  when: manager_firewall_enabled
   vars:
     ferm_rules_filename: "{{ manager_ferm_rules_filename }}"
     ferm_input_rules: "{{ manager_ferm_input_rules }}"
@@ -71,3 +103,5 @@
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
+
+...

@@ -1,4 +1,5 @@
 ---
+
 - name: restart nginx
   ansible.builtin.systemd:
     name: nginx
@@ -13,3 +14,5 @@
   ansible.builtin.systemd:
     name: systemd-sysusers
     state: restarted
+
+...

@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: POSTGRESQL SWITCH CURRENT STANDBY TO PRIMARY
   hosts: postgres_standby
   tasks:
@@ -10,7 +11,7 @@
 
     - name: check if node is currently in standby
       ansible.builtin.command:
-        cmd: repmgr standby switchover -f /etc/postgresql/13/main/repmgr.conf --siblings-follow --dry-run
+        cmd: repmgr standby switchover -f /etc/postgresql/15/main/repmgr.conf --siblings-follow --dry-run
       become: true
       become_user: postgres
       changed_when: false
@@ -19,10 +20,12 @@
 
     - name: switch standby node to primary
       ansible.builtin.command:
-        cmd: repmgr standby switchover -f /etc/postgresql/13/main/repmgr.conf --siblings-follow
+        cmd: repmgr standby switchover -f /etc/postgresql/15/main/repmgr.conf --siblings-follow
       become: true
       become_user: postgres
       changed_when: false
       when:
         - standby_dry_run is succeeded
         - rephacheck['stdout'] == "standby"
+
+...

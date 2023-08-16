@@ -1,0 +1,17 @@
+---
+vault_packages:
+  - ubicast-mediavault
+
+vault_email_service_name: "status-email-admin"
+vault_email_service_path: "/etc/systemd/system/{{ vault_email_service_name }}@.service"
+vault_email_script_path: "/usr/local/sbin/systemd-mailer"
+
+vault_ferm_rules_filename: vault
+vault_ferm_input_rules: []
+vault_ferm_output_rules:
+  - proto:
+      - tcp
+    dport:
+      - 22
+vault_ferm_global_settings:
+...

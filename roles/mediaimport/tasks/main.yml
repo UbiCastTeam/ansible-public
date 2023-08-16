@@ -1,9 +1,10 @@
 ---
+
 - name: install packages
   ansible.builtin.package:
     force_apt_get: true
     install_recommends: false
-    name: "{{ mediaimport_packages }}"
+    name: "{{ import_packages }}"
 
 ## MEDIAIMPORT
 
@@ -14,10 +15,11 @@
     regexp: ^PasswordAuthentication no
     replace: "#PasswordAuthentication yes"
 
-- name: enable mediaimport service
+# mediaimport service failed without any account configured
+- name: disable mediaimport service
   ansible.builtin.systemd:
     name: mediaimport
-    enabled: true
+    enabled: false
 
 - name: enable mediaimport-cleanup timer
   ansible.builtin.systemd:
@@ -26,7 +28,7 @@
 
 - name: configure mediaimport admin emails
   when:
-    - envsetup_email_admins | d(false)
+    - import_email_to | d(false)
   notify: restart mediaimport
   ansible.builtin.template:
     src: mediaimport.json.j2
@@ -36,12 +38,22 @@
 
 # FAIL2BAN
 
-- name: deploy fail2ban jail
+- name: deploy fail2ban pure-ftpd jail
   notify: restart fail2ban
-  ansible.builtin.template:
-    src: fail2ban_ftpd.conf.j2
+  ansible.builtin.copy:
     dest: /etc/fail2ban/jail.d/pure-ftpd.conf
     mode: "0644"
+    content: |
+      [pure-ftpd]
+      enabled = true
+
+- name: configure pure-ftpd jail backend
+  notify: restart fail2ban
+  ansible.builtin.lineinfile:
+    path: /etc/fail2ban/paths-overrides.local
+    regexp: '^pureftpd_backend'
+    insertafter: '[DEFAULT]'
+    line: 'pureftpd_backend = systemd'
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
@@ -49,14 +61,15 @@
 # FIREWALL
 
 - name: firewall
-  when: mediaimport_firewall_enabled
   vars:
-    ferm_rules_filename: "{{ mediaimport_ferm_rules_filename }}"
-    ferm_input_rules: "{{ mediaimport_ferm_input_rules }}"
-    ferm_output_rules: "{{ mediaimport_ferm_output_rules }}"
-    ferm_global_settings: "{{ mediaimport_ferm_global_settings }}"
+    ferm_rules_filename: "{{ import_ferm_rules_filename }}"
+    ferm_input_rules: "{{ import_ferm_input_rules }}"
+    ferm_output_rules: "{{ import_ferm_output_rules }}"
+    ferm_global_settings: "{{ import_ferm_global_settings }}"
   ansible.builtin.include_role:
     name: ferm-configure
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
+
+...

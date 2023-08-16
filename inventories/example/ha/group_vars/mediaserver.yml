@@ -1,0 +1,24 @@
+---
+
+# Defines the address for the Nudgis Front emails sender
+#nudgis_front_email_from: "noreply@{{ nudgis_front_domain }}"
+
+# Defines the default deployed Nudgis portal "ubicast" user password
+nudgis_front_user_ubicast_password: "my-password"
+
+# Defines the default deployed Nudgis portal "admin" user password
+nudgis_front_user_admin_password: "my-password"
+
+# Domain to reach PostgreSQL database
+nudgis_front_database_domain: "127.0.0.1"
+
+# Port to reach PostgreSQL database
+nudgis_front_database_port: "54321"
+
+# Port to connect to PostgreSQL database with superuser rights
+nudgis_front_database_password: "my-password"
+
+# Directory to store nudgis portal
+#ndugis_front_instances_dir: "/data"
+
+...

@@ -1,0 +1,5 @@
+---
+monitor_domain: "monitor.example.com"
+monitor_user_ubicast_password: "changeit"
+monitor_user_admin_password: "changeit"
+...

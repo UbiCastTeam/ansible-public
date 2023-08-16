@@ -1,0 +1,9 @@
+---
+
+# IP or domain on which the celerity server service can be joined
+celerity_server_domain: "{{ hostvars[groups['celerity'][0]]['ansible_default_ipv4']['address'] }}"
+
+# Secret key shared between celerity server and workers for communications (should be the same everywhere for communication)
+celerity_signing_key: "my-signing-key"
+
+...

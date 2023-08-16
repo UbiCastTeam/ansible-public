@@ -1,9 +1,0 @@
----
-# customer name
-customer_short_name: customer
-
-# enable letsencrypt certificate
-letsencrypt_enabled: false
-
-# update conf.sh
-conf_update: false

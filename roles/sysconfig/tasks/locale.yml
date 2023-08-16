@@ -1,4 +1,5 @@
 ---
+
 - name: install locale packages
   ansible.builtin.apt:
     force_apt_get: true
@@ -10,7 +11,7 @@
 
 - name: generate locale
   when: init_locale != 'C.UTF-8'
-  locale_gen:
+  community.general.locale_gen:
     name: "{{ init_locale }}"
 
 - name: set locale
@@ -31,7 +32,18 @@
     backrefs: true
     line: \1
 
-- name: set timezone
-  notify: restart cron
-  timezone:
+- name: set timezone (part.1)
+  # in order to execute cron task at new set timezone
+  # TODO: fix when there is no cron service
+  # notify: restart cron
+  community.general.timezone:
     name: "{{ init_timezone }}"
+
+- name: set timezone (part.2)
+  # https://unix.stackexchange.com/questions/451709/timedatectl-set-timezone-doesnt-update-etc-timezone
+  # timedatectl do not update the /etc/timzone file...
+  ansible.builtin.command:
+    cmd: dpkg-reconfigure --frontend noninteractive tzdata
+  changed_when: false
+
+...

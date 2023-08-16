@@ -1,0 +1,17 @@
+---
+import_packages:
+  - ssl-cert # for optionnal FTPS support (the mediaimport postinst will will use the snakeoil certificate for pure-ftpd)
+  - ubicast-mediaimport
+
+import_ferm_rules_filename: import
+import_ferm_input_rules:
+  - proto:
+      - tcp
+    dport:
+      - 21
+      - 22
+  - mod: helper
+    helper: ftp
+import_ferm_output_rules: []
+import_ferm_global_settings:
+...

@@ -1,3 +1,6 @@
 ---
+
 kibana_default_port: 5601
 kibana_server_host: localhost
+
+...

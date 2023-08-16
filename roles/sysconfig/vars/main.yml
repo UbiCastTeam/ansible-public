@@ -1,0 +1,23 @@
+---
+sysconfig_packages:
+  - openssh-server
+  - bash-completion
+  - man
+  - sudo
+  - vim
+  - ifupdown
+  - lm-sensors
+  - smartmontools
+  - curl
+  - host
+  - htop
+
+locale_packages:
+  - locales
+  - tzdata
+
+sysconfig_repos_packages:
+  - python3-debian
+
+sysconfig_repos_keyrings_dir: '/usr/local/share/keyrings'
+...

@@ -44,7 +44,7 @@
             group: nogroup
           ignore_errors: true  # noqa ignore-errors
           become: true
-          become_method: sudo
+          become_method: ansible.builtin.sudo
           become_user: nobody
           changed_when: false
 

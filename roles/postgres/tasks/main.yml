@@ -1,18 +1,10 @@
 ---
-- name: ansible postgresql requirements install
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: python3-psycopg2
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: install packages
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
-    name: "{{ pg_packages }}"
+    name: "{{ database_packages }}"
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -30,7 +22,7 @@
 
 - name: ensure conf directory exists
   ansible.builtin.file:
-    path: "{{ pg_conf_dir }}/conf.d"
+    path: "{{ database_conf_dir }}/conf.d"
     owner: postgres
     group: postgres
     state: directory
@@ -38,25 +30,17 @@
 
 - name: ensure conf directory is included
   ansible.builtin.replace:
-    path: "{{ pg_conf_dir }}/postgresql.conf"
+    path: "{{ database_conf_dir }}/postgresql.conf"
     backup: true
     regexp: ^#?include_dir = '[A-Za-z\.]+'(\s+.*)$
     replace: include_dir = 'conf.d'\1
 
-- name: change max connections value
-  ansible.builtin.replace:
-    path: "{{ pg_conf_dir }}/postgresql.conf"
-    backup: true
-    regexp: ^#?max_connections = [0-9]+
-    replace: max_connections = {{ pg_conf_max_connections }}
-  when: pg_conf_max_connections is defined
-
 - name: configure custom settings
   notify: restart postgresql
-  loop: "{{ pg_conf }}"
+  loop: "{{ database_conf }}"
   when: item.content | d(false)
   ansible.builtin.copy:
-    dest: "{{ pg_conf_dir }}/conf.d/{{ item.name }}.conf"
+    dest: "{{ database_conf_dir }}/conf.d/{{ item.name }}.conf"
     owner: postgres
     group: postgres
     backup: true
@@ -67,7 +51,7 @@
   notify: restart postgresql
   ansible.builtin.template:
     src: pg_hba.conf.j2
-    dest: "{{ pg_conf_dir }}/pg_hba.conf"
+    dest: "{{ database_conf_dir }}/pg_hba.conf"
     owner: postgres
     group: postgres
     mode: "0640"
@@ -75,7 +59,7 @@
 
 - name: ensure service is enabled and running
   ansible.builtin.systemd:
-    name: postgresql@{{ pg_version }}-{{ pg_cluster }}
+    name: postgresql@{{ database_version }}-{{ database_cluster }}
     enabled: true
     state: started
 
@@ -87,13 +71,13 @@
   no_log: true
   community.general.postgresql_user:
     name: postgres
-    password: "{{ pg_password | d(omit) }}"
+    password: "{{ database_password | d(omit) }}"
 
 - name: manage users
   become: true
   become_user: postgres
   no_log: true
-  loop: "{{ pg_users }}"
+  loop: "{{ database_users }}"
   community.general.postgresql_user:
     name: "{{ item.name }}"
     password: "{{ item.password | d(omit) }}"
@@ -102,7 +86,7 @@
     role_attr_flags: "{{ item.roles | d(omit) }}"
 
 - name: set .pgpass to allow passwordless connection
-  loop: "{{ query('nested', ['root', 'postgres'], pg_users) }}"
+  loop: "{{ query('nested', ['root', 'postgres'], database_users) }}"
   ansible.builtin.blockinfile:
     path: ~{{ item.0 }}/.pgpass
     block: "*:*:*:{{ item.1.name }}:{{ item.1.password }}"
@@ -117,22 +101,23 @@
 - name: create databases
   become: true
   become_user: postgres
-  loop: "{{ pg_databases }}"
-  postgresql_db:
+  loop: "{{ database_databases }}"
+  community.general.postgresql_db:
     name: "{{ item.name }}"
     owner: "{{ item.owner | d(omit) }}"
 
 # FIREWALL
 
 - name: firewall
-  when: pg_firewall_enabled
   vars:
-    ferm_rules_filename: "{{ pg_ferm_rules_filename }}"
-    ferm_input_rules: "{{ pg_ferm_input_rules }}"
-    ferm_output_rules: "{{ pg_ferm_output_rules }}"
-    ferm_global_settings: "{{ pg_ferm_global_settings }}"
+    ferm_rules_filename: "{{ database_ferm_rules_filename }}"
+    ferm_input_rules: "{{ database_ferm_input_rules }}"
+    ferm_output_rules: "{{ database_ferm_output_rules }}"
+    ferm_global_settings: "{{ database_ferm_global_settings }}"
   ansible.builtin.include_role:
     name: ferm-configure
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
+
+...

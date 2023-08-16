@@ -10,6 +10,6 @@ node_id = {{ hostvars[node]['repmgr_node_id'] }}
 {% endfor %}
 
 [conninfo]
-dbname = "{{ repmgr_db }}"
+dbname = "{{ repmgr_database }}"
 user = "{{ repmgr_user }}"
 password = "{{ repmgr_password }}"

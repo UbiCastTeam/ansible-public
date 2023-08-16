@@ -1,7 +1,10 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: Install UbiCast tester
   hosts: mediaserver:mediaworker:mirismanager:postgres:msmonitor:live:celerity:mediaimport:mediacache:mediavault
   tags: all
   roles:
     - tester
+
+...

@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: MEDIACACHE
   hosts: mediacache
   tags: mediacache
@@ -11,26 +12,26 @@
 - hosts: mediacache
   tags: mediacache
   vars:
-    server_firewall_enabled: true
-    server_ferm_rules_filename: mediacache
-    server_ferm_input_rules:
+    cache_ferm_rules_filename: mediacache
+    cache_ferm_input_rules:
       - proto:
           - tcp
         dport:
           - 80
           - 443
-    server_ferm_output_rules: []
-    server_ferm_global_settings:
+    cache_ferm_output_rules: []
+    cache_ferm_global_settings:
   tasks:
     - name: firewall
-      when: server_firewall_enabled
       vars:
-        ferm_rules_filename: "{{ server_ferm_rules_filename }}"
-        ferm_input_rules: "{{ server_ferm_input_rules }}"
-        ferm_output_rules: "{{ server_ferm_output_rules }}"
-        ferm_global_settings: "{{ server_ferm_global_settings }}"
+        ferm_rules_filename: "{{ cache_ferm_rules_filename }}"
+        ferm_input_rules: "{{ cache_ferm_input_rules }}"
+        ferm_output_rules: "{{ cache_ferm_output_rules }}"
+        ferm_global_settings: "{{ cache_ferm_global_settings }}"
       ansible.builtin.include_role:
         name: ferm-configure
 
 - import_playbook: deploy-minimal.yml
   tags: mediacache
+
+...

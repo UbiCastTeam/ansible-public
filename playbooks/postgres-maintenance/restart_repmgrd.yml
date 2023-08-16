@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: REPMGRD RESTART
   hosts: postgres
   tasks:
@@ -13,3 +14,5 @@
       ansible.builtin.systemd:
         name: repmgrd
         state: restarted
+
+...

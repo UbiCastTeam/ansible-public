@@ -1,0 +1,15 @@
+---
+
+- name: wait for munin cron to end
+  ansible.builtin.wait_for:
+    path: /var/run/munin/munin-update.lock
+    state: absent
+  listen: "restart munin-server"
+
+- name: restart munin_server service
+  ansible.builtin.service:
+    name: munin
+    state: restarted
+  listen: "restart munin-server"
+
+...

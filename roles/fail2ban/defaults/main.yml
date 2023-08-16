@@ -1,29 +1,8 @@
 ---
-f2b_packages:
-  - fail2ban
-  - rsyslog
-
-f2b_enabled: "{% if envsetup_fail2ban_enabled | default(false) %}true{% else %}false{% endif %}"
-f2b_ignoreip: 127.0.0.1/8 ::1
-f2b_maxretry: "{{ envsetup_fail2ban_maxretry | default('5', true) }}"
-f2b_bantime: "{{ envsetup_fail2ban_bantime | default('10m', true) }}"
-f2b_sender: "{{ envsetup_email_sender | default('root@localhost', true) }}"
-f2b_destemail: >
-  {% if envsetup_fail2ban_dest_email is defined %}
-    {% if envsetup_fail2ban_dest_email is string %}
-      {{ envsetup_fail2ban_dest_email }}
-    {% else %}
-      {{ envsetup_fail2ban_dest_email | join(',') }}
-    {% endif %}
-  {% endif %}
-
-f2b_destemail_admins: >
-  {% if envsetup_email_admins is defined %}
-    {% if envsetup_email_admins is string %}
-      {{ envsetup_email_admins }}
-    {% else %}
-      {{ envsetup_email_admins | join(',') }}
-    {% endif %}
-  {% endif %}"
-
-f2b_action: "{% if envsetup_fail2ban_send_email | default(false) %}action_mwl{% else %}action_{% endif %}"
+fail2ban_ignoreip: "127.0.0.1/8 ::1"
+fail2ban_maxretry: "5"
+fail2ban_bantime: "10m"
+fail2ban_email_from: "root@localhost"
+fail2ban_email_to: "noreply@example.com"
+fail2ban_action: "action_mwl"
+...

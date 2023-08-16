@@ -1,4 +1,5 @@
 ---
+
 - name: nginx install
   ansible.builtin.apt:
     force_apt_get: true
@@ -57,3 +58,14 @@
     path: /etc/nginx/conf.d/ssl_certificate.conf
     regexp: ssl_certificate_key\s+([\w/\-\_\.]+);
     line: ssl_certificate_key {{ nginx_ssl_certificate_key }};
+
+- name: add realip configuration (for LoadBalancer in HA configuration)
+  notify: restart nginx
+  when:
+    - nginx_real_ip_from | length > 0
+  ansible.builtin.template:
+    src: realip.conf.j2
+    dest: /etc/nginx/conf.d/realip.conf
+    mode: "644"
+
+...

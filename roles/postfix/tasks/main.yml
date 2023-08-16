@@ -1,4 +1,5 @@
 ---
+
 - name: create postfix dir
   ansible.builtin.file:
     path: /etc/postfix
@@ -56,11 +57,11 @@
     dest: /etc/postfix/generic
     mode: "644"
     content: |
-      root@localhost {{ postfix_email_sender }}
-      root@{{ postfix_mailname }} {{ postfix_email_sender }}
-      root@{{ ansible_hostname }} {{ postfix_email_sender }}
-      @{{ postfix_mailname }} {{ postfix_email_sender }}
-      @{{ ansible_hostname }} {{ postfix_email_sender }}
+      root@localhost {{ postfix_email_from }}
+      root@{{ postfix_mailname }} {{ postfix_email_from }}
+      root@{{ ansible_hostname }} {{ postfix_email_from }}
+      @{{ postfix_mailname }} {{ postfix_email_from }}
+      @{{ ansible_hostname }} {{ postfix_email_from }}
 
 - name: postfix authentication
   when:
@@ -91,3 +92,5 @@
     name: postfix
     enabled: true
     state: started
+
+...

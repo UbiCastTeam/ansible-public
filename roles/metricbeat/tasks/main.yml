@@ -1,10 +1,11 @@
 ---
+
 - name: install apt-transport-https
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false
     name: apt-transport-https
-    state: latest
+    state: present
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -23,7 +24,7 @@
     force_apt_get: true
     install_recommends: false
     name: metricbeat
-    state: latest
+    state: present
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -54,3 +55,5 @@
     name: metricbeat
     enabled: true
     state: started
+
+...

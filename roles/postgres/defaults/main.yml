@@ -1,20 +1,13 @@
 ---
-pg_packages:
-  - acl
-  - postgresql
+database_password: "changeit"
+database_users: []
+database_databases: []
 
-pg_version: 13
-pg_cluster: main
-
-pg_password: "{{ envsetup_db_pg_root_pwd | d() }}"
-
-pg_conf_dir: /etc/postgresql/{{ pg_version }}/{{ pg_cluster }}
-
-pg_conf:
+database_conf:
   - name: main
     content:
 
-pg_hba:
+database_host_authentification:
   - type: local
     method: peer
   - type: hostssl
@@ -30,15 +23,4 @@ pg_hba:
   - type: hostssl
     database: replication
     address: ::1/128
-
-pg_users: []
-pg_databases: []
-pg_firewall_enabled: true
-pg_ferm_rules_filename: postgres
-pg_ferm_input_rules:
-  - proto:
-      - tcp
-    dport:
-      - 5432
-pg_ferm_output_rules: []
-pg_ferm_global_settings:
+...

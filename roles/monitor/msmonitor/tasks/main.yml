@@ -1,0 +1,53 @@
+---
+
+- name: ensure /etc/webmonitor directory exist
+  ansible.builtin.file:
+    path: /etc/webmonitor
+    state: directory
+    mode: "750"  # use webmonitor package post-install rights...
+- name: deploy monitor install.ini file
+  ansible.builtin.copy:
+    src: install.example.ini
+    dest: /etc/webmonitor/install.ini
+    force: false
+    mode: "640"  # use webmonitor package post-install rights...
+
+- name: prepare webmonitor variables in install.ini file
+  ansible.builtin.replace:
+    path: /etc/webmonitor/install.ini
+    regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
+    replace: '\1{{ item.name }} = {{ item.value }}'
+  loop:
+    - { name: 'DOMAIN',        value: '{{ monitor_domain }}' }                # noqa: yaml[commas]
+    - { name: 'ADMIN_PWD',     value: '{{ monitor_user_admin_password }}' }   # noqa: yaml[commas]
+    - { name: 'SUPERUSER_PWD', value: '{{ monitor_user_ubicast_password }}' } # noqa: yaml[commas]
+  when: item.value != "" and item.value != '""'
+
+- name: install ubicast msmonitor
+  ansible.builtin.apt:
+    force_apt_get: true
+    install_recommends: false
+    state: present
+    name: "{{ msmonitor_packages }}"
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: ensure msmonitor is running
+  ansible.builtin.service:
+    name: webmonitor
+    enabled: true
+    state: started
+
+# FIREWALL
+
+- name: firewall
+  vars:
+    ferm_rules_filename: "{{ monitor_ferm_rules_filename }}"
+    ferm_input_rules: "{{ monitor_ferm_input_rules }}"
+    ferm_output_rules: "{{ monitor_ferm_output_rules }}"
+    ferm_global_settings: "{{ monitor_ferm_global_settings }}"
+  ansible.builtin.include_role:
+    name: ferm-configure
+
+...

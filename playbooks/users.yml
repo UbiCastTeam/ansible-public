@@ -1,8 +1,11 @@
 #!/usr/bin/env ansible-playbook
 ---
+
 - name: USERS
   hosts: all
   tags: all
   roles:
     - conf
-    - users
+    - sysuser
+
+...

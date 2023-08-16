@@ -42,7 +42,7 @@
     force_apt_get: true
     install_recommends: false
     name: "{{ sysconfig_packages }}"
-    state: latest
+    state: present
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -69,7 +69,7 @@
     force_apt_get: true
     install_recommends: false
     name: unattended-upgrades
-    state: latest
+    state: present
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
@@ -112,7 +112,7 @@
   ansible.builtin.replace:
     dest: /etc/ssh/sshd_config
     regexp: ^#?PermitRootLogin.*
-    replace: PermitRootLogin without-password
+    replace: PermitRootLogin prohibit-password
   notify: restart sshd
 
 - name: remove disabled root login
@@ -134,18 +134,6 @@
     dest: /etc/issue
     mode: "644"
 
-# FIREWALL
-
-- name: firewall
-  when: sysconfig_firewall_enabled
-  vars:
-    ferm_rules_filename: "{{ sysconfig_ferm_rules_filename }}"
-    ferm_input_rules: "{{ sysconfig_ferm_input_rules }}"
-    ferm_output_rules: "{{ sysconfig_ferm_output_rules }}"
-    ferm_global_settings: "{{ sysconfig_ferm_global_settings }}"
-  ansible.builtin.include_role:
-    name: ferm-configure
-
 - name: LOGS
   ansible.builtin.include_tasks: logs.yml
 
@@ -154,3 +142,5 @@
 
 - name: NTP
   ansible.builtin.include_tasks: ntp.yml
+
+...
