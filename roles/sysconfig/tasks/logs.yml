@@ -3,5 +3,6 @@
   ansible.builtin.file:
     path: /var/log/journal
     state: directory
-    mode: "02755"
+    # let system decide directory rights
+    #mode: "02755"
 ...
