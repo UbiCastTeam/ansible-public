@@ -19,13 +19,13 @@
     opts: defaults,size={{ live_tmpfs_size }}
     state: mounted
 
-- name: Changing the rights on the TMPFS directory
-  notify: restart nginx
-  ansible.builtin.file:
-    path: /var/tmp/nginx-rtmp
-    owner: nginx
-    group: root
-    # not working with a tmpfs (777)
-    #mode: "0700"
+# not working with a tmpfs (mode=777, user=group=root)
+#- name: Changing the rights on the TMPFS directory
+#  notify: restart nginx
+#  ansible.builtin.file:
+#    path: /var/tmp/nginx-rtmp
+#    owner: nginx
+#    group: root
+#    mode: "0700"
 
 ...
