@@ -25,6 +25,7 @@
     path: /var/tmp/nginx-rtmp
     owner: nginx
     group: root
-    mode: "0700"
+    # not working with a tmpfs (777)
+    #mode: "0700"
 
 ...
