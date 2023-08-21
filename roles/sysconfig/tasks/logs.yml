@@ -1,8 +1,10 @@
 ---
+
 - name: ensure journald logs persistence is enabled
   ansible.builtin.file:
     path: /var/log/journal
     state: directory
     # let system decide directory rights
-    #mode: "02755"
+    # mode: "02755"
+
 ...
