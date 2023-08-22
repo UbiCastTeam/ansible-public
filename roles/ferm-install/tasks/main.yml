@@ -26,6 +26,10 @@
   register: cmd
   changed_when: "'using /usr/sbin/iptables-legacy to provide /usr/sbin/iptables (iptables) in manual mode' in cmd.stdout"
 
+- name: reboot the server to avoid kernel module bug (#38332)
+  ansible.builtin.reboot:
+  changed_when: false
+
 - name: directories
   loop:
     - /etc/ferm/ferm.d
