@@ -1,59 +1,59 @@
 ; -- Hosts --
 
-ha-ms1
-ha-ms2
+ha-cel
 ha-db1
 ha-db2
 ha-dbw
-ha-mw1
-ha-mw2
 ha-live1
 ha-live2
-ha-cel
-ha-mm
 ha-misc1
+ha-mm
+ha-ms1
+ha-ms2
+ha-mw1
+ha-mw2
 
 ; -- Groups --
+
+[celerity]
+ha-cel
+
+[live]
+ha-live1
+ha-live2
+
+[mediacache]
+ha-misc1
+
+[mediaimport]
+ha-misc1
 
 [mediaserver]
 ha-ms1
 ha-ms2
 
-[postgres-ha]
-ha-db1
-ha-db2
-ha-dbw
+[mediavault]
+ha-misc1
+
+[mediaworker]
+ha-mw1
+ha-mw2
+
+[mirismanager]
+ha-mm
+
+[netcapture]
+ha-misc1
 
 [postgres]
 ha-db1
 ha-db2
 ha-dbw
 
-[mediaworker]
-ha-mw1
-ha-mw2
-
-[live]
-ha-live1
-ha-live2
-
-[celerity]
-ha-cel
-
-[mirismanager]
-ha-mm
-
-[mediaimport]
-ha-misc1
-
-[mediavault]
-ha-misc1
-
-[mediacache]
-ha-misc1
-
-[netcapture]
-ha-misc1
+[postgres-ha]
+ha-db1
+ha-db2
+ha-dbw
 
 ; -- Meta groups (do not edit) --
 

@@ -1,6 +1,6 @@
 ---
 
 # URL of the mirismanager to use for packages
-netcapture_mm_url: "manager.ubica.st"
+netcapture_mm_url: "https://manager.ubica.st"
 
 ...

@@ -1,6 +1,0 @@
----
-
-# Secret key shared between celerity server and workers for communications (should be the same everywhere for communication)
-celerity_signing_key: "my-signing-key"
-
-...

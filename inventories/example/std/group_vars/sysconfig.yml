@@ -1,8 +1,5 @@
 ---
 
-# Debian distribution short name (example: "bullseye")
-#repos_release: "{{ ansible_distribution_release }}"
-
 # Value for the system locale
 init_locale: "en_GB.UTF-8"
 
@@ -14,5 +11,8 @@ init_locale: "en_GB.UTF-8"
 
 # Domain to use for the Debian security repositories
 #repos_debian_security_packages_domain: "security.debian.org"
+
+# Debian distribution short name (example: "bullseye")
+#repos_release: "{{ ansible_distribution_release }}"
 
 ...

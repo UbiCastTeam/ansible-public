@@ -1,49 +1,19 @@
 ---
 
-# munin_node:
-#   Short name of the customer, with no spaces. This name is used in munin to group the graphs under the same name.
-# munin_server:
-#   Short name of the customer, with no spaces. This name is used in munin to group the graphs under the same name.
-ubicast_customer_name: "UbiCast-HA"
-
-# mediaserver:
-#   Defines the default deployed Nudgis portal short name (and linked unix user)
-# mediaworker:
-#   Nudgis system username for the application portal, used as a JSON key in celerity config for nudgis API usage (see also nudgis_front_api_key)
 # celerity:
-#   Nudgis system username for the application portal, used as a JSON key in celerity config for nudgis API usage (see also nudgis_front_api_key)
-nudgis_front_system_user: "msuser"
-
-# mediaserver:
-#   Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix)
-# mediaworker:
-#   URL of the default Nudgis "msuser" portal used to populate the /etc/celerity/config.py file
-# mediacache:
-#   URL of Nudgis Front cluster
-nudgis_front_domain: "nudgis.ubica.st"
-
-# mediaserver:
-#   Defines the default deployed Nudgis portal linked mirismanager domain (correspond to the URL of the mirismanager portal when adding the HTTP(S) prefix)
-# mirismanager:
-#   Defines the default domain for the Nudgis Manager
-manager_domain: "manager.ubica.st"
-
-# mediaserver:
-#   Defines the default deployed Nudgis portal master API key
-# mediaworker:
-#   Nudgis API key, used to communicate with the nudgis portal
-# celerity:
-#   Nudgis API key, used to communicate with the nudgis portal
-nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
-
+#   IP or domain on which the celerity server service can be joined
 # mediaserver:
 #   IPv4 address used to join the celerity server
-# celerity:
+# mediaworker:
 #   IP or domain on which the celerity server service can be joined
 celerity_server_domain: "{{ hostvars[groups['celerity'][0]]['ansible_default_ipv4']['address'] }}"
 
+# celerity:
+#   Secret key shared between celerity server and workers for communications (should be the same everywhere for communication)
 # mediaserver:
 #   Key used to encrypt communications to and from celerity server
+# mediaworker:
+#   Secret key shared between celerity server and workers for communications (should be the same everywhere for communication)
 celerity_signing_key: "my-signing-key"
 
 # live:
@@ -51,5 +21,41 @@ celerity_signing_key: "my-signing-key"
 # mediacache:
 #   URL of the Nudgis Live cluster
 live_domain: "live.ubica.st"
+
+# mediaserver:
+#   Defines the default deployed Nudgis portal linked mirismanager domain (correspond to the URL of the mirismanager portal when adding the HTTP(S) prefix)
+# mirismanager:
+#   Defines the default domain for the Nudgis Manager
+manager_domain: "manager.ubica.st"
+
+# celerity:
+#   Nudgis API key, used to communicate with the nudgis portal
+# mediaserver:
+#   Defines the default deployed Nudgis portal master API key
+# mediaworker:
+#   Nudgis API key, used to communicate with the nudgis portal
+nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+
+# mediacache:
+#   URL of Nudgis Front cluster
+# mediaserver:
+#   Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix)
+# mediaworker:
+#   URL of the default Nudgis "msuser" portal used to populate the /etc/celerity/config.py file
+nudgis_front_domain: "nudgis.ubica.st"
+
+# celerity:
+#   Nudgis system username for the application portal, used as a JSON key in celerity config for nudgis API usage (see also nudgis_front_api_key)
+# mediaserver:
+#   Defines the default deployed Nudgis portal short name (and linked unix user)
+# mediaworker:
+#   Nudgis system username for the application portal, used as a JSON key in celerity config for nudgis API usage (see also nudgis_front_api_key)
+nudgis_front_system_user: "msuser"
+
+# munin_node:
+#   Short name of the customer, with no spaces. This name is used in munin to group the graphs under the same name.
+# munin_server:
+#   Short name of the customer, with no spaces. This name is used in munin to group the graphs under the same name.
+ubicast_customer_name: "UbiCast-HA"
 
 ...
