@@ -1,77 +1,12 @@
 ---
 
-# tester:
-#   Name of the system in the reports
-#tester_system_name: "{{ inventory_hostname }}"
-
-# tester:
-#   Sender of the email report
-#tester_email_from: "ubicast.tester"
-
-# tester:
-#   List of tests to ignore when executing the ubicast-tester
-tester_tests_ignored:
-  - uptime.sh
-
-# postfix:
-#   Define the specified email address for the unix root account (in /etc/aliases)
-postfix_admin: "my-email@domain.com"
-
-# postfix:
-#   Default sender domain, used to complete both postfix configuration and the /etc/mailname content
-postfix_mailname: "ubica.st"
-
-# postfix:
-#   Email address used by postfix to send emails
-postfix_email_from: "noreply@domain.com"
-
-# postfix:
-#   SMTP host for the SASL account
-#postfix_relay_host: ""
-
-# postfix:
-#   User of the SMTP SASL account
-#postfix_relay_pass: ""
-
-# postfix:
-#   Password of the SMTP SASL account
-#postfix_relay_user: ""
-
 # postgres:
 #   [HA only] Define database role on this host. Possible values: primary, standby or witness
 database_role: "standby"
 
-# sysuser:
-#   Do not configure any ubicast ssh public key
-# sysconfig:
-#   Do not configure any repository and use local repository
-#offline_mode: False
-
-# sysuser:
-#   Password for the system user ubicast
-sysuser_ubicast_password: "my-password"
-
-# sysuser:
-#   Password for the system user admin
-sysuser_admin_password: "my-password"
-
-# sysconfig:
-#   Prefix of the debian repositories, with the protocol (example: "http://"). Used when the apt-cacher-ng of the Nudgis Manager proxifies the debian repositories.
-#repos_debian_prefix: "http://"
-
-# sysconfig:
-#   List of NTP servers to use on the systems
-ntp_servers:
-  - 0.debian.pool.ntp.org
-  - 1.debian.pool.ntp.org
-
-# sysconfig:
-#   Token used in the UbiCast debian repository URL
-repos_ubicast_packages_token: "UBICAST-APT-TOKEN"
-
-# sysconfig:
-#   Domain of the UbiCast debian packages repository URL
-repos_ubicast_packages_domain: "manager.ubica.st"
+# ferm-configure:
+#   List of forward rules for the ferm firewall
+#ferm_forward_rules: []
 
 # ferm-configure:
 #   Global settings to be put in ferm.d directory
@@ -90,8 +25,75 @@ repos_ubicast_packages_domain: "manager.ubica.st"
 #   Filename into which rules will be written
 #ferm_rules_filename: "default"
 
-# ferm-configure:
-#   List of forward rules for the ferm firewall
-#ferm_forward_rules: []
+# sysconfig:
+#   List of NTP servers to use on the systems
+ntp_servers:
+  - 0.debian.pool.ntp.org
+  - 1.debian.pool.ntp.org
+
+# sysconfig:
+#   Do not configure any repository and use local repository
+# sysuser:
+#   Do not configure any ubicast ssh public key
+#offline_mode: False
+
+# postfix:
+#   Define the specified email address for the unix root account (in /etc/aliases)
+postfix_admin: "my-email@domain.com"
+
+# postfix:
+#   Email address used by postfix to send emails
+postfix_email_from: "noreply@domain.com"
+
+# postfix:
+#   Default sender domain, used to complete both postfix configuration and the /etc/mailname content
+postfix_mailname: "ubica.st"
+
+# postfix:
+#   SMTP host for the SASL account
+#postfix_relay_host: ""
+
+# postfix:
+#   User of the SMTP SASL account
+#postfix_relay_pass: ""
+
+# postfix:
+#   Password of the SMTP SASL account
+#postfix_relay_user: ""
+
+# sysconfig:
+#   Prefix of the debian repositories, with the protocol (example: "http://"). Used when the apt-cacher-ng of the Nudgis Manager proxifies the debian repositories.
+#repos_debian_prefix: "http://"
+
+# sysconfig:
+#   Domain of the UbiCast debian packages repository URL
+repos_ubicast_packages_domain: "manager.ubica.st"
+
+# sysconfig:
+#   Token used in the UbiCast debian repository URL
+# tester:
+#   UbiCast repository token used to make API call to mirismanager.ubicast.net to retrieve system informations
+repos_ubicast_packages_token: "UBICAST-APT-TOKEN"
+
+# sysuser:
+#   Password for the system user admin
+sysuser_admin_password: "my-password"
+
+# sysuser:
+#   Password for the system user ubicast
+sysuser_ubicast_password: "my-password"
+
+# tester:
+#   Sender of the email report
+#tester_email_from: "ubicast.tester"
+
+# tester:
+#   Name of the system in the reports
+#tester_system_name: "{{ inventory_hostname }}"
+
+# tester:
+#   List of tests to ignore when executing the ubicast-tester
+tester_tests_ignored:
+  - uptime.sh
 
 ...

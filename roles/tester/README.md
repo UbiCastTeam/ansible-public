@@ -12,6 +12,11 @@ Available variables are listed below, along with the descriptions and the defaul
 tester_system_name: "{{ inventory_hostname }}"
 ```
 
+`repos_ubicast_packages_token`: UbiCast repository token used to make API call to mirismanager.ubicast.net to retrieve system informations
+```
+repos_ubicast_packages_token: "XXXX-XXXX-XXXX-XXXX-XXXX"
+```
+
 `tester_email_admin`: UbiCast admin reciever of the email report for premiums
 ```
 tester_email_admin: "sysadmin+premium@ubicast.eu"

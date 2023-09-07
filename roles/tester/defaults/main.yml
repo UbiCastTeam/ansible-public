@@ -17,4 +17,7 @@ tester_tests_ignored: []
 #   - ntp.sh
 #   - email.sh
 
+# UbiCast repository token used to make API call to mirismanager.ubicast.net to retrieve system informations
+repos_ubicast_packages_token: "XXXX-XXXX-XXXX-XXXX-XXXX"
+
 ...

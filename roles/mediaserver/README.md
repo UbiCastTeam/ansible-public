@@ -43,12 +43,12 @@ nudgis_front_user_ubicast_password: "changeit"
 nudgis_front_user_admin_password: "changeit"
 ```
 
-`celerity_server_domain`: IPv4 address used to join the celerity server (Optional)
+`celerity_server_domain`: IPv4 address used to join the celerity server
 ```
 celerity_server_domain: "celerity.example.com"
 ```
 
-`celerity_signing_key`: Key used to encrypt communications to and from celerity server (Optional)
+`celerity_signing_key`: Key used to encrypt communications to and from celerity server
 ```
 celerity_signing_key: "changeit"
 ```
@@ -68,7 +68,7 @@ nudgis_front_database_port: "5432"
 nudgis_front_database_password: "changeit"
 ```
 
-`ndugis_front_instances_dir`: Directory to store nudgis portal (Optional)
+`nudgis_front_instances_dir`: Directory to store nudgis portal (Optional)
 ```
-ndugis_front_instances_dir: "/data"
+nudgis_front_instances_dir: "/data"
 ```

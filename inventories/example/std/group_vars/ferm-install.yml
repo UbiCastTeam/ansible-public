@@ -1,7 +1,13 @@
 ---
 
-# Input policy for the ferm firewall
-#ferm_input_policy: "DROP"
+# Activates the logs for forward packets
+#ferm_forward_log: False
+
+# Prefix for the forward packets log lines
+#ferm_forward_log_prefix: "{{ ferm_forward_policy }} FORWARD "
+
+# Forward policy for the ferm firewall
+#ferm_forward_policy: "DROP"
 
 # Activates the logs for input packets
 #ferm_input_log: False
@@ -9,8 +15,8 @@
 # Prefix for the input packets log lines
 #ferm_input_log_prefix: "{{ ferm_input_policy }} INPUT "
 
-# Output policy for the ferm firewall
-#ferm_output_policy: "ACCEPT"
+# Input policy for the ferm firewall
+#ferm_input_policy: "DROP"
 
 # Activates the logs for output packets
 #ferm_output_log: False
@@ -18,13 +24,7 @@
 # Prefix for the output packets log lines
 #ferm_output_log_prefix: "{{ ferm_output_policy }} OUTPUT "
 
-# Forward policy for the ferm firewall
-#ferm_forward_policy: "DROP"
-
-# Activates the logs for forward packets
-#ferm_forward_log: False
-
-# Prefix for the forward packets log lines
-#ferm_forward_log_prefix: "{{ ferm_forward_policy }} FORWARD "
+# Output policy for the ferm firewall
+#ferm_output_policy: "ACCEPT"
 
 ...

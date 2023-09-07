@@ -1,34 +1,34 @@
 ; -- Hosts --
 
+std-misc1
 std-ms1
 std-mw1
-std-misc1
 
 ; -- Groups --
 
 [celerity]
 std-ms1
 
-[mediaserver]
-std-ms1
-
-[postgres]
-std-ms1
-
 [live]
 std-ms1
 
-[mirismanager]
+[mediacache]
+std-misc1
+
+[mediaserver]
 std-ms1
 
 [mediaworker]
 std-mw1
 
-[mediacache]
-std-misc1
+[mirismanager]
+std-ms1
 
 [netcapture]
 std-misc1
+
+[postgres]
+std-ms1
 
 ; -- Meta groups (do not edit) --
 

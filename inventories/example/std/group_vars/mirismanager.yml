@@ -1,21 +1,21 @@
 ---
 
-# Defines the default address for the Nudgis Manager emails sender
-#manager_email_from: "noreply@{{ manager_domain }}"
-
 # Domain to reach PostgreSQL database
 manager_database_domain: "127.0.0.1"
-
-# Port to reach PostgreSQL database
-manager_database_port: "5432"
 
 # Port to connect to PostgreSQL database with superuser rights
 manager_database_password: "my-password"
 
-# Application ubicast user password
-manager_user_ubicast_password: "my-password"
+# Port to reach PostgreSQL database
+manager_database_port: "5432"
+
+# Defines the default address for the Nudgis Manager emails sender
+#manager_email_from: "noreply@{{ manager_domain }}"
 
 # Application admin user password
 manager_user_admin_password: "my-password"
+
+# Application ubicast user password
+manager_user_ubicast_password: "my-password"
 
 ...

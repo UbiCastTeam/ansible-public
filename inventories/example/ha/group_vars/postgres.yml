@@ -1,5 +1,13 @@
 ---
 
+# PostgreSQL configuration key/values
+#database_conf:
+#  - content: ''
+#    name: main
+
+# Dictionnary of extra databases to deploy (with `name` and `owner` keys)
+#database_databases: []
+
 # PostgreSQL user/host connection file
 #database_host_authentification:
 #  - method: peer
@@ -17,14 +25,6 @@
 #  - address: ::1/128
 #    database: replication
 #    type: hostssl
-
-# PostgreSQL configuration key/values
-#database_conf:
-#  - content: ''
-#    name: main
-
-# Dictionnary of extra databases to deploy (with `name` and `owner` keys)
-#database_databases: []
 
 # Password for the postgres admin account
 database_password: "my-password"
