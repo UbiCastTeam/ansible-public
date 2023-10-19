@@ -13,13 +13,14 @@
 
 - name: ensure configuration directory exists
   ansible.builtin.file:
-    path: /etc/mediaserver
+    path: /etc/benchmark
     state: directory
     mode: "755"
 
 - name: benchmark configuration settings
   ansible.builtin.copy:
-    dest: /etc/mediaserver/bench-conf.json
+    backup: true
+    dest: /etc/benchmark/benchmark.json
     content: |
       {
       "LOCUST_HOST":"{{ bench_server }}",

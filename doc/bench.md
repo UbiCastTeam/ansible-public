@@ -109,7 +109,7 @@ If you want to test with a video stream, you can start it with using the docker 
 `cd /usr/share/ms-testing-suite && make run_live`
 
 Or directly by hand:
-`/usr/share/ms-testing-suite/ms_live_streamer.py /etc/mediaserver/bench-streaming.conf`
+`/usr/share/ms-testing-suite/ms_live_streamer.py /etc/benchmark/streaming.conf`
 
 Go with your browser on `http://<bench_server>:8089`. You might have to use an SSH tunnel to access this port.
 

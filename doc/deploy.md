@@ -35,4 +35,3 @@ To view all tags avalaible, run:
 ```
 grep 'tags:' ./playbooks/site.yml | grep -v always | sed 's,.*tags: ,,'
 ```
-

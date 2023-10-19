@@ -13,13 +13,14 @@
 
 - name: ensure configuration directory exists
   ansible.builtin.file:
-    path: /etc/mediaserver
+    path: /etc/benchmark
     state: directory
     mode: "755"
 
 - name: benchmark configuration settings
   ansible.builtin.copy:
-    dest: /etc/mediaserver/bench-conf.json
+    backup: true
+    dest: /etc/benchmark/benchmark.json
     content: |
       {
       "LOCUST_HOST":"{{ bench_server }}",
@@ -44,7 +45,7 @@
 - name: streaming configuration settings
   ansible.builtin.template:
     src: bench-streaming.conf.j2
-    dest: /etc/mediaserver/bench-streaming.conf
+    dest: /etc/benchmark/streaming.conf
     mode: "644"
 
 - name: clone ms-testing-suite repository
@@ -57,7 +58,7 @@
 
 - name: copy configuration for testing tools
   ansible.builtin.copy:
-    src: /etc/mediaserver/bench-streaming.conf
+    src: /etc/benchmark/streaming.conf
     dest: /usr/share/ms-testing-suite/config.json
     remote_src: true
     mode: "644"
