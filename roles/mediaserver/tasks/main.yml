@@ -178,6 +178,12 @@
       touch /etc/mediaserver/.{{ nudgis_front_domain }}.reset_service_resources.log ;
     creates: /etc/mediaserver/.{{ nudgis_front_domain }}.reset_service_resources.log
 
+- name: ensure clamav-freshclam service is enabled and running
+  ansible.builtin.service:
+    name: clamav-freshclam
+    enabled: true
+    state: started
+
 - name: ensure mediaserver is running
   ansible.builtin.service:
     name: mediaserver
