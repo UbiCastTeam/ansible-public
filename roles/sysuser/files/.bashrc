@@ -106,9 +106,7 @@ fi
 alias lskernels='dpkg --get-selections | grep linux'
 alias lspackages='dpkg --get-selections'
 alias swapclear='sudo swapoff -a && sudo swapon -a'
-alias full-upgrade='sudo apt-get update && sudo apt-get dist-upgrade -y'
-alias aptud='sudo apt-get update'
-alias aptug='sudo apt-get upgrade'
+alias full-upgrade='sudo apt update && sudo apt dist-upgrade -y && sudo apt autoremove -y && sudo apt autoclean'
 
 # files
 alias rmempty='find . -type d -empty -delete'
