@@ -7,7 +7,6 @@ dependencies:
   - role: sysuser
   - role: postfix
   - role: ferm-install
-  - role: ferm-configure
   - role: fail2ban
 
 ...

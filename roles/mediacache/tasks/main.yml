@@ -82,4 +82,18 @@
     regexp: ^(proxy_pass)\s+.*(;)$
     replace: \1 https://{{ live_domain }}\2
 
+# FIREWALL
+
+- name: firewall
+  vars:
+    ferm_rules_filename: "{{ cache_ferm_rules_filename }}"
+    ferm_input_rules: "{{ cache_ferm_input_rules }}"
+    ferm_output_rules: "{{ cache_ferm_output_rules }}"
+    ferm_global_settings: "{{ cache_ferm_output_global_settings }}"
+  ansible.builtin.include_role:
+    name: ferm-configure
+
+- name: flush handlers
+  ansible.builtin.meta: flush_handlers
+
 ...

@@ -2,7 +2,7 @@
 ---
 
 - name: Install UbiCast tester
-  hosts: mediaserver:mediaworker:mirismanager:postgres:msmonitor:live:celerity:mediaimport:mediacache:mediavault
+  hosts: tester
   tags: all
   roles:
     - tester

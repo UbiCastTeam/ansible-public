@@ -1,0 +1,8 @@
+---
+
+netcapture_ferm_rules_filename: netcapture
+netcapture_ferm_input_rules: []
+netcapture_ferm_output_rules: []
+netcapture_ferm_global_settings:
+
+...

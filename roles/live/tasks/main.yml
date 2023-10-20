@@ -28,4 +28,18 @@
 #     group: root
 #     mode: "0700"
 
+# FIREWALL
+
+- name: firewall
+  vars:
+    ferm_rules_filename: "{{ live_ferm_rules_filename }}"
+    ferm_input_rules: "{{ live_ferm_input_rules }}"
+    ferm_output_rules: "{{ live_ferm_output_rules }}"
+    ferm_global_settings: "{{ live_ferm_output_global_settings }}"
+  ansible.builtin.include_role:
+    name: ferm-configure
+
+- name: flush handlers
+  ansible.builtin.meta: flush_handlers
+
 ...

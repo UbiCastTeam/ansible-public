@@ -2,7 +2,7 @@
 ---
 
 - name: BASE
-  hosts: all
+  hosts: base
   tags: all
   roles:
     - base
