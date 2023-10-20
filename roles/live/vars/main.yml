@@ -1,4 +1,17 @@
 ---
+
 live_packages:
   - ubicast-live
+
+live_ferm_rules_filename: live
+live_ferm_input_rules:
+  - proto:
+      - tcp
+    dport:
+      - 80
+      - 443
+      - 1935
+live_ferm_output_rules: []
+live_ferm_global_settings:
+
 ...

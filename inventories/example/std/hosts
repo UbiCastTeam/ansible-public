@@ -57,3 +57,13 @@ mediaworker
 mirismanager
 msmonitor
 postgres
+
+[base:children]
+celerity
+live
+mediacache
+mediaserver
+mediaworker
+mirismanager
+msmonitor
+postgres

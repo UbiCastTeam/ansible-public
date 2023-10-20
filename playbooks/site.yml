@@ -12,6 +12,9 @@
       ansible.builtin.raw: command -v python3 || echo es_pyinstall && apt update && apt install -y python3-minimal python3-apt iproute2
       tags: always
 
+- import_playbook: base.yml
+  tags: base
+
 - import_playbook: "{{ 'postgres-ha' if groups['postgres']|d('') | length > 1 else 'postgres' }}.yml"
   tags: postgres
 
@@ -27,10 +30,10 @@
 - import_playbook: mediaserver.yml
   tags: server
 
-- import_playbook: live/deploy-standalone.yml
+- import_playbook: live/live.yml
   tags: live
 
-- import_playbook: mediacache/deploy-standalone.yml
+- import_playbook: mediacache/mediacache.yml
   tags: mediacache
 
 - import_playbook: mediavault/deploy.yml
@@ -39,7 +42,7 @@
 - import_playbook: mediaimport.yml
   tags: import
 
-- import_playbook: netcapture/deploy-standalone.yml
+- import_playbook: netcapture/netcapture.yml
   tags: netcapture
 
 - import_playbook: bench.yml
