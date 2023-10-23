@@ -39,18 +39,20 @@ If you want a permanent venv, create manually a virtual environment with [Python
 ```sh
 # create the venv
 apt-get install -y python3-venv
-python3 -m venv .venv
+python3 -m venv ansible-venv
 
 # activate the venv
-source .venv/bin/activate
+source ansible-venv/bin/activate
 
 # install ansible requirements
 python3 -m pip install -U pip wheel
 python3 -m pip install -r requirements.txt
+```
 
+If you plan to use the benchmark component, the following requirements are also needed:
+```sh
 # install galaxy requirements
 ansible-galaxy install -r requirements.yml
-
 ```
 
 ## Testing
@@ -61,10 +63,10 @@ To make sure Ansible is properly installed, run this command:
 # verfiy ansible version
 ansible --version
 
-ansible 2.9.18
+ansible X.X.X
   config file = None
   configured module search path = ['/home/ubicast/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = /home/ubicast/.local/lib/python3.7/site-packages/ansible
+  ansible python module location = /home/ubicast/.local/lib/python3.X/site-packages/ansible
   executable location = /home/ubicast/.local/bin/ansible
-  python version = 3.7.3 (default, Jan 22 2021, 20:04:44) [GCC 8.3.0]
+  python version = 3.X.X (default, ...)
 ```

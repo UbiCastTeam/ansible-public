@@ -1,28 +1,86 @@
-* Remove unused `server_live_host` variable
-* Remove unnecessary `manager_default_email_sender` variable
-* Replace `skyreach_activation_key` and `skyreach_system_key` with `ubicast_api_key`
-* Remove `conf_debug` variable and task
-* Remove unnecessary `letsencrypt_testing` variable
-* Set `netcapture_mm_url` to a default value
-* Set `init_locale` to a default value
-* Set `init_timezone` to a default value
-* Move `postfix_packages` from default to vars directory
-* Remove unused `cockpit` firewall rule
-* Move roles firewall rules from default to vars directory
-* Move munin nodes firewall rules from sysconfig to munin-node
-* Define package variable in vars directory where missing (mediaworker, msmonitor, munin-node, munin-server)
-* Remove unnecessary `postfix_default_email_sender` variable
-* Change default `celerity_server` value
-* Change default `letsencrypt_email` value
-* Rework celerity server and worker defaults variables to use nudgis frontend one
-* Rename `repos_skyreach_*` variables to `repos_ubicast_*`
-* Set `proxy_*` to a default value
-* Set `ntp_servers` to a default value
-* Remove unused `manager_testing` variable
-* Rename `manager_hostname` variable to `manager_domain`
-* Rename `server_*` variables to `nudgis_front_*`
-* Remove unnecessary `server_instances` variable
-* Rename `tmpfs_size` to `live_tmpfs_size`
-* Rename `f2b_` varibales to `fail2ban_`
+# 20231018
 
-# TODO : add cache  
+Ansible installation documentation has been enhanced.  
+Makefile has been removed in favor of the more complete `ansible` and `ansible-playbook` default commands.
+
+# 20230816
+
+Many changes have been made with the arrival of debian 12. 
+Variables have been completely restructured.
+
+To help you make the transition : 
+* [Documentations has been added for each role](https://git.ubicast.net/sys/ansible-public/-/tree/stable/roles) 
+it contains an exhaustive list of variables that can be specified
+* [Example inventories are also available in the repository](https://git.ubicast.net/sys/ansible-public/-/tree/stable/inventories/example)
+
+### Remove
+
+* Remove `conf` role
+* Remove unused `server_live_host` variable
+* Remove unused `manager_testing` variable
+* Remove unused `cockpit` firewall rule
+* Remove unnecessary `manager_default_email_sender` variable
+* Remove unnecessary `postfix_default_email_sender` variable
+* Remove unnecessary `server_instances` variable
+* Remove unnecessary `letsencrypt_testing` variable
+* Remove unnecessary `envsetup_*` variable
+* Remove all mediaimport variables (deployed with an empty configuration)
+
+### Rename or replace
+
+Variables have been renamed to be consistent across roles. 
+For instance, the mirismanager domain name is now called `manager_domain` across all roles where it is used.  
+Variables have been renamed for better clarity (for instance `server_hostname` become `nudgis_front_domain`)
+
+### Additions
+
+* Add `tester_tests_ignored` variables to configure ubicast-tester ignored tests list
+* All variables from the `/root/envsetup/conf.sh` and `/root/envsetup/auto-generated-conf.sh` should now be configured in the ansible inventory. The following transition rules apply:
+
+`*-conf.sh` value | Ansible value
+--------------|---------------
+CELERITY_SERVER | celerity_server_domain
+CELERITY_SIGNING_KEY | celerity_signing_key
+CM_ADMIN_PWD | manager_user_admin_password
+CM_SERVER_NAME | manager_domain
+CM_SUPERUSER_PWD | manager_user_ubicast_password
+DB_HOST | nudgis_front_database_domain
+DB_PG_ROOT_PWD | nudgis_front_database_password, mirismanager_database_password, database_password
+DB_PORT | nudgis_front_database_port
+EMAIL_ADMINS | tester_email_admin
+EMAIL_SMTP_PWD | postfix_relay_pass
+EMAIL_SMTP_SERVER | postfix_relay_host
+EMAIL_SMTP_USER | postfix_relay_user
+MONITOR_ADMIN_PWD | monitor_user_admin_password
+MONITOR_SERVER_NAME | monitor_domain
+MONITOR_SUPERUSER_PWD | monitor_user_ubicast_password
+MS_ADMIN_PWD | nudgis_front_user_admin_password
+MS_API_KEY | nudgis_front_api_key
+MS_ID | nudgis_front_system_user (see **Note 1** below)
+MS_SECRET | nudgis_front_secret
+MS_SERVER_NAME | nudgis_front_domain
+MS_SUPERUSER_PWD | nudgis_front_user_ubicast_password
+NTP_SERVER | ntp_servers
+PROXY_EXCLUDE | proxy_exclude
+PROXY_HTTP | proxy_http
+PROXY_HTTPS | proxy_https
+SERIAL_NUMBER | tester_system_name
+SHELL_ADMIN_PWD | admin_password
+SHELL_UBICAST_PWD | ubicast_password
+SKYREACH_API_KEY | ubicast_api_key
+SKYREACH_APT_TOKEN | repos_ubicast_packages_token
+
+**Note 1:** For `nudgis_front_system_user` ansible value, keep only the first part of `MS_ID` value (before the `_`)  
+**Note 2:** [See roles `README.md`](https://git.ubicast.net/sys/ansible-public/-/tree/stable/roles)  for more informations on the ansible variables.
+
+### Roles default value
+
+All variables have now a default value (for example `init_locale` is set to `en_GB.UTF-8`).  
+The values of some variables have been updated.
+
+### Move role
+
+* Move all role's package variable from `default` to `vars` directory and add it when missing (mediaworker, msmonitor, munin-node, munin-server)
+* Move all role's firewall rules from `default` to `vars` directory
+* Move all haproxy role configuration from `default` to a template
+
