@@ -6,16 +6,21 @@ Move to ansible-public root directory
 cd /root/ansible-public
 ```
 
+To test access to all servers, execute:
+```sh
+ansible -i inventories/customer -m ping all
+```
+
 To deploy all components, execute:
 
 ```sh
-make deploy i=inventories/customer
+ansible-playbook -i inventories/customer playbooks/site.yml 
 ```
 
 If you want to limit and deploy specific part, you can add a `tag`:
 
 ```sh
-make deploy i=inventories/customer l=<tag>
+ansible-playbook -i inventories/customer -t <tag> playbooks/site.yml 
 ```
 
 The avalaible tags are:
@@ -33,5 +38,5 @@ The avalaible tags are:
 
 To view all tags avalaible, run: 
 ```
-grep 'tags:' ./playbooks/site.yml | grep -v always | sed 's,.*tags: ,,'
+awk '/tags:/ && !/always/ {print $2}' ./playbooks/site.yml
 ```
