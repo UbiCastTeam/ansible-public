@@ -1,4 +1,7 @@
 # Ferm-configure
+## Description
+
+Used by the "base" metagroup to configure the firewall solution
 
 ## Role Variables
 

@@ -1,4 +1,5 @@
 # Live
+## Description
 
 The live group is used to configure all hosts that will process lives streams.  
  * In a standard Ubicast case, the host is the same as the mediaserver.

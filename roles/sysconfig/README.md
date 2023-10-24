@@ -1,4 +1,7 @@
 # Sysconfig
+## Description
+
+Used by the "base" metagroup to provide core system utilities and their configuration
 
 ## Role Variables
 

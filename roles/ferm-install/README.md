@@ -1,4 +1,7 @@
 # Ferm-install
+## Description
+
+Used by the "base" metagroup to install the firewall solution
 
 ## Role Variables
 

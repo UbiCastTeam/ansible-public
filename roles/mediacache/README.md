@@ -1,4 +1,5 @@
 # Mediacache
+## Description
 
 The cache group is used to configure all hosts that will server as a proxy cache of live and/or vod.
 
@@ -11,7 +12,7 @@ Available variables are listed below, along with the descriptions and the defaul
 cache_domain: "cache.example.com"
 ```
 
-`nudgis_front_domain`: URL of Nudgis Front cluster (Optional)
+`nudgis_front_domain`: URL of Nudgis Front cluster
 ```
 nudgis_front_domain: "nudgis.example.com"
 ```

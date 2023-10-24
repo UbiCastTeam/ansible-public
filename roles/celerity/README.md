@@ -1,4 +1,5 @@
 # Celerity
+## Description
 
 The celerity group is used to configure the hosts that balance the transcoding tasks.  
  * In a standard UbiCast case, the host is the same as the mediaserver.
