@@ -2,7 +2,6 @@
 
 # config
 exclude_pattern=()
-exclude_pattern+=('^./roles/elastic.elasticsearch')
 exclude_pattern+=('^./.venv')
 
 apt_regex='^[^#]*(ansible.builtin.|)apt:'

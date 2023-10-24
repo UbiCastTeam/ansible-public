@@ -45,9 +45,6 @@
 - import_playbook: netcapture/netcapture.yml
   tags: netcapture
 
-- import_playbook: bench.yml
-  tags: bench
-
 - import_playbook: monitor/all.yml
   tags: monitor
 

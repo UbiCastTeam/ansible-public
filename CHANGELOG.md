@@ -1,3 +1,12 @@
+# 20231023
+
+Remove benchmark solution deployment.
+
+# 20231020
+
+Avoid multiple `base` role execution.  
+Now you have to create a meta group `[base:children]` containing all defined groups (`mediaserver`, `mirismanager`, ... see example inventories).
+
 # 20231018
 
 Ansible installation documentation has been enhanced.  

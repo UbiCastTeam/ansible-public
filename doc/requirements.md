@@ -26,15 +26,7 @@ cd ansible-public
 
 ### Python and ansible
 
-
-To automatically create a temporary virtualenv: 
-```
-make venv
-make install
-make install-galaxy
-```
-
-If you want a permanent venv, create manually a virtual environment with [Python's venv](https://docs.python.org/3/library/venv.html) or with the package [virtualenv](https://virtualenv.pypa.io/en/stable/). 
+Create manually a virtual environment with [Python's venv](https://docs.python.org/3/library/venv.html) or with the package [virtualenv](https://virtualenv.pypa.io/en/stable/). 
 
 ```sh
 # create the venv
@@ -47,12 +39,6 @@ source ansible-venv/bin/activate
 # install ansible requirements
 python3 -m pip install -U pip wheel
 python3 -m pip install -r requirements.txt
-```
-
-If you plan to use the benchmark component, the following requirements are also needed:
-```sh
-# install galaxy requirements
-ansible-galaxy install -r requirements.yml
 ```
 
 ## Testing
