@@ -1,7 +1,10 @@
 # Tester
+## Description
 
 The tester group is used to configure all hosts with the UbiCast tester solution  
- * In a standard and HA Ubicast case, the hosts are all those that compose the UbiCast platform
+ * In a standard and HA Ubicast case, the hosts are all those that compose the UbiCast platform  
+ 
+This group is only meant to be used as a meta group (see for instance meta groups section in the [standard example inventory](../../inventories/example/std/hosts) or [HA example inventory](../../inventories/example/ha/hosts)).
 
 ## Role Variables
 
@@ -17,7 +20,7 @@ tester_system_name: "{{ inventory_hostname }}"
 repos_ubicast_packages_token: "XXXX-XXXX-XXXX-XXXX-XXXX"
 ```
 
-`tester_email_admin`: UbiCast admin reciever of the email report for premiums
+`tester_email_admin`: UbiCast admin reciever of the email report for premiums (Optional)
 ```
 tester_email_admin: "sysadmin+premium@ubicast.eu"
 ```

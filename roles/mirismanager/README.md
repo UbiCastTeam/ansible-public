@@ -1,4 +1,5 @@
 # Mirismanager
+## Description
 
 The mediaserver group is used to configure all hosts with the UbiCast platform to control and manage video recorders.  
  * In a standard Ubicast case, the host is the same as mediaserver
@@ -8,7 +9,7 @@ The mediaserver group is used to configure all hosts with the UbiCast platform t
 
 Available variables are listed below, along with the descriptions and the default values.
 
-`manager_domain`: Defines the default domain for the Nudgis Manager (Optional)
+`manager_domain`: Defines the default domain for the Nudgis Manager
 ```
 manager_domain: "manager.example.com"
 ```

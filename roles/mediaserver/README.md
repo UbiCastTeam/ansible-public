@@ -1,4 +1,5 @@
 # Mediaserver
+## Description
 
 The mediaserver group is used to configure all hosts with the UbiCast platform to handle and to broadcast media.  
  * In a standard Ubicast case, the host is the same as other component (mirismanager, etc.)
@@ -18,7 +19,7 @@ nudgis_front_email_from: "noreply@{{ nudgis_front_domain }}"
 nudgis_front_system_user: "msuser"
 ```
 
-`nudgis_front_domain`: Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix) (Optional)
+`nudgis_front_domain`: Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix)
 ```
 nudgis_front_domain: "nudgis.example.com"
 ```

@@ -1,4 +1,7 @@
 # Sysuser
+## Description
+
+Used by the "base" metagroup to setup the system users
 
 ## Role Variables
 

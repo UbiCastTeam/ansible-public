@@ -1,4 +1,7 @@
 # Fail2ban
+## Description
+
+Used by the "base" metagroup to provide and configure ban capabilities for various services
 
 ## Role Variables
 
