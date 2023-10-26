@@ -8,9 +8,6 @@ To deploy UbiCast products:
 - [Configure hosts inventory](/doc/config.md)
 - [Deploy UbiCast softwares](/doc/deploy.md)
 
-To benchmark the solution:
-- [MediaServer Benchmark](/doc/bench.md)
-
 ## Development
 
 To contribute:

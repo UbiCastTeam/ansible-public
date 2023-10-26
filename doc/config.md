@@ -30,41 +30,28 @@ Make a copy of the `example` inventory and eventually customize it with the cust
 
 ```sh
 # for standard deployment
-cp -r inventories/example inventories/customer
+cp -r inventories/example/std inventories/my-inventory
 
 # for HA deployement
-cp -r inventories/example-ha inventories/customer
-```
-
-There are also inventories for local deployment, you can use one of these lines:
-```sh
-cp -r inventories/local-full        inventories/customer
-cp -r inventories/local-mediaserver inventories/customer
-cp -r inventories/local-mediaworker inventories/customer
+cp -r inventories/example/ha inventories/my-inventory
 ```
 
 ### Hosts and Groups
 
-Edit `inventories/customer/hosts` to match your inrastructure.
+Edit `inventories/my-inventory/hosts` to match your infrastructure.  
+Move, copy and/or delete variables files according to your `hosts` file.
 
 ### Variables
 
-If you use a local-\* inventory, copy `inventories/customer/host_vars/localhost.dist.yml` to `inventories/customer/host_vars/localhost.yml`.
-
-You **must at least** configure:
-- `skyreach_system_key` values in `inventories/customer/host_vars/<host>.yml`
-
 If you want to set/override a variable for:
-- all: `inventories/my-customer/group_vars/all.yml`.
-- a group:`inventories/my-customer/group_vars/<group>.yml`.
-- a host: `inventories/my-customer/host_vars/<host>.yml`.
 
-If hosts have a proxy you have to set the proxy settings in the inventory variables, in `inventories/mcustomer/group_vars/all.yml`:
+| Target  | File                                              |
+| ------- | ------------------------------------------------- |
+| all     | `inventories/my-inventory/group_vars/all.yml`     |
+| a group | `inventories/my-inventory/group_vars/<group>.yml` |
+| a host  | `inventories/my-inventory/host_vars/<host>.yml`   |
 
-```yaml
-proxy_http: http://proxy.my-customer.net:3128
-proxy_https: http://proxy.my-customer.net:3128
-```
+All variables needed are defined in ansible roles `README.md` files (for instance for [nudgis frontend role](../roles/mediaserver/README.md))
 
 ### Verify
 
