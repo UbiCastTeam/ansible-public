@@ -82,6 +82,22 @@
     regexp: ^(proxy_pass)\s+.*(;)$
     replace: \1 https://{{ live_domain }}\2
 
+# MONITORING
+
+- name: Ensure /etc/munin/plugin-conf.d/ directory exist
+  ansible.builtin.file:
+    dest: /etc/munin/plugin-conf.d
+    state: directory
+    mode: "750"
+
+- name: Configure mediacache nginx monitoring plugin
+  ansible.builtin.copy:
+    content: |
+      [nginx_ubicast_multi]
+      env.path_filters *.ts *.m3u8
+    dest: /etc/munin/plugin-conf.d/nginx_ubicast_multi
+    mode: "644"
+
 # FIREWALL
 
 - name: firewall
