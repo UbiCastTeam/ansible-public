@@ -3,4 +3,5 @@ tester_packages:
   - ubicast-tester
   - ubicast-tester-nudgis
   - ubicast-tester-system
+  - ubicast-tester-deployment
 ...
