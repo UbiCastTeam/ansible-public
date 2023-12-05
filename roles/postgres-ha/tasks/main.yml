@@ -99,6 +99,24 @@
         /bin/systemctl restart postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}, \
         /bin/systemctl reload postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}
 
+- name: configure swappiness
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/40-swappiness.conf
+    owner: "root"
+    group: "root"
+    mode: "644"
+    content: |
+      # UbiCast Swappiness settings configuration for PostgreSQL on Linux
+
+      # Parameter that controls the relative weight given to swapping out of runtime memory,
+      # as opposed to dropping pages from the system page cache.
+      # A low value causes the kernel to prefer to evict pages from the page cache while
+      # a higher value causes the kernel to prefer to swap out "cold" memory pages.
+      # Swappiness can be set to a value from 0 to 200. Default is 60.
+
+      # See RM#38809 and https://dali.bo/j1_html#configuration-du-swap
+      vm.swappiness = 10
+
 # SSH
 
 - name: ensure postgres account have a ssh keypair
