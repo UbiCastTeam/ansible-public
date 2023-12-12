@@ -1,18 +1,18 @@
-# 20231023
+# 2023-10-23
 
 Remove benchmark solution deployment.
 
-# 20231020
+# 2023-10-20
 
 Avoid multiple `base` role execution.  
 Now you have to create a meta group `[base:children]` containing all defined groups (`mediaserver`, `mirismanager`, ... see example inventories).
 
-# 20231018
+# 2023-10-18
 
 Ansible installation documentation has been enhanced.  
 Makefile has been removed in favor of the more complete `ansible` and `ansible-playbook` default commands.
 
-# 20230816
+# 2023-08-16
 
 Many changes have been made with the arrival of debian 12. 
 Variables have been completely restructured.
