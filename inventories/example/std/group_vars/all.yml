@@ -36,6 +36,8 @@ manager_domain: "manager.ubica.st"
 #   Nudgis API key, used to communicate with the nudgis portal
 nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
 
+# celerity:
+#   Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix)
 # mediacache:
 #   URL of Nudgis Front cluster
 # mediaserver:
