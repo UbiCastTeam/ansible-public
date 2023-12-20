@@ -19,6 +19,11 @@ nudgis_front_system_user: "msuser"
 nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
 ```
 
+`nudgis_front_domain`: Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix)
+```
+nudgis_front_domain: "nudgis.example.com"
+```
+
 `celerity_server_domain`: IP or domain on which the celerity server service can be joined
 ```
 celerity_server_domain: "celerity.example.com"

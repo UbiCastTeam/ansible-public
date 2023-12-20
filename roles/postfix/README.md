@@ -22,7 +22,7 @@ postfix_mailname: "domain.example.com"
 postfix_email_from: "noreply@{{ postfix_mailname }}"
 ```
 
-`postfix_relay_host`: SMTP host for the SASL account (Optional)
+`postfix_relay_host`: SMTP relay host (Optional)
 ```
 postfix_relay_host: ""
 ```

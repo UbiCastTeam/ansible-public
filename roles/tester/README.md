@@ -4,7 +4,7 @@
 The tester group is used to configure all hosts with the UbiCast tester solution  
  * In a standard and HA Ubicast case, the hosts are all those that compose the UbiCast platform  
  
-This group is only meant to be used as a meta group (see for instance meta groups section in the [standard example inventory](../../inventories/example/std/hosts) or [HA example inventory](../../inventories/example/ha/hosts)).
+ This group is only meant to be used as a meta group (see for instance meta groups section in the [standard example inventory](../../inventories/example/std/hosts) or [HA example inventory](../../inventories/example/ha/hosts)).
 
 ## Role Variables
 

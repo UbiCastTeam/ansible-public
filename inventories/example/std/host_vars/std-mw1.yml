@@ -46,7 +46,7 @@ postfix_email_from: "noreply@domain.com"
 postfix_mailname: "ubica.st"
 
 # postfix:
-#   SMTP host for the SASL account
+#   SMTP relay host
 #postfix_relay_host: ""
 
 # postfix:
