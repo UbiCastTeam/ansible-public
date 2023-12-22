@@ -32,9 +32,9 @@
   notify: restart mediaimport
   ansible.builtin.template:
     src: mediaimport.json.j2
-    dest: /etc/mediaserver/mediaimport.json
+    dest: /etc/mediaimport/mediaimport.json
     backup: true
-    mode: "0640"
+    mode: "0600"
 
 # FAIL2BAN
 
