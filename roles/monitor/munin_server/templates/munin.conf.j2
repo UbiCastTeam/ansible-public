@@ -4,10 +4,11 @@
 # (Exactly one) directory to include all files from.
 includedir /etc/munin/munin-conf.d
 
+{% if groups['munin_node'] is defined %}
 {% for host in groups['munin_node'] %}
 [{{ host }}.{{ ubicast_customer_name }}]
     address {{hostvars[host]['ansible_facts']['default_ipv4']['address']}}
     use_node_name yes
 
 {% endfor %}
-
+{% endif %}
