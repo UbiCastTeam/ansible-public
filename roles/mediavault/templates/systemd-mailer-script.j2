@@ -1,11 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+to="${1}"
+service="${2}"
+
+if systemctl is-active --quiet "${service}"; then
+    # The service running is again, a new timer should have start it
+    # Prepare output message
+    message="A new execution of ${service} is ongoing...\n\n"
+    message+="Previous execution logs :\n"
+    # There is no way of extracting logs of a previous execution, so we extract it manually
+    # See : https://github.com/systemd/systemd/issues/1942
+    # Timestamp when unit transitioned from inactive to active
+    until=$(systemctl show -p InactiveExitTimestamp "${service}" | cut -d'=' -f2-)
+    until=${until:-now}
+    # add jounal to message, use reverse + tac to make output faster
+    message+="$(journalctl --until "${until}" --unit "${service}" --reverse | head -n20 | tac)"
+else
+    # add current status to message
+    message="$(systemctl status --full "${service}" -n 20)"
+fi
 
 sendmail -t <<ERRMAIL
-To: $1
+To: ${to}
 From: {{ vault_email_from }}
-Subject: ({{ ansible_fqdn }}) $2 status
+Subject: ({{ ansible_fqdn }}) ${service} status
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=UTF-8
 
-$(systemctl status --full "$2")
+$(echo -e "${message}")
 ERRMAIL
