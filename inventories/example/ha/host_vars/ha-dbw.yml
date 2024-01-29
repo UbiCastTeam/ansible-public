@@ -4,27 +4,6 @@
 #   [HA only] Define database role on this host. Possible values: primary, standby or witness
 database_role: "witness"
 
-# ferm-configure:
-#   List of forward rules for the ferm firewall
-#ferm_forward_rules: []
-
-# ferm-configure:
-#   Global settings to be put in ferm.d directory
-#ferm_global_settings: |
-
-
-# ferm-configure:
-#   List of input rules for the ferm firewall
-#ferm_input_rules: []
-
-# ferm-configure:
-#   List of output rules for the ferm firewall
-#ferm_output_rules: []
-
-# ferm-configure:
-#   Filename into which rules will be written
-#ferm_rules_filename: "default"
-
 # sysconfig:
 #   List of NTP servers to use on the systems
 ntp_servers:

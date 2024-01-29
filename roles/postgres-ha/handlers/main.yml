@@ -19,4 +19,6 @@
     name: rephacheck.socket
     state: restarted
 
+- import_tasks: ../../shared/handlers/nftables.yml  # noqa: name[missing]
+
 ...

@@ -39,15 +39,6 @@
     enabled: true
     state: started
 
-# FIREWALL
-
-- name: firewall
-  vars:
-    ferm_rules_filename: "{{ monitor_ferm_rules_filename }}"
-    ferm_input_rules: "{{ monitor_ferm_input_rules }}"
-    ferm_output_rules: "{{ monitor_ferm_output_rules }}"
-    ferm_global_settings: "{{ monitor_ferm_global_settings }}"
-  ansible.builtin.include_role:
-    name: ferm-configure
+- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
 
 ...

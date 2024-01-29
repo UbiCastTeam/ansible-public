@@ -14,17 +14,6 @@
   vars:
     _celerity_service: "celerity-workers"
 
-# FIREWALL
-
-- name: firewall
-  vars:
-    ferm_rules_filename: "{{ worker_ferm_rules_filename }}"
-    ferm_input_rules: "{{ worker_ferm_input_rules }}"
-    ferm_output_rules: "{{ worker_ferm_output_rules }}"
-    ferm_global_settings: "{{ worker_ferm_global_settings }}"
-  ansible.builtin.include_role:
-    name: ferm-configure
-
 - name: flush handlers
   ansible.builtin.meta: flush_handlers
 

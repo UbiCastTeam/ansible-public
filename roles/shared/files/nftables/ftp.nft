@@ -1,0 +1,2 @@
+add inet filter input tcp dport 21 accept comment "FTP"
+add inet filter input tcp dport 22 accept comment "SFTP"

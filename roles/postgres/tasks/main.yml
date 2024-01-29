@@ -106,16 +106,7 @@
     name: "{{ item.name }}"
     owner: "{{ item.owner | d(omit) }}"
 
-# FIREWALL
-
-- name: firewall
-  vars:
-    ferm_rules_filename: "{{ database_ferm_rules_filename }}"
-    ferm_input_rules: "{{ database_ferm_input_rules }}"
-    ferm_output_rules: "{{ database_ferm_output_rules }}"
-    ferm_global_settings: "{{ database_ferm_global_settings }}"
-  ansible.builtin.include_role:
-    name: ferm-configure
+- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers

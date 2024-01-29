@@ -1,0 +1,1 @@
+add inet filter input tcp dport 6200 accept comment "Celerity Server"

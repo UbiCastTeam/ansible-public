@@ -6,4 +6,6 @@
     state: restarted
   listen: restart munin-node
 
+- import_tasks: ../../shared/handlers/nftables.yml  # noqa: name[missing]
+
 ...

@@ -29,4 +29,6 @@
     name: fail2ban
     state: restarted
 
+- import_tasks: ../../shared/handlers/nftables.yml  # noqa: name[missing]
+
 ...

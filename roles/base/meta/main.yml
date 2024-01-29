@@ -6,7 +6,6 @@ dependencies:
   - role: sysconfig
   - role: sysuser
   - role: postfix
-  - role: ferm-install
   - role: fail2ban
 
 ...

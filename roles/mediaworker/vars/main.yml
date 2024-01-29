@@ -1,18 +1,6 @@
 ---
+
 worker_packages:
   - ubicast-celerity-workers
 
-worker_ferm_rules_filename: worker
-worker_ferm_input_rules: []
-worker_ferm_output_rules:
-  - proto:
-      - tcp
-    dport:
-      - 80
-      - 443
-  - proto:
-      - tcp
-    dport:
-      - 6200
-worker_ferm_global_settings:
 ...

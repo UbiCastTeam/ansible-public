@@ -7,13 +7,6 @@ munin_node_packages:
 munin_node_logfile: /var/log/munin/munin_node.log
 munin_node_pidfile: /var/run/munin/munin_node.pid
 
-munin_node_ferm_rules_filename: munin_node
-munin_node_ferm_input_rules:
-  - proto:
-      - tcp
-    dport:
-      - 4949
-munin_node_ferm_output_rules: []
-munin_node_ferm_global_settings:
+firewall_rules_files: ['munin-node']
 
 ...

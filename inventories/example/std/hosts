@@ -32,32 +32,6 @@ std-ms1
 
 ; -- Meta groups (do not edit) --
 
-[munin_server:children]
-mediaserver
-
-[msmonitor:children]
-munin_server
-
-[munin_node:children]
-celerity
-live
-mediacache
-mediaserver
-mediaworker
-mirismanager
-msmonitor
-postgres
-
-[tester:children]
-celerity
-live
-mediacache
-mediaserver
-mediaworker
-mirismanager
-msmonitor
-postgres
-
 [base:children]
 celerity
 live
@@ -67,3 +41,18 @@ mediaworker
 mirismanager
 msmonitor
 postgres
+
+[munin_server:children]
+mediaserver
+
+[msmonitor:children]
+munin_server
+
+[munin_node:children]
+base
+
+[tester:children]
+base
+
+[firewall:children]
+base

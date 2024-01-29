@@ -1,4 +1,5 @@
 ---
+
 database_packages:
   - acl
   - postgresql
@@ -8,12 +9,6 @@ database_version: 15
 database_cluster: main
 database_conf_dir: /etc/postgresql/{{ database_version }}/{{ database_cluster }}
 
-database_ferm_rules_filename: postgres
-database_ferm_input_rules:
-  - proto:
-      - tcp
-    dport:
-      - 5432
-database_ferm_output_rules: []
-database_ferm_global_settings:
+firewall_rules_files: ['postgres']
+
 ...
