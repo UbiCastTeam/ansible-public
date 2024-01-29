@@ -1,6 +1,7 @@
 ---
 
 - name: celerity server install
+  notify: "reload fail2ban"
   ansible.builtin.apt:
     force_apt_get: true
     install_recommends: false

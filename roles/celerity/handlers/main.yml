@@ -10,6 +10,12 @@
     name: celerity-workers
     state: restarted
 
+# The celerity package drops a fail2ban conf, so we need to reload it form idempotency
+- name: reload fail2ban
+  ansible.builtin.systemd:
+    name: fail2ban
+    state: reloaded
+
 - import_tasks: ../../shared/handlers/nftables.yml  # noqa: name[missing]
 
 ...
