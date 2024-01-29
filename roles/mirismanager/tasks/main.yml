@@ -90,16 +90,7 @@
     enabled: true
     state: started
 
-# FIREWALL
-
-- name: firewall
-  vars:
-    ferm_rules_filename: "{{ manager_ferm_rules_filename }}"
-    ferm_input_rules: "{{ manager_ferm_input_rules }}"
-    ferm_output_rules: "{{ manager_ferm_output_rules }}"
-    ferm_global_settings: "{{ manager_ferm_global_settings }}"
-  ansible.builtin.include_role:
-    name: ferm-configure
+- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
 
 - name: flush handlers
   ansible.builtin.meta: flush_handlers

@@ -1,7 +1,7 @@
 # Postfix
 ## Description
 
-Used by the "base" metagroup to provide emailing capabilities
+The postfix group is used to configure all hosts to send email.  
 
 ## Role Variables
 

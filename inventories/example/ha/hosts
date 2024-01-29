@@ -52,36 +52,6 @@ ha-dbw
 
 ; -- Meta groups (do not edit) --
 
-[munin_server:children]
-mediaserver
-
-[msmonitor:children]
-munin_server
-
-[munin_node:children]
-celerity
-live
-mediacache
-mediaimport
-mediaserver
-mediavault
-mediaworker
-mirismanager
-msmonitor
-postgres
-
-[tester:children]
-celerity
-live
-mediacache
-mediaimport
-mediaserver
-mediavault
-mediaworker
-mirismanager
-msmonitor
-postgres
-
 [base:children]
 celerity
 live
@@ -93,3 +63,18 @@ mediaworker
 mirismanager
 msmonitor
 postgres
+
+[munin_server:children]
+mediaserver
+
+[msmonitor:children]
+munin_server
+
+[munin_node:children]
+base
+
+[tester:children]
+base
+
+[firewall:children]
+base

@@ -1,4 +1,5 @@
 ---
+
 - name: restart celerity-server
   ansible.builtin.service:
     name: celerity-server
@@ -8,4 +9,7 @@
   ansible.builtin.service:
     name: celerity-workers
     state: restarted
+
+- import_tasks: ../../shared/handlers/nftables.yml  # noqa: name[missing]
+
 ...

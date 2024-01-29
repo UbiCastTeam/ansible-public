@@ -1,4 +1,5 @@
 ---
+
 repmgr_packages:
   - repmgr
   # rephacheck:
@@ -17,18 +18,6 @@ repmgr_node_name: "{{ ansible_hostname }}"
 
 repmgr_conninfo: host={{ ansible_default_ipv4.address }} dbname={{ repmgr_database }} user={{ repmgr_user }} connect_timeout={{ repmgr_timeout }}
 
-database_ferm_rules_filename: postgres_ha
-database_ferm_input_rules:
-  - proto:
-      - tcp
-    dport:
-      - 5432
-      - 8543
-database_ferm_output_rules:
-  - proto:
-      - tcp
-    dport:
-      - 54321
-      - 54322
-database_ferm_global_settings:
+firewall_rules_files: ['rephacheck']
+
 ...

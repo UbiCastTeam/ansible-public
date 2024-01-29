@@ -3,14 +3,6 @@
 cache_packages:
   - ubicast-mediacache
 
-cache_ferm_rules_filename: mediacache
-cache_ferm_input_rules:
-  - proto:
-      - tcp
-    dport:
-      - 80
-      - 443
-cache_ferm_output_rules: []
-cache_ferm_global_settings:
+firewall_rules_files: ['http']
 
 ...

@@ -1,4 +1,5 @@
 ---
+
 nudgis_front_packages:
   - postgresql-client
   - cron
@@ -8,13 +9,6 @@ nudgis_front_packages:
   - ubicast-mediaserver
   - rsync  # used for HA only (copy of instance data)
 
-nudgis_front_ferm_rules_filename: server
-nudgis_front_ferm_input_rules:
-  - proto:
-      - tcp
-    dport:
-      - 80
-      - 443
-nudgis_front_ferm_output_rules: []
-nudgis_front_ferm_output_global_settings:
+firewall_rules_files: ['http']
+
 ...

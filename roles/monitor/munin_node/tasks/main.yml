@@ -1,4 +1,5 @@
 ---
+
 - name: install required packages for munin-node
   ansible.builtin.apt:
     force_apt_get: true
@@ -24,14 +25,6 @@
   register: munin_plugin_linked
   changed_when: munin_plugin_linked.stderr | length > 0
 
-# FIREWALL
+- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
 
-- name: firewall
-  vars:
-    ferm_rules_filename: "{{ munin_node_ferm_rules_filename }}"
-    ferm_input_rules: "{{ munin_node_ferm_input_rules }}"
-    ferm_output_rules: "{{ munin_node_ferm_output_rules }}"
-    ferm_global_settings: "{{ munin_node_ferm_global_settings }}"
-  ansible.builtin.include_role:
-    name: ferm-configure
 ...

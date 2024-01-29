@@ -1,15 +1,9 @@
 ---
+
 msmonitor_packages:
   - ubicast-webmonitor
   - ubicast-webmonitor-runtime
 
-monitor_ferm_rules_filename: monitor
-monitor_ferm_input_rules:
-  - proto:
-      - tcp
-    dport:
-      - 80
-      - 443
-monitor_ferm_output_rules: []
-monitor_ferm_global_settings:
+firewall_rules_files: ['http']
+
 ...
