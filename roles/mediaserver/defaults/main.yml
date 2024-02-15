@@ -12,6 +12,7 @@ nudgis_front_database_domain: "database.nudgis.example.com"
 nudgis_front_database_port: "5432"
 nudgis_front_database_password: "changeit"
 nudgis_front_instances_dir: "/data"
+nudgis_front_lock_dir: "/data"
 
 celerity_signing_key: "changeit"
 celerity_server_domain: "celerity.example.com"

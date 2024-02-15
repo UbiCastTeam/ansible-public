@@ -12,8 +12,11 @@ nudgis_front_database_port: "54321"
 # Defines the address for the Nudgis Front emails sender
 #nudgis_front_email_from: "noreply@{{ nudgis_front_domain }}"
 
-# Directory to store nudgis portal
+# Directory to store the Nudgis portals data
 #nudgis_front_instances_dir: "/data"
+
+# Directory to store the Nudgis lock files. This directory should be shared between the Nudgis Fronts in HA cases.
+#nudgis_front_lock_dir: "/data"
 
 # Defines the default deployed Nudgis portal "admin" user password
 nudgis_front_user_admin_password: "my-password"

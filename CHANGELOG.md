@@ -1,3 +1,8 @@
+# 2024-02-15
+
+* Remove obsolete `DATA_DIRS` configuration in Nudgis Front configuration template
+* Add `MSCONTROLLER_LOCKS_DIR` configuration in Nudgis Front configuration template (use the `nudgis_front_instances_dir` value as default value)
+
 # 2023-10-23
 
 Remove benchmark solution deployment.

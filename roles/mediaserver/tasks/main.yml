@@ -18,11 +18,11 @@
     regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
     replace: '\1{{ item.name }} = {{ item.value }}'
   loop:
-    - { name: 'DB_HOST',       value: '{{ nudgis_front_database_domain }}' }   # noqa: yaml[commas]
-    - { name: 'DB_PORT',       value: '{{ nudgis_front_database_port }}' }     # noqa: yaml[commas]
-    - { name: 'DB_ROOT_PWD',   value: '{{ nudgis_front_database_password }}' } # noqa: yaml[commas]
-    - { name: 'DATA_NEW_DIRS', value: '{{ nudgis_front_instances_dir }}' }     # noqa: yaml[commas]
-    - { name: 'DATA_DIRS',     value: '{{ nudgis_front_instances_dir }}' }     # noqa: yaml[commas]
+    - { name: 'DB_HOST',                value: '{{ nudgis_front_database_domain }}' }   # noqa: yaml[commas]
+    - { name: 'DB_PORT',                value: '{{ nudgis_front_database_port }}' }     # noqa: yaml[commas]
+    - { name: 'DB_ROOT_PWD',            value: '{{ nudgis_front_database_password }}' } # noqa: yaml[commas]
+    - { name: 'DATA_NEW_DIRS',          value: '{{ nudgis_front_instances_dir }}' }     # noqa: yaml[commas]
+    - { name: 'MSCONTROLLER_LOCKS_DIR', value: '{{ nudgis_front_lock_dir }}' }     # noqa: yaml[commas]
   when: item.value != "" and item.value != '""'
 
 - name: mediaserver install

@@ -69,7 +69,12 @@ nudgis_front_database_port: "5432"
 nudgis_front_database_password: "changeit"
 ```
 
-`nudgis_front_instances_dir`: Directory to store nudgis portal (Optional)
+`nudgis_front_instances_dir`: Directory to store the Nudgis portals data (Optional)
 ```
 nudgis_front_instances_dir: "/data"
+```
+
+`nudgis_front_lock_dir`: Directory to store the Nudgis lock files. This directory should be shared between the Nudgis Fronts in HA cases. (Optional)
+```
+nudgis_front_lock_dir: "/data"
 ```
