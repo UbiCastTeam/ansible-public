@@ -3,7 +3,6 @@
 
 - name: MEDIAWORKER
   hosts: mediaworker
-  tags: mediaworker
   roles:
     - mediaworker
   post_tasks:

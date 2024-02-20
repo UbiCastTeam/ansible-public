@@ -1,9 +1,6 @@
 ---
-repmgr_database: repmgr
-repmgr_user: repmgr
-repmgr_password:
-repmgr_roles: LOGIN,REPLICATION,SUPERUSER
-repmgr_timeout: 5
-repmgr_repha_port: 8543
-repmgr_conninfo: host={{ ansible_default_ipv4.address }} dbname={{ repmgr_database }} user={{ repmgr_user }} connect_timeout={{ repmgr_timeout }}
+
+# [HA only] Password of the repmgr DB user
+repmgr_password: ""
+
 ...

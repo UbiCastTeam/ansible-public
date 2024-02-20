@@ -1,0 +1,12 @@
+---
+
+- name: CONFIGURE UBICAST-TESTER
+  ansible.builtin.include_tasks: "configure/tester-configure.yml"
+  when:
+    - repos_ubicast_packages_token is defined
+    - tester_email_admin is defined
+    - tester_email_from is defined
+    - tester_email_to is defined
+    - tester_tests_ignored is defined
+
+...

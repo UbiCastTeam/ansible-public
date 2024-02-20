@@ -1,6 +1,10 @@
 ---
 
+# Packages required for the group
 worker_packages:
   - ubicast-celerity-workers
+
+# Nudgis system username for the application portal, used as a JSON key in celerity config for nudgis API usage (see also nudgis_front_api_key) **shared with mediaserver and celerity roles**
+nudgis_front_system_user: "msuser"
 
 ...

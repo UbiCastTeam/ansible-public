@@ -1,0 +1,11 @@
+---
+
+- name: CONFIGURE SUDOERS
+  ansible.builtin.include_tasks: "base/sudoers.yml"
+
+- name: SETUP ROOT DOTFILES
+  ansible.builtin.include_tasks: "common/dotfiles.yml"
+  vars:
+    user: "root"
+
+...

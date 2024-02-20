@@ -1,0 +1,8 @@
+---
+
+- name: CONFIGURE MUNIN-SERVER
+  ansible.builtin.include_tasks: "configure/main-configuration.yml"
+  when:
+    - ubicast_customer_name is defined
+
+...

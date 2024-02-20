@@ -1,0 +1,13 @@
+---
+
+- name: configure authentication
+  notify: restart postgresql
+  ansible.builtin.template:
+    src: pg_hba.conf.j2
+    dest: "{{ database_conf_dir }}/pg_hba.conf"
+    owner: postgres
+    group: postgres
+    mode: "0640"
+    backup: true
+
+...

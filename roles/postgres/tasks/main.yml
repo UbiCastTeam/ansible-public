@@ -1,114 +1,33 @@
 ---
 
-- name: install packages
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: "{{ database_packages }}"
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+- name: INSTALL
+  ansible.builtin.include_tasks:
+    file: "install.yml"
+    apply:
+      become: true
+      tags:
+        - install
+  tags:
+    - always
 
-# CONFIGURATION
+- name: BASE CONFIGURATION
+  ansible.builtin.include_tasks:
+    file: "base.yml"
+    apply:
+      become: true
+      tags:
+        - base
+  tags:
+    - always
 
-- name: update logrotate config
-  ansible.builtin.copy:
-    src: logrotate-postgresql
-    dest: /etc/logrotate.d/postgresql-common
-    owner: root
-    group: root
-    backup: false
-    mode: "644"
-
-- name: ensure conf directory exists
-  ansible.builtin.file:
-    path: "{{ database_conf_dir }}/conf.d"
-    owner: postgres
-    group: postgres
-    state: directory
-    mode: "755"
-
-- name: ensure conf directory is included
-  ansible.builtin.replace:
-    path: "{{ database_conf_dir }}/postgresql.conf"
-    backup: true
-    regexp: ^#?include_dir = '[A-Za-z\.]+'(\s+.*)$
-    replace: include_dir = 'conf.d'\1
-
-- name: configure custom settings
-  notify: restart postgresql
-  loop: "{{ database_conf }}"
-  when: item.content | d(false)
-  ansible.builtin.copy:
-    dest: "{{ database_conf_dir }}/conf.d/{{ item.name }}.conf"
-    owner: postgres
-    group: postgres
-    backup: true
-    content: "{{ item.content }}"
-    mode: "644"
-
-- name: configure authentication
-  notify: restart postgresql
-  ansible.builtin.template:
-    src: pg_hba.conf.j2
-    dest: "{{ database_conf_dir }}/pg_hba.conf"
-    owner: postgres
-    group: postgres
-    mode: "0640"
-    backup: true
-
-- name: ensure service is enabled and running
-  ansible.builtin.systemd:
-    name: postgresql@{{ database_version }}-{{ database_cluster }}
-    enabled: true
-    state: started
-
-# USERS
-
-- name: set superuser password
-  become: true
-  become_user: postgres
-  no_log: true
-  community.general.postgresql_user:
-    name: postgres
-    password: "{{ database_password | d(omit) }}"
-
-- name: manage users
-  become: true
-  become_user: postgres
-  no_log: true
-  loop: "{{ database_users }}"
-  community.general.postgresql_user:
-    name: "{{ item.name }}"
-    password: "{{ item.password | d(omit) }}"
-    db: "{{ item.db | d(omit) }}"
-    priv: "{{ item.priv | d(omit) }}"
-    role_attr_flags: "{{ item.roles | d(omit) }}"
-
-- name: set .pgpass to allow passwordless connection
-  loop: "{{ query('nested', ['root', 'postgres'], database_users) }}"
-  ansible.builtin.blockinfile:
-    path: ~{{ item.0 }}/.pgpass
-    block: "*:*:*:{{ item.1.name }}:{{ item.1.password }}"
-    marker: "# {mark} {{ item.1.name }}"
-    create: true
-    owner: "{{ item.0 }}"
-    group: "{{ item.0 }}"
-    mode: "0600"
-
-# DATABASES
-
-- name: create databases
-  become: true
-  become_user: postgres
-  loop: "{{ database_databases }}"
-  community.general.postgresql_db:
-    name: "{{ item.name }}"
-    owner: "{{ item.owner | d(omit) }}"
-
-- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
-
-- name: flush handlers
-  ansible.builtin.meta: flush_handlers
+- name: CONFIGURE
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+    apply:
+      become: true
+      tags:
+        - configure
+  tags:
+    - always
 
 ...

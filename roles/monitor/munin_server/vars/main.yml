@@ -1,4 +1,7 @@
 ---
+
+# Packages required for the group
 munin_server_packages:
   - munin
+
 ...

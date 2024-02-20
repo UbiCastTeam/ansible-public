@@ -1,8 +1,11 @@
 ---
 
+# Packages required for the group
 cache_packages:
   - ubicast-mediacache
 
-firewall_rules_files: ['http']
+# Group firewall rules filename, see roles/shared/files/nftables/
+firewall_rules_files:
+  - http
 
 ...

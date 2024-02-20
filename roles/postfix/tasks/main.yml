@@ -1,96 +1,23 @@
 ---
 
-- name: create postfix dir
-  ansible.builtin.file:
-    path: /etc/postfix
-    state: directory
-    mode: "755"
+- name: INSTALL
+  ansible.builtin.include_tasks:
+    file: "install.yml"
+    apply:
+      become: true
+      tags:
+        - install
+  tags:
+    - always
 
-- name: postfix main config
-  notify: restart postfix
-  ansible.builtin.template:
-    backup: true
-    src: main.cf.j2
-    dest: /etc/postfix/main.cf
-    mode: "644"
-
-- name: postfix mailname
-  notify: restart postfix
-  ansible.builtin.copy:
-    backup: true
-    dest: /etc/mailname
-    content: "{{ postfix_mailname }}"
-    mode: "644"
-
-- name: postfix local aliases
-  notify:
-    - newaliases
-    - restart postfix
-  ansible.builtin.copy:
-    backup: true
-    dest: /etc/aliases
-    mode: "644"
-    content: |
-      devnull: /dev/null
-      clamav: root
-      root: {{ postfix_admin }}
-
-- name: postfix virtual aliases
-  notify:
-    - postmap virtual
-    - restart postfix
-  ansible.builtin.copy:
-    backup: true
-    dest: /etc/postfix/virtual
-    mode: "644"
-    content: |
-      postmaster@{{ postfix_mailname }} root
-      bounces@{{ postfix_mailname }} root
-      noreply@{{ postfix_mailname }} devnull
-
-- name: postfix generic aliases, sender rewriting
-  notify:
-    - postmap generic
-    - restart postfix
-  ansible.builtin.copy:
-    backup: true
-    dest: /etc/postfix/generic
-    mode: "644"
-    content: |
-      root@localhost {{ postfix_email_from }}
-      root@{{ postfix_mailname }} {{ postfix_email_from }}
-      root@{{ ansible_hostname }} {{ postfix_email_from }}
-      @{{ postfix_mailname }} {{ postfix_email_from }}
-      @{{ ansible_hostname }} {{ postfix_email_from }}
-
-- name: postfix authentication
-  when:
-    - postfix_relay_host | d(false)
-    - postfix_relay_user | d(false)
-    - postfix_relay_pass | d(false)
-  notify:
-    - postmap sasl
-    - restart postfix
-  ansible.builtin.copy:
-    backup: true
-    dest: /etc/postfix/sasl-passwords
-    mode: "644"
-    content: "{{ postfix_relay_host }} {{ postfix_relay_user }}:{{ postfix_relay_pass }}"
-
-- name: install postfix
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: "{{ postfix_packages }}"
-    state: present
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
-
-- name: ensure postfix is running
-  ansible.builtin.service:
-    name: postfix
-    enabled: true
-    state: started
+- name: CONFIGURE
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+    apply:
+      become: true
+      tags:
+        - configure
+  tags:
+    - always
 
 ...

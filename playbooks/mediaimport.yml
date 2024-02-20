@@ -3,7 +3,6 @@
 
 - name: MEDIAIMPORT
   hosts: mediaimport
-  tags: mediaimport
   roles:
     - mediaimport
   post_tasks:

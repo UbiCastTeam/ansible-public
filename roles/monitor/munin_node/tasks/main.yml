@@ -1,30 +1,33 @@
 ---
 
-- name: install required packages for munin-node
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    state: present
-    name: "{{ munin_node_packages }}"
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+- name: INSTALL
+  ansible.builtin.include_tasks:
+    file: "install.yml"
+    apply:
+      become: true
+      tags:
+        - install
+  tags:
+    - always
 
-- name: copy munin_node configuration
-  notify: restart munin-node
-  ansible.builtin.template:
-    src: munin_node.conf.j2
-    dest: /etc/munin/munin-node.conf
-    mode: "644"
+- name: BASE CONFIGURATION
+  ansible.builtin.include_tasks:
+    file: "base.yml"
+    apply:
+      become: true
+      tags:
+        - base
+  tags:
+    - always
 
-- name: setup munin-node plugins link
-  notify: restart munin-node
-  ansible.builtin.shell:
-    munin_node-configure --shell --remove-also 2>&1 || true | sh -x  # noqa risky-shell-pipe
-  # sh -x print executed cmd to stderr
-  register: munin_plugin_linked
-  changed_when: munin_plugin_linked.stderr | length > 0
-
-- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
+- name: CONFIGURE
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+    apply:
+      become: true
+      tags:
+        - configure
+  tags:
+    - always
 
 ...

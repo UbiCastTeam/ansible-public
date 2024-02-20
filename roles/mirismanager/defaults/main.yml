@@ -1,12 +1,27 @@
 ---
+
+# Defines the default domain for the Nudgis Manager
 manager_domain: "manager.example.com"
+
+# Defines the default address for the Nudgis Manager emails sender
 manager_email_from: "noreply@{{ manager_domain }}"
+
+# Mandatory proxy to use in apt-cacher-ng
 proxy_http: ""
 
+# Domain to reach PostgreSQL database
 manager_database_domain: "database.manager.example.com"
+
+# Port to reach PostgreSQL database
 manager_database_port: "5432"
+
+# Port to connect to PostgreSQL database with superuser rights
 manager_database_password: "changeit"
 
+# Application ubicast user password
 manager_user_ubicast_password: "changeit"
+
+# Application admin user password
 manager_user_admin_password: "changeit"
+
 ...

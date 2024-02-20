@@ -1,9 +1,12 @@
 ---
 
+# Packages required for the group
 msmonitor_packages:
   - ubicast-webmonitor
   - ubicast-webmonitor-runtime
 
-firewall_rules_files: ['http']
+# Group firewall rules filename, see roles/shared/files/nftables/
+firewall_rules_files:
+  - http
 
 ...

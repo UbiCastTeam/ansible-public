@@ -1,7 +1,7 @@
 # Sysconfig
 ## Description
 
-Used by the "base" metagroup to provide core system utilities and their configuration
+The sysconfig group handles the installation and configuration of system components.
 
 ## Role Variables
 
@@ -10,11 +10,6 @@ Available variables are listed below, along with the descriptions and the defaul
 `offline_mode`: Do not configure any repository and use local repository (Optional)
 ```
 offline_mode: False
-```
-
-`repos_release`: Debian distribution short name (example: "bullseye") (Optional)
-```
-repos_release: "{{ ansible_distribution_release }}"
 ```
 
 `repos_debian_prefix`: Prefix of the debian repositories, with the protocol (example: "http://"). Used when the apt-cacher-ng of the Nudgis Manager proxifies the debian repositories. (Optional)

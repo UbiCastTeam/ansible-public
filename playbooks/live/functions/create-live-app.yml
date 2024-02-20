@@ -44,7 +44,7 @@
 
     - name: Extracting the application secret
       ansible.builtin.set_fact:
-        live_secret: "{{ ms_live_config.content | b64decode | from_json | json_query('RTMP_APP') }}"
+        live_secret: "{{ (ms_live_config.content | b64decode | from_json).RTMP_APP }}"
       when: ms_conf_live.stat.exists
 
     - name: Declaring the application secret
@@ -97,7 +97,10 @@
       failed_when: false
 
     - name: (Re)create the RTMP app configuration
-      notify: Reload nginx
+      notify:
+        - Reload nginx
+        - Setup munin-node plugins link
+        - Restart munin-node service
       ansible.builtin.command:
         cmd: ubicast-livectl add {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
         creates: /etc/nginx/rtmp.d/{{ live_app_name }}.conf
@@ -126,6 +129,18 @@
       ansible.builtin.systemd:
         name: nginx
         state: reloaded
+
+    - name: Setup munin-node plugins link
+      ansible.builtin.shell:
+        munin-node-configure --shell --remove-also 2>&1 | sh -x  # noqa risky-shell-pipe
+      # sh -x print executed cmd to stderr
+      register: munin_plugin_linked
+      changed_when: munin_plugin_linked.stderr | length > 0
+
+    - name: Restart munin-node service
+      ansible.builtin.service:
+        name: munin-node
+        state: restarted
 
 - name: MediaServer(s) - "{{ live_app_name }}" live application configuration
   hosts: mediaserver

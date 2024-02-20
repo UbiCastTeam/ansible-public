@@ -15,6 +15,7 @@
     name: systemd-sysusers
     state: restarted
 
+- import_tasks: ../../shared/handlers/munin-node.yml  # noqa: name[missing]
 - import_tasks: ../../shared/handlers/nftables.yml  # noqa: name[missing]
 
 ...

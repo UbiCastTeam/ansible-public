@@ -1,53 +1,23 @@
 ---
 
-- name: netcapture install
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: ubicast-netcapture
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+- name: INSTALL
+  ansible.builtin.include_tasks:
+    file: "install.yml"
+    apply:
+      become: true
+      tags:
+        - install
+  tags:
+    - always
 
-- name: create netcapture config
-  ansible.builtin.template:
-    src: netcapture.json.j2
-    dest: /etc/miris/netcapture.json
-    mode: u=rw,g=r,o=r
-
-- name: check if miris api config exists
-  ansible.builtin.stat:
-    path: "{{ netcapture_conf_folder }}/api.json"
-  register: miris_config_file
-
-- name: create netcapture miris api config
-  ansible.builtin.template:
-    src: miris-api.json.j2
-    dest: "{{ netcapture_conf_folder }}/api.json"
-    mode: u=rw,g=r,o=r
-  when: not miris_config_file.stat.exists
-
-- name: netcapture config dir
-  ansible.builtin.file:
-    path: "{{ netcapture_conf_folder }}"
-    group: video
-    mode: u=rwX,g=rwX,o=r
-    state: directory
-
-- name: netcapture media dir
-  ansible.builtin.file:
-    path: "{{ netcapture_media_folder }}"
-    group: video
-    mode: u=rwX,g=rwX,o=rx
-    state: directory
-
-- name: netcapture package dir
-  ansible.builtin.file:
-    path: "{{ netcapture_pkg_folder }}"
-    mode: u=rwX,g=rwX,o=rx
-    state: directory
-
-- name: flush handlers
-  ansible.builtin.meta: flush_handlers
+- name: CONFIGURE
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+    apply:
+      become: true
+      tags:
+        - configure
+  tags:
+    - always
 
 ...

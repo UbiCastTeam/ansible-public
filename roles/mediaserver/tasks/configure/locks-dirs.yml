@@ -1,0 +1,13 @@
+---
+
+- name: Configure mscontroller script locks directory
+  ansible.builtin.replace:
+    path: /etc/mediaserver/install.ini
+    regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
+    replace: '\1{{ item.name }} = {{ item.value }}'
+  loop:
+    - { name: 'MSCONTROLLER_LOCKS_DIR', value: '{{ nudgis_front_lock_dir }}' }
+
+# /!\ Existing locks wont be altered /!\
+
+...

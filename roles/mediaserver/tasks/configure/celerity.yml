@@ -1,0 +1,27 @@
+---
+
+- name: Update the MS configuration with the celerity server IP
+  ansible.builtin.lineinfile:
+    path: /etc/mediaserver/msconf.py
+    regexp: "^CELERITY_SERVER_URL = "
+    line: CELERITY_SERVER_URL = 'https://{{ celerity_server_domain }}:6200'
+    create: true
+    owner: root
+    group: root
+    # 644 as all the instances must reach this file
+    # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
+    mode: "0644"
+
+- name: Update the MS configuration with the celerity server secret
+  ansible.builtin.lineinfile:
+    path: /etc/mediaserver/msconf.py
+    regexp: "^CELERITY_SIGNING_KEY = "
+    line: CELERITY_SIGNING_KEY = '{{ celerity_signing_key }}'
+    create: true
+    owner: root
+    group: root
+    # 644 as all the instances must reach this file
+    # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
+    mode: "0644"
+
+...

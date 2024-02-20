@@ -1,0 +1,21 @@
+---
+
+- name: CONFIGURE POSTGRESQL-HA
+  ansible.builtin.include_tasks: "configure/postgres-role.yml"
+
+- name: CONFIGURE SSH BETWEEN SERVERS
+  ansible.builtin.include_tasks: "configure/ssh-key.yml"
+
+- name: CONFIGURE POSTGRESQL PRIMARY NODE
+  ansible.builtin.include_tasks: "configure/register-primary.yml"
+
+- name: CONFIGURE POSTGRESQL STANDBY NODE
+  ansible.builtin.include_tasks: "configure/register-standby.yml"
+
+- name: CONFIGURE POSTGRESQL WITNESS NODE
+  ansible.builtin.include_tasks: "configure/register-witness.yml"
+
+- name: flush handlers
+  ansible.builtin.meta: flush_handlers
+
+...

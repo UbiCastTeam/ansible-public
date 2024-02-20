@@ -3,7 +3,6 @@
 
 - name: POSTGRESQL
   hosts: postgres
-  tags: postgres
   roles:
     - postgres
   post_tasks:

@@ -3,7 +3,6 @@
 
 - name: MEDIASERVER
   hosts: mediaserver
-  tags: mediaserver
   roles:
     - mediaserver
   post_tasks:

@@ -1,0 +1,34 @@
+---
+
+- name: set superuser password
+  become: true
+  become_user: postgres
+  no_log: true
+  community.general.postgresql_user:
+    name: postgres
+    password: "{{ database_password | d(omit) }}"
+
+- name: manage users
+  become: true
+  become_user: postgres
+  no_log: true
+  loop: "{{ database_users }}"
+  community.general.postgresql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password | d(omit) }}"
+    db: "{{ item.db | d(omit) }}"
+    priv: "{{ item.priv | d(omit) }}"
+    role_attr_flags: "{{ item.roles | d(omit) }}"
+
+- name: set .pgpass to allow passwordless connection
+  loop: "{{ query('nested', ['root', 'postgres'], database_users) }}"
+  ansible.builtin.blockinfile:
+    path: ~{{ item.0 }}/.pgpass
+    block: "*:*:*:{{ item.1.name }}:{{ item.1.password }}"
+    marker: "# {mark} {{ item.1.name }}"
+    create: true
+    owner: "{{ item.0 }}"
+    group: "{{ item.0 }}"
+    mode: "0600"
+
+...

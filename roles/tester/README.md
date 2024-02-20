@@ -10,11 +10,6 @@ The tester group is used to configure all hosts with the UbiCast tester solution
 
 Available variables are listed below, along with the descriptions and the default values.
 
-`tester_system_name`: Name of the system in the reports (Optional)
-```
-tester_system_name: "{{ inventory_hostname }}"
-```
-
 `repos_ubicast_packages_token`: UbiCast repository token used to make API call to mirismanager.ubicast.net to retrieve system informations
 ```
 repos_ubicast_packages_token: "XXXX-XXXX-XXXX-XXXX-XXXX"

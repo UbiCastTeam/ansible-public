@@ -3,7 +3,6 @@
 
 - name: FIREWALL
   hosts: firewall
-  tags: firewall
   roles:
     - nftables
 

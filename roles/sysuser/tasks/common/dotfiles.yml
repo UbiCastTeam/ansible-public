@@ -1,0 +1,15 @@
+---
+
+- name: "({{ user }}) copy .bashrc"
+  ansible.builtin.copy:
+    src: bashrc
+    dest: ~{{ user }}/.bashrc
+    mode: "644"
+
+- name: "({{ user }}) copy .vimrc"
+  ansible.builtin.copy:
+    src: vimrc
+    dest: ~{{ user }}/.vimrc
+    mode: "644"
+
+...

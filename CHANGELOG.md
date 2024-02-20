@@ -1,25 +1,40 @@
+# 2024-02-16
+
+* Rework roles in 3 distinct stages. Stages can be used with the ansible tags of the same name.
+  * `install` for package installations,
+  * `base` for basic configuration (without variable),
+  * `configure` for case specific configurations.  
+* Remove some unused variables in roles.
+* Migrate variables from roles `defaults` to `vars`.
+* Add variables to `munin_server` and `munin_node` roles to allow a standalone installation of the roles.
+* Add documentation for ansible `vars` and `default`.
+
 # 2024-02-15
 
 * Remove obsolete `DATA_DIRS` configuration in Nudgis Front configuration template
 * Add `MSCONTROLLER_LOCKS_DIR` configuration in Nudgis Front configuration template (use the `nudgis_front_instances_dir` value as default value)
 
+# 2024-01-24
+
+* Changing the firewall solution from `ferm`/`iptables` to `nftables`.
+
 # 2023-10-23
 
-Remove benchmark solution deployment.
+* Remove benchmark solution deployment.
 
 # 2023-10-20
 
-Avoid multiple `base` role execution.  
+* Avoid multiple `base` role execution.  
 Now you have to create a meta group `[base:children]` containing all defined groups (`mediaserver`, `mirismanager`, ... see example inventories).
 
 # 2023-10-18
 
-Ansible installation documentation has been enhanced.  
+* Ansible installation documentation has been enhanced.  
 Makefile has been removed in favor of the more complete `ansible` and `ansible-playbook` default commands.
 
 # 2023-08-16
 
-Many changes have been made with the arrival of debian 12. 
+* Many changes have been made with the arrival of debian 12.  
 Variables have been completely restructured.
 
 To help you make the transition : 

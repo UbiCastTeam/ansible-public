@@ -1,0 +1,35 @@
+---
+
+- name: CONFIGURE LOCALHOST NAME RESOLUTION
+  ansible.builtin.include_tasks: "configure/local-resolution.yml"
+  when:
+    - cache_domain is defined
+
+- name: CONFIGURE VOD FOLDER
+  ansible.builtin.include_tasks: "configure/vod.yml"
+  when:
+    - cache_vod_folder is defined
+    - cache_vod_size is defined
+
+- name: CONFIGURE LIVE FOLDER
+  ansible.builtin.include_tasks: "configure/live.yml"
+  when:
+    - cache_live_folder is defined
+    - cache_live_size is defined
+
+- name: CONFIGURE NUDGIS CACHE VHOST
+  ansible.builtin.include_tasks: "configure/nginx-vhost.yml"
+  when:
+    - cache_domain is defined
+
+- name: CONFIGURE VOD UPSTREAM DOMAIN
+  ansible.builtin.include_tasks: "configure/nginx-vod-upstream.yml"
+  when:
+    - nudgis_front_domain is defined
+
+- name: CONFIGURE LIVE UPSTREAM DOMAIN
+  ansible.builtin.include_tasks: "configure/nginx-live-upstream.yml"
+  when:
+    - live_domain is defined
+
+...

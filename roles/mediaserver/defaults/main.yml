@@ -1,21 +1,36 @@
 ---
 
-nudgis_front_domain: "nudgis.example.com"
+# Defines the address for the Nudgis Front emails sender
 nudgis_front_email_from: "noreply@{{ nudgis_front_domain }}"
-nudgis_front_system_user: "msuser"
+
+# Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix)
+nudgis_front_domain: "nudgis.example.com"
+
+# Defines the default deployed Nudgis portal linked mirismanager domain (correspond to the URL of the mirismanager portal when adding the HTTP(S) prefix)
 manager_domain: "manager.example.com"
+
+# Defines the default deployed Nudgis portal master API key
 nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+
+# Defines the default deployed Nudgis portal "ubicast" user password
 nudgis_front_user_ubicast_password: "changeit"
+
+# Defines the default deployed Nudgis portal "admin" user password
 nudgis_front_user_admin_password: "changeit"
 
-nudgis_front_database_domain: "database.nudgis.example.com"
-nudgis_front_database_port: "5432"
-nudgis_front_database_password: "changeit"
-nudgis_front_instances_dir: "/data"
-nudgis_front_lock_dir: "/data"
-
-celerity_signing_key: "changeit"
+# IPv4 address used to join the celerity server
 celerity_server_domain: "celerity.example.com"
 
-real_ip_from: "" # default for OVH LB is 10.108.0.0/14
+# Key used to encrypt communications to and from celerity server
+celerity_signing_key: "changeit"
+
+# Domain to reach PostgreSQL database
+nudgis_front_database_domain: "database.nudgis.example.com"
+
+# Port to reach PostgreSQL database
+nudgis_front_database_port: "5432"
+
+# Port to connect to PostgreSQL database with superuser rights
+nudgis_front_database_password: "changeit"
+
 ...

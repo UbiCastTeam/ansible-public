@@ -17,26 +17,11 @@ To deploy all components, execute:
 ansible-playbook -i inventories/customer playbooks/site.yml 
 ```
 
-If you want to limit and deploy specific part, you can add a `tag`:
+Additionnaly, each role is splitted into 3 tags:
+* "install" to install the application packages required
+* "base" to to the base configuration of the application
+* "configure" to deploy specific configurations for the role
 
-```sh
-ansible-playbook -i inventories/customer -t <tag> playbooks/site.yml 
-```
+You can limit your deployment to this tags by using `--tags <tag_name>` to your ansible command.
 
-The avalaible tags are:
-
-| Component     | Tag            |
-|---------------|----------------|
-| mediaserver   | `server`       |
-| mediaworker   | `worker`       |
-| mirismanager  | `manager`      |
-| mediaimport   | `import`       |
-| mediavault    | `vault`        |
-| celerity      | `celerity`     |
-| ...           | ...            |
-
-
-To view all tags avalaible, run: 
-```
-awk '/tags:/ && !/always/ {print $2}' ./playbooks/site.yml
-```
+To personalise components to install/configure during the deployment, the best method is to duplicate and edit the `site.yml` playbook to suit your needs.

@@ -1,8 +1,15 @@
 ---
-celerity_signing_key: "changeit"
+
+# URL of the default Nudgis "msuser" portal used to populate the /etc/celerity/config.py file
+nudgis_front_domain: "nudgis.example.com"
+
+# Nudgis API key, used to communicate with the nudgis portal
+nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+
+# IP or domain on which the celerity server service can be joined
 celerity_server_domain: "celerity.example.com"
 
-nudgis_front_domain: "nudgis.example.com"
-nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
-nudgis_front_system_user: "msuser"
+# Secret key shared between celerity server and workers for communications (should be the same everywhere for communication)
+celerity_signing_key: "changeit"
+
 ...

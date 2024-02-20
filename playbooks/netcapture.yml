@@ -3,7 +3,6 @@
 
 - name: NETCAPTURE
   hosts: netcapture
-  tags: netcapture
   roles:
     - netcapture
   post_tasks:

@@ -1,7 +1,12 @@
 ---
 
+# List the domain to configure with a let's encrypt certificate. If an empty list is provided, every domain found in nginx is configured.
 letsencrypt_domains: []
-letsencrypt_webroot: "/var/www/letsencrypt"
+
+# Email of the Let's Encrypt SSL certificates administrator(s)
 letsencrypt_email: "admin@example.com"
+
+# Default Let's Encrypt web root folder for challenges publication
+letsencrypt_webroot: "/var/www/letsencrypt"
 
 ...

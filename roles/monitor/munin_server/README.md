@@ -14,3 +14,8 @@ Available variables are listed below, along with the descriptions and the defaul
 ```
 ubicast_customer_name: "example"
 ```
+
+`munin_nodes`: List of munin_nodes with their names and IP (each element of the list is a dictionary with a "name" and a "ip" key) (Optional)
+```
+munin_nodes: []
+```

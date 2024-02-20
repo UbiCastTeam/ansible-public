@@ -1,7 +1,10 @@
 ---
 
-# Name of the system in the reports
-tester_system_name: "{{ inventory_hostname }}"
+# UbiCast repository token used to make API call to mirismanager.ubicast.net to retrieve system informations
+repos_ubicast_packages_token: "XXXX-XXXX-XXXX-XXXX-XXXX"
+
+# UbiCast admin reciever of the email report for premiums
+tester_email_admin: "sysadmin+premium@ubicast.eu"
 
 # Sender of the email report
 tester_email_from: "ubicast.tester"
@@ -9,15 +12,7 @@ tester_email_from: "ubicast.tester"
 # Reciever of the email report
 tester_email_to: "example@example.com"
 
-# UbiCast admin reciever of the email report for premiums
-tester_email_admin: "sysadmin+premium@ubicast.eu"
-
 # List of tests to ignore when executing the ubicast-tester
 tester_tests_ignored: []
-#   - ntp.sh
-#   - email.sh
-
-# UbiCast repository token used to make API call to mirismanager.ubicast.net to retrieve system informations
-repos_ubicast_packages_token: "XXXX-XXXX-XXXX-XXXX-XXXX"
 
 ...

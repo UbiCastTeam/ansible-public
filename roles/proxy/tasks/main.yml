@@ -1,62 +1,13 @@
 ---
 
-- name: if proxy settings are set
-  when:
-    - proxy_http | d(false)
-    - proxy_https | d(false)
-  block:
-    - name: environment
-      ansible.builtin.blockinfile:
-        path: /etc/environment
-        create: true
-        marker_begin: BEGIN PROXY
-        marker_end: END PROXY
-        mode: "644"
-        block: |
-          http_proxy={{ proxy_http }}
-          HTTP_PROXY={{ proxy_http }}
-          https_proxy={{ proxy_https }}
-          HTTPS_PROXY={{ proxy_https }}
-          no_proxy={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
-          NO_PROXY={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
-
-    - name: apt
-      ansible.builtin.copy:
-        dest: /etc/apt/apt.conf.d/proxy
-        mode: "644"
-        content: |
-          Acquire::http::Proxy "{{ proxy_http }}";
-          Acquire::https::Proxy "{{ proxy_https }}";
-
-    - name: wget
-      ansible.builtin.copy:
-        dest: /etc/wgetrc
-        mode: "644"
-        content: |
-          use_proxy=yes
-          http_proxy={{ proxy_http }}
-          https_proxy={{ proxy_https }}
-          no_proxy={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
-
-    - name: install git
-      ansible.builtin.apt:
-        force_apt_get: true
-        install_recommends: false
-        name: git
-      register: apt_status
-      retries: 60
-      until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
-
-    - name: git
-      loop:
-        - name: http.proxy
-          value: "{{ proxy_http }}"
-        - name: https.proxy
-          value: "{{ proxy_https }}"
-      community.general.git_config:
-        name: "{{ item.name }}"
-        scope: global
-        value: "{{ item.value }}"
-        state: present
+- name: CONFIGURE
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+    apply:
+      become: true
+      tags:
+        - configure
+  tags:
+    - always
 
 ...

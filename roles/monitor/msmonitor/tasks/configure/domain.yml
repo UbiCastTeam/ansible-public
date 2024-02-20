@@ -1,0 +1,13 @@
+---
+
+- name: Configure domain
+  ansible.builtin.replace:
+    path: /etc/webmonitor/install.ini
+    regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
+    replace: '\1{{ item.name }} = {{ item.value }}'
+  loop:
+    - { name: 'DOMAIN',        value: '{{ monitor_domain }}' }                # noqa: yaml[commas]
+
+# /!\ Does not alter the already created instances /!\
+
+...

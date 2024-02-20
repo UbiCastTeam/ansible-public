@@ -1,20 +1,23 @@
 ---
 
-- name: install celerity worker
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: "{{ worker_packages }}"
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+- name: INSTALL
+  ansible.builtin.include_tasks:
+    file: "install.yml"
+    apply:
+      become: true
+      tags:
+        - install
+  tags:
+    - always
 
-- name: configure celerity
-  ansible.builtin.include_tasks: celerity_base_config.yml
-  vars:
-    _celerity_service: "celerity-workers"
-
-- name: flush handlers
-  ansible.builtin.meta: flush_handlers
+- name: CONFIGURE
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+    apply:
+      become: true
+      tags:
+        - configure
+  tags:
+    - always
 
 ...

@@ -1,0 +1,38 @@
+---
+
+- name: Populate postfix main configuration
+  ansible.builtin.include_tasks: "configure/postfix_main.yml"
+  when:
+    - postfix_mailname is defined
+    - postfix_relay_host is defined
+    - postfix_relay_user is defined
+
+- name: Populate /etc/mailname file
+  ansible.builtin.include_tasks: "configure/mailname.yml"
+  when:
+    - postfix_mailname is defined
+
+- name: Populate /etc/aliases file
+  ansible.builtin.include_tasks: "configure/aliases.yml"
+  when:
+    - postfix_admin is defined
+
+- name: Populate postfix virtual aliases
+  ansible.builtin.include_tasks: "configure/postfix_virtual.yml"
+  when:
+    - postfix_mailname is defined
+
+- name: Populate postfix generic
+  ansible.builtin.include_tasks: "configure/postfix_generic.yml"
+  when:
+    - postfix_mailname is defined
+    - postfix_email_from is defined
+
+- name: Populate postfix authentication file
+  ansible.builtin.include_tasks: "configure/postfix_authentication.yml"
+  when:
+    - postfix_relay_host is defined
+    - postfix_relay_user is defined
+    - postfix_relay_pass is defined
+
+...

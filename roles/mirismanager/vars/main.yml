@@ -1,6 +1,6 @@
 ---
 
-# ubicast-skyreach-runtime packages: todo: manage the database in inventory (/!\ can be idenpendent of the MS database)
+# Packages required for the group. Comes from ubicast-skyreach-runtime packages
 dependencies_packages:
   - apt-cacher-ng
   - cron
@@ -8,9 +8,13 @@ dependencies_packages:
   - postfix
   - postgresql
 
+# Packages required for the group
 manager_packages:
   - ubicast-skyreach
 
-firewall_rules_files: ['http', 'apt-cacher']
+# Group firewall rules filename, see roles/shared/files/nftables/
+firewall_rules_files:
+  - http
+  - apt-cacher
 
 ...

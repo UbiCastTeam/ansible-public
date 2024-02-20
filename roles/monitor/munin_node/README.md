@@ -14,3 +14,8 @@ Available variables are listed below, along with the descriptions and the defaul
 ```
 ubicast_customer_name: "example"
 ```
+
+`munin_server_ip`: IP of the munin server to authorize in munin_node (Optional)
+```
+munin_server_ip: ""
+```

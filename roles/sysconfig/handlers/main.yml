@@ -1,26 +1,9 @@
 ---
-- name: update cache
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    update_cache: true
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
-- name: systemd daemon reload
-  ansible.builtin.systemd:
-    daemon_reload: true
-
-- name: update locale
-  ansible.builtin.command: locale-gen
-  # we want to execute locale generation at every execution
-  changed_when: false
-
-- name: restart cron
-  ansible.builtin.service:
-    name: cron
-    state: restarted
+# - name: restart cron
+#   ansible.builtin.service:
+#     name: cron
+#     state: restarted
 
 - name: restart sshd
   ansible.builtin.service:
@@ -37,12 +20,17 @@
     name: systemd-timesyncd
     state: restarted
 
-- name: update cache
+- name: trigger dpkg-reconfigure tzdata
+  # https://unix.stackexchange.com/questions/451709/timedatectl-set-timezone-doesnt-update-etc-timezone
+  # timedatectl do not update the /etc/timezone file...
+  ansible.builtin.command:
+    cmd: dpkg-reconfigure --frontend noninteractive tzdata
+
+- name: trigger apt update
   ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
     update_cache: true
   register: apt_status
   retries: 60
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
 ...

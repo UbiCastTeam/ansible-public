@@ -3,7 +3,6 @@
 
 - name: BASE
   hosts: base
-  tags: all
   roles:
     - base
 

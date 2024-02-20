@@ -1,5 +1,12 @@
 ---
-offline_mode: false
+
+# Do not configure any ubicast ssh public key
+offline_mode: False
+
+# Password for the system user ubicast
 sysuser_ubicast_password: "changeit"
+
+# Password for the system user admin
 sysuser_admin_password: "changeit"
+
 ...

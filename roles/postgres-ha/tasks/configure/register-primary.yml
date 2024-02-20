@@ -1,0 +1,28 @@
+---
+
+- name: setup primary
+  when: >
+    (database_role is defined and database_role == "primary") or
+    (database_role is undefined and inventory_hostname == groups['postgres'][0]) or
+    (database_role is defined and database_role == "" and inventory_hostname == groups['postgres'][0])
+  block:
+    - name: check if primary already joined
+      become: true
+      become_user: postgres
+      register: repmgr_check_primary
+      community.general.postgresql_query:
+        db: repmgr
+        query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
+
+    - name: register primary
+      become: true
+      become_user: postgres
+      changed_when: true
+      when: repmgr_check_primary.query_result | length == 0
+      notify: restart repmgrd
+      ansible.builtin.command:
+        cmd: repmgr --config-file={{ repmgr_conf_file }} primary register
+
+- ansible.builtin.meta: flush_handlers # noqa name[missing]
+
+...

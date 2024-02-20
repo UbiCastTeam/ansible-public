@@ -14,11 +14,6 @@ Available variables are listed below, along with the descriptions and the defaul
 nudgis_front_email_from: "noreply@{{ nudgis_front_domain }}"
 ```
 
-`nudgis_front_system_user`: Defines the default deployed Nudgis portal short name (and linked unix user) (Optional)
-```
-nudgis_front_system_user: "msuser"
-```
-
 `nudgis_front_domain`: Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix)
 ```
 nudgis_front_domain: "nudgis.example.com"
@@ -67,14 +62,4 @@ nudgis_front_database_port: "5432"
 `nudgis_front_database_password`: Port to connect to PostgreSQL database with superuser rights
 ```
 nudgis_front_database_password: "changeit"
-```
-
-`nudgis_front_instances_dir`: Directory to store the Nudgis portals data (Optional)
-```
-nudgis_front_instances_dir: "/data"
-```
-
-`nudgis_front_lock_dir`: Directory to store the Nudgis lock files. This directory should be shared between the Nudgis Fronts in HA cases. (Optional)
-```
-nudgis_front_lock_dir: "/data"
 ```

@@ -1,9 +1,12 @@
 ---
 
+# Packages required for the group. ssl-cert is used for optionnal FTPS support
 import_packages:
-  - ssl-cert # for optionnal FTPS support (the mediaimport postinst will will use the snakeoil certificate for pure-ftpd)
+  - ssl-cert
   - ubicast-mediaimport
 
-firewall_rules_files: ['ftp']
+# Group firewall rules filename, see roles/shared/files/nftables/
+firewall_rules_files:
+  - ftp
 
 ...

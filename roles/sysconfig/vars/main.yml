@@ -1,9 +1,19 @@
 ---
+
+# Packages required for the group
+init_packages:
+  - openssh-client
+  - ca-certificates
+  - apt-utils
+  - gnupg
+  - sudo
+
+# Packages required for the group
 sysconfig_packages:
   - openssh-server
   - bash-completion
+  - unattended-upgrades
   - man
-  - sudo
   - vim
   - ifupdown
   - lm-sensors
@@ -12,12 +22,19 @@ sysconfig_packages:
   - host
   - htop
 
+# Debian distribution short name (example: "bullseye")
+repos_release: "{{ ansible_distribution_release }}"
+
+# Packages required for the group
 locale_packages:
   - locales
   - tzdata
 
+# Packages required for the group
 sysconfig_repos_packages:
   - python3-debian
 
-sysconfig_repos_keyrings_dir: '/usr/local/share/keyrings'
+# Repository keyring path
+sysconfig_repos_keyrings_dir: "/usr/local/share/keyrings"
+
 ...

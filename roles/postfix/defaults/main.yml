@@ -1,8 +1,21 @@
 ---
-postfix_mailname: "domain.example.com"
-postfix_email_from: "noreply@{{ postfix_mailname }}"
-postfix_relay_host: ""
-postfix_relay_user: ""
-postfix_relay_pass: ""
+
+# Define the specified email address for the unix root account (in /etc/aliases)
 postfix_admin: "admin@example.com"
+
+# Default sender domain, used to complete both postfix configuration and the /etc/mailname content
+postfix_mailname: "domain.example.com"
+
+# Email address used by postfix to send emails
+postfix_email_from: "noreply@{{ postfix_mailname }}"
+
+# SMTP relay host
+postfix_relay_host: ""
+
+# User of the SMTP SASL account
+postfix_relay_pass: ""
+
+# Password of the SMTP SASL account
+postfix_relay_user: ""
+
 ...

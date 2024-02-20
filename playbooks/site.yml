@@ -4,54 +4,50 @@
 - name: PYTHON
   hosts: all
   gather_facts: false
-
   tasks:
     - name: ensure python3 is installed
       register: python_install
       changed_when: "'es_pyinstall' in python_install.stdout_lines"
       ansible.builtin.raw: command -v python3 || echo es_pyinstall && apt update && apt install -y python3-minimal python3-apt iproute2
-      tags: always
+
+# Should be in a installation role (see #39283)
+- name: UPDATE PACKAGES
+  hosts: base
+  gather_facts: false
+  tags: install
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 86400
+      changed_when: false
 
 - import_playbook: base.yml
-  tags: base
 
 - import_playbook: firewall.yml
-  tags: firewall
 
 - import_playbook: "{{ 'postgres-ha' if groups['postgres']|d('') | length > 1 else 'postgres' }}.yml"
-  tags: postgres
 
 - import_playbook: mirismanager.yml
-  tags: manager
 
 - import_playbook: celerity.yml
-  tags: celerity
 
 - import_playbook: mediaworker.yml
-  tags: worker
 
 - import_playbook: mediaserver.yml
-  tags: server
 
 - import_playbook: live/live.yml
-  tags: live
 
 - import_playbook: mediacache/mediacache.yml
-  tags: mediacache
 
 - import_playbook: mediavault/deploy.yml
-  tags: vault
 
 - import_playbook: mediaimport.yml
-  tags: import
 
 - import_playbook: netcapture/netcapture.yml
-  tags: netcapture
 
 - import_playbook: monitor/all.yml
-  tags: monitor
 
 - import_playbook: tester.yml
-  tags: tester
 
 ...

@@ -1,36 +1,33 @@
 ---
 
-- name: Live packages installation
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: "{{ live_packages }}"
-    state: present
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+- name: INSTALL
+  ansible.builtin.include_tasks:
+    file: "install.yml"
+    apply:
+      become: true
+      tags:
+        - install
+  tags:
+    - always
 
-- name: TMPFS creation to store the live chunks
-  notify: restart nginx
-  ansible.posix.mount:
-    path: /var/tmp/nginx-rtmp
-    src: tmpfs
-    fstype: tmpfs
-    opts: defaults,size={{ live_tmpfs_size }}
-    state: mounted
+- name: BASE CONFIGURATION
+  ansible.builtin.include_tasks:
+    file: "base.yml"
+    apply:
+      become: true
+      tags:
+        - base
+  tags:
+    - always
 
-# not working with a tmpfs (mode=777, user=group=root)
-# - name: Changing the rights on the TMPFS directory
-#   notify: restart nginx
-#   ansible.builtin.file:
-#     path: /var/tmp/nginx-rtmp
-#     owner: nginx
-#     group: root
-#     mode: "0700"
-
-- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
-
-- name: flush handlers
-  ansible.builtin.meta: flush_handlers
+- name: CONFIGURE
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+    apply:
+      become: true
+      tags:
+        - configure
+  tags:
+    - always
 
 ...

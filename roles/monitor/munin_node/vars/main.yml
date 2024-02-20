@@ -1,12 +1,21 @@
 ---
 
+# Group firewall rules filename, see roles/shared/files/nftables/
+firewall_rules_files:
+  - munin-node
+
+# Munin node hostname of the server
+munin_node_hostname: "{{ inventory_hostname }}"
+
+# Path of the munin-node log file
+munin_node_logfile: "/var/log/munin/munin_node.log"
+
+# Packages required for the group
 munin_node_packages:
   - munin-node
   - ubicast-munin
 
-munin_node_logfile: /var/log/munin/munin_node.log
-munin_node_pidfile: /var/run/munin/munin_node.pid
-
-firewall_rules_files: ['munin-node']
+# Path of the munin-node PID file
+munin_node_pidfile: "/var/run/munin/munin_node.pid"
 
 ...

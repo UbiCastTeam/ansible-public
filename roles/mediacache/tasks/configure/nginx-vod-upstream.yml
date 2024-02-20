@@ -1,0 +1,10 @@
+---
+
+- name: fill the nginx VOD proxypass
+  notify: restart nginx
+  ansible.builtin.replace:
+    path: /etc/mediacache/nginx-proxy-mediaserver.conf
+    regexp: ^(proxy_pass)\s+.*(;)$
+    replace: \1 https://{{ nudgis_front_domain }}\2
+
+...

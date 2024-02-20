@@ -1,59 +1,23 @@
 ---
 
-- name: LXC packages installation
-  ansible.builtin.apt:
-    force_apt_get: true
-    name:
-      - lxc
-      - lxcfs
-      - bridge-utils
-    state: present
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+- name: INSTALL
+  ansible.builtin.include_tasks:
+    file: "install.yml"
+    apply:
+      become: true
+      tags:
+        - install
+  tags:
+    - always
 
-- name: Host bridge configuration
-  when: lxc_network_type == 'host_bridge'
-  block:
-    - name: Masquerade bridge configuration disabling
-      notify: restart lxc-net
-      ansible.builtin.copy:
-        src: lxc-net.host_bridge
-        dest: /etc/default/lxc-net
-        mode: "644"
-
-    - name: Ask confirmation
-      ansible.builtin.pause:
-        prompt: |
-          -------------------------------------------------------------------------------------------
-          ! WARNING !
-          Host bridge configuration must be done manually, and named: br0
-          Documentation (section host device as bridge): https://wiki.debian.org/LXC/SimpleBridge
-          Continue (yes/no)
-          -------------------------------------------------------------------------------------------
-      register: confirm_continue
-      no_log: true
-
-    - name: check parm is null or invalid
-      ansible.builtin.fail:
-        msg: 'Installation aborted'
-      when: not ((confirm_continue.user_input | bool) or (confirm_continue.user_input | length == 0))
-
-- name: Masquerade bridge configuration
-  when: lxc_network_type == 'masquerade_bridge'
-  block:
-    - name: Container network configuration
-      notify: restart lxc-net
-      ansible.builtin.copy:
-        src: lxc-net.masquerade_bridge
-        dest: /etc/default/lxc-net
-        mode: "644"
-
-- name: Default container configuration
-  notify: restart lxc
-  ansible.builtin.template:
-    src: lxc-default.j2
-    dest: /etc/lxc/default.conf
-    mode: "644"
+- name: BASE CONFIGURATION
+  ansible.builtin.include_tasks:
+    file: "base.yml"
+    apply:
+      become: true
+      tags:
+        - base
+  tags:
+    - always
 
 ...

@@ -1,0 +1,10 @@
+---
+
+- name: CONFIGURE MAILER
+  ansible.builtin.include_tasks: "configure/mailer.yml"
+  when:
+    - vault_email_enabled is defined
+    - vault_email_from is defined
+    - vault_email_to is defined
+
+...
