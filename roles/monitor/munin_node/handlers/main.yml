@@ -1,11 +1,6 @@
 ---
 
-- name: restart munin-node service
-  ansible.builtin.service:
-    name: munin-node
-    state: restarted
-  listen: restart munin-node
-
+- import_tasks: ../../shared/handlers/munin-node.yml  # noqa: name[missing]
 - import_tasks: ../../shared/handlers/nftables.yml  # noqa: name[missing]
 
 ...

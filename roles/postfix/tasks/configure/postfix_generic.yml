@@ -1,0 +1,15 @@
+---
+
+- name: gather hostname
+  ansible.builtin.setup:
+    filter: ansible_hostname
+
+- name: postfix generic
+  notify: postmap generic
+  ansible.builtin.template:
+    backup: true
+    src: generic.j2
+    dest: /etc/postfix/generic
+    mode: "644"
+
+...

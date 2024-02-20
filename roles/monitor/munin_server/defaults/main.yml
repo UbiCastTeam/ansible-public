@@ -1,3 +1,9 @@
 ---
+
+# Short name of the customer, with no spaces. This name is used in munin to group the graphs under the same name.
 ubicast_customer_name: "example"
+
+# List of munin_nodes with their names and IP (each element of the list is a dictionary with a "name" and a "ip" key)
+munin_nodes: []
+
 ...

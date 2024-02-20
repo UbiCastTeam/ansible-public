@@ -1,8 +1,6 @@
 ---
 
 dependencies:
-  - role: conf
-  - role: init
   - role: sysconfig
   - role: sysuser
   - role: postfix

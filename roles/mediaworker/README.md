@@ -14,11 +14,6 @@ Available variables are listed below, along with the descriptions and the defaul
 nudgis_front_domain: "nudgis.example.com"
 ```
 
-`nudgis_front_system_user`: Nudgis system username for the application portal, used as a JSON key in celerity config for nudgis API usage (see also nudgis_front_api_key) (Optional)
-```
-nudgis_front_system_user: "msuser"
-```
-
 `nudgis_front_api_key`: Nudgis API key, used to communicate with the nudgis portal
 ```
 nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"

@@ -1,43 +1,33 @@
 ---
 
-- name: packages
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: "{{ fail2ban_packages }}"
-    state: present
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+- name: INSTALL
+  ansible.builtin.include_tasks:
+    file: "install.yml"
+    apply:
+      become: true
+      tags:
+        - install
+  tags:
+    - always
 
-- name: create fail2ban path-overrides
-  notify: restart fail2ban
-  ansible.builtin.copy:
-    dest: /etc/fail2ban/paths-overrides.local
-    mode: "644"
-    force: false
-    content: |
-      [DEFAULT]
+- name: BASE CONFIGURATION
+  ansible.builtin.include_tasks:
+    file: "base.yml"
+    apply:
+      become: true
+      tags:
+        - base
+  tags:
+    - always
 
-- name: configure sshd jail backend
-  notify: restart fail2ban
-  ansible.builtin.lineinfile:
-    path: /etc/fail2ban/paths-overrides.local
-    regexp: '^sshd_backend'
-    insertafter: '[DEFAULT]'
-    line: 'sshd_backend = systemd'
-
-- name: jail defaults
-  notify: restart fail2ban
-  ansible.builtin.template:
-    src: jail.local.j2
-    dest: /etc/fail2ban/jail.local
-    mode: "644"
-
-- name: service
-  ansible.builtin.systemd:
-    name: fail2ban
-    enabled: true
-    state: started
+- name: CONFIGURE
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+    apply:
+      become: true
+      tags:
+        - configure
+  tags:
+    - always
 
 ...

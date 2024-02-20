@@ -1,8 +1,12 @@
 ---
 
+# Packages required for the group
 live_packages:
   - ubicast-live
 
-firewall_rules_files: ['http', 'rtmp']
+# Group firewall rules filename, see roles/shared/files/nftables/
+firewall_rules_files:
+  - http
+  - rtmp
 
 ...

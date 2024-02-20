@@ -1,0 +1,63 @@
+---
+
+- name: install rephacheck
+  ansible.builtin.template:
+    src: rephacheck.py.j2
+    dest: /usr/bin/rephacheck
+    mode: "0755"
+
+- name: register variables needed by rephacheck as facts
+  ansible.builtin.set_fact:
+    repmgr_node_name: "{{ repmgr_node_name }}"
+    repmgr_node_id: "{{ repmgr_node_id }}"
+
+- name: configure rephacheck
+  ansible.builtin.template:
+    src: rephacheck.conf.j2
+    dest: /etc/postgresql/{{ repmgr_database_version }}/{{ repmgr_database_cluster }}/rephacheck.conf
+    owner: postgres
+    group: postgres
+    mode: "0644"
+
+- name: configure rephacheck socket
+  notify:
+    - reload systemd
+    - restart rephacheck
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/rephacheck.socket
+    mode: "644"
+    content: |
+      [Unit]
+      Description=RepHACheck socket
+
+      [Socket]
+      ListenStream={{ repmgr_repha_port }}
+      Accept=yes
+
+      [Install]
+      WantedBy=sockets.target
+
+- name: configure rephacheck service
+  notify:
+    - reload systemd
+    - restart rephacheck
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/rephacheck@.service
+    mode: "644"
+    content: |
+      [Unit]
+      Description=RepHACheck - Health check for PostgreSQL cluster managed by repmgr
+
+      [Service]
+      ExecStart=-/usr/bin/rephacheck
+      StandardInput=socket
+      User=postgres
+      Group=postgres
+
+- name: enable and start rephacheck
+  ansible.builtin.service:
+    name: rephacheck.socket
+    state: started
+    enabled: true
+
+...

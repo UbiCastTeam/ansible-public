@@ -1,5 +1,10 @@
 ---
 
-firewall_rules_files: ['celerity']
+# Nudgis system username for the application portal, used as a JSON key in celerity config for nudgis API usage (see also nudgis_front_api_key) **shared with mediaserver and mediaworker roles**
+nudgis_front_system_user: "msuser"
+
+# Group firewall rules filename, see roles/shared/files/nftables/
+firewall_rules_files:
+  - celerity
 
 ...

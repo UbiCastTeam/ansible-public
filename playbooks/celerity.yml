@@ -3,7 +3,6 @@
 
 - name: CELERITY SERVER
   hosts: celerity
-  tags: celerity
   roles:
     - celerity
   post_tasks:

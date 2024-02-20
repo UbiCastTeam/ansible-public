@@ -1,8 +1,15 @@
 ---
-celerity_signing_key: "changeit"
+
+# Nudgis API key, used to communicate with the nudgis portal
+nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
+
+# Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix)
+nudgis_front_domain: "nudgis.example.com"
+
+# IP or domain on which the celerity server service can be joined
 celerity_server_domain: "celerity.example.com"
 
-nudgis_front_domain: "nudgis.example.com"
-nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
-nudgis_front_system_user: "msuser"
+# Secret key shared between celerity server and workers for communications (should be the same everywhere for communication)
+celerity_signing_key: "changeit"
+
 ...

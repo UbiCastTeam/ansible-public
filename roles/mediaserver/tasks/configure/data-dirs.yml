@@ -1,0 +1,13 @@
+---
+
+- name: Configure instances directories
+  ansible.builtin.replace:
+    path: /etc/mediaserver/install.ini
+    regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
+    replace: '\1{{ item.name }} = {{ item.value }}'
+  loop:
+    - { name: 'DATA_NEW_DIRS', value: '{{ nudgis_front_instances_dir }}' }
+
+# /!\ Does not alter the already created instances /!\
+
+...

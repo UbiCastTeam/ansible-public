@@ -3,7 +3,6 @@
 
 - name: POSTGRES HA
   hosts: postgres
-  tags: postgres
   pre_tasks:
     - name: check that repmgr_node_id is set
       ansible.builtin.assert:
@@ -26,7 +25,6 @@
 
 - name: POSTGRES HA CLIENTS
   hosts: mediaserver
-  tags: [postgres, mediaserver]
   # pre_tasks:
   #   - name: check that haproxy is configured
   #     ansible.builtin.assert:

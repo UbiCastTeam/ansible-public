@@ -1,0 +1,60 @@
+---
+
+- name: enable password login for ssh
+  notify: restart sshd
+  ansible.builtin.replace:
+    dest: /etc/ssh/sshd_config
+    regexp: ^PasswordAuthentication no
+    replace: "#PasswordAuthentication yes"
+
+# mediaimport service failed without any account configured
+- name: disable mediaimport service
+  ansible.builtin.systemd:
+    name: mediaimport
+    enabled: false
+
+- name: enable mediaimport-cleanup timer
+  ansible.builtin.systemd:
+    name: mediaimport-cleanup.timer
+    enabled: true
+
+- name: configure mediaimport admin emails
+  when:
+    - import_email_to | d(false)
+  notify: restart mediaimport
+  ansible.builtin.template:
+    src: mediaimport.json.j2
+    dest: /etc/mediaimport/mediaimport.json
+    backup: true
+    mode: "0600"
+
+# FAIL2BAN
+
+- name: deploy fail2ban pure-ftpd jail
+  notify: restart fail2ban
+  ansible.builtin.copy:
+    dest: /etc/fail2ban/jail.d/pure-ftpd.conf
+    mode: "0644"
+    content: |
+      [pure-ftpd]
+      enabled = true
+
+- name: configure pure-ftpd jail backend
+  notify: restart fail2ban
+  ansible.builtin.lineinfile:
+    path: /etc/fail2ban/paths-overrides.local
+    regexp: '^pureftpd_backend'
+    insertafter: '[DEFAULT]'
+    line: 'pureftpd_backend = systemd'
+
+- name: flush handlers
+  ansible.builtin.meta: flush_handlers
+
+# FIREWALL
+
+- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
+
+- name: flush handlers
+  ansible.builtin.meta: flush_handlers
+
+...

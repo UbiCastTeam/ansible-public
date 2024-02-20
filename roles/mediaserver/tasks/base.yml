@@ -1,0 +1,27 @@
+---
+
+- name: enable and start the clamav-freshclam service
+  ansible.builtin.service:
+    name: clamav-freshclam
+    enabled: true
+    state: started
+
+- name: Stats Nudgis Front main configuration file
+  ansible.builtin.stat:
+    path: "/etc/mediaserver/install.ini"
+  register: nudgis_config
+
+- name: Populate Nudgis Front base configuration with example values
+  when: nudgis_config.stat.size == 0
+  ansible.builtin.copy:
+    src: "/etc/mediaserver/install.example.ini"
+    dest: "/etc/mediaserver/install.ini"
+    mode: "preserve"
+    remote_src: true
+
+- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
+
+- name: flush handlers
+  ansible.builtin.meta: flush_handlers
+
+...

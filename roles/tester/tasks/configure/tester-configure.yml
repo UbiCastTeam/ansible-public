@@ -1,0 +1,16 @@
+---
+
+- name: tester configuration
+  ansible.builtin.replace:
+    path: /etc/ubicast-tester/config.yml
+    regexp: '^(\s*)#?{{ item.name }}:(\s*).*$'
+    replace: '\1{{ item.name }}:\2{{ item.value }}'
+  loop:
+    - { name: 'name',    value: '"{{ tester_system_name }}"' }           # noqa: yaml[commas]
+    - { name: 'token',   value: '"{{ repos_ubicast_packages_token }}"' } # noqa: yaml[commas]
+    - { name: 'from',    value: '"{{ tester_email_from }}"' }            # noqa: yaml[commas]
+    - { name: 'to',      value: '"{{ tester_email_to }}"' }              # noqa: yaml[commas]
+    - { name: 'admin',   value: '"{{ tester_email_admin }}"' }           # noqa: yaml[commas]
+    - { name: 'ignored', value: '{{ tester_tests_ignored }}' }
+
+...

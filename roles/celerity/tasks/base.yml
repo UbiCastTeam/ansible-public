@@ -1,0 +1,5 @@
+---
+
+- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
+
+...

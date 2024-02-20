@@ -1,7 +1,7 @@
 # Mirismanager
 ## Description
 
-The mediaserver group is used to configure all hosts with the UbiCast platform to control and manage video recorders.  
+The mirismanager group is used to configure all hosts with the UbiCast platform to control and manage video recorders.  
  * In a standard Ubicast case, the host is the same as mediaserver
  * In a HA Ubicast case, it is usually a dedicated server
 
@@ -19,9 +19,9 @@ manager_domain: "manager.example.com"
 manager_email_from: "noreply@{{ manager_domain }}"
 ```
 
-`http_proxy`: Mandatory proxy to use in apt-cacher-ng (Optional)
+`proxy_http`: Mandatory proxy to use in apt-cacher-ng (Optional)
 ```
-http_proxy: ""
+proxy_http: ""
 ```
 
 `manager_database_domain`: Domain to reach PostgreSQL database

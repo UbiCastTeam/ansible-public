@@ -3,7 +3,6 @@
 
 - name: Install UbiCast tester
   hosts: tester
-  tags: all
   roles:
     - tester
 

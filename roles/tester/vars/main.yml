@@ -1,7 +1,13 @@
 ---
+
+# Packages required for the group
 tester_packages:
   - ubicast-tester
   - ubicast-tester-nudgis
   - ubicast-tester-system
   - ubicast-tester-deployment
+
+# Name of the system in the reports
+tester_system_name: "{{ inventory_hostname }}"
+
 ...

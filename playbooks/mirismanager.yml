@@ -3,7 +3,6 @@
 
 - name: MIRIS MANAGER
   hosts: mirismanager
-  tags: mirismanager
   roles:
     - mirismanager
   post_tasks:

@@ -1,5 +1,15 @@
 ---
 
+# Defines the default deployed Nudgis portal short name (and linked unix user) **shared with celerity and mediaworker roles**
+nudgis_front_system_user: "msuser"
+
+# Directory to store the Nudgis portals data
+nudgis_front_instances_dir: "/data"
+
+# Directory to store the Nudgis lock files. This directory should be shared between the Nudgis Fronts in HA cases. 
+nudgis_front_lock_dir: "/data"
+
+# Packages required for the group. rsync is used for HA only (copy of instance data)
 nudgis_front_packages:
   - postgresql-client
   - cron
@@ -7,8 +17,10 @@ nudgis_front_packages:
   - nginx
   - postfix
   - ubicast-mediaserver
-  - rsync  # used for HA only (copy of instance data)
+  - rsync
 
-firewall_rules_files: ['http']
+# Group firewall rules filename, see roles/shared/files/nftables/
+firewall_rules_files:
+  - http
 
 ...

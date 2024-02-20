@@ -1,9 +1,12 @@
 ---
-netcapture_mm_url: "mirismanager.example.com"
-netcapture_mm_ssl: true
-netcapture_conf_folder: "/etc/miris/conf"
-netcapture_media_folder: "/data/netcapture/media"
-netcapture_pkg_folder: "/data/netcapture/packages"
+
+# Password of the deployed netcapture miris API
 netcapture_miris_user_pwd: "changeme"
-netcapture_miris_auth: true
+
+# URL of the mirismanager to use for packages
+netcapture_mm_url: "mirismanager.example.com"
+
+# Activates the SSL verification when calling the Nudgis Manager
+netcapture_mm_ssl: True
+
 ...

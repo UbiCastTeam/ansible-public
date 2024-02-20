@@ -1,6 +1,9 @@
 ---
+
+# Packages required for the group
 hap_packages:
   - haproxy
   - rsyslog
   - logrotate
+
 ...

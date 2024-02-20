@@ -2,22 +2,18 @@
 
 - name: postmap sasl
   ansible.builtin.command: postmap hash:/etc/postfix/sasl-passwords
-  # we want to generate db file at every execution
   changed_when: false
 
 - name: postmap generic
   ansible.builtin.command: postmap hash:/etc/postfix/generic
-  # we want to generate db file at every execution
   changed_when: false
 
 - name: postmap virtual
   ansible.builtin.command: postmap hash:/etc/postfix/virtual
-  # we want to generate db file at every execution
   changed_when: false
 
-- name: newaliases
+- name: run newaliases
   ansible.builtin.command: newaliases
-  # we want to generate aliases at every execution
   changed_when: false
 
 - name: restart postfix

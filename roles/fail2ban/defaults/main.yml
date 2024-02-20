@@ -1,8 +1,9 @@
 ---
-fail2ban_ignoreip: "127.0.0.1/8 ::1"
-fail2ban_maxretry: "5"
-fail2ban_bantime: "10m"
+
+# Email sender of the fail2ban reports
 fail2ban_email_from: "root@localhost"
+
+# Email reciepient of the fail2ban reports
 fail2ban_email_to: "noreply@example.com"
-fail2ban_action: "action_mwl"
+
 ...

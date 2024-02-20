@@ -19,9 +19,11 @@ ignore_file \.dpkg-(tmp|new|old|dist)$
 ignore_file \.rpm(save|new)$
 ignore_file \.pod$
 
-host_name {{ inventory_hostname }}.{{ ubicast_customer_name }}
+host_name {{ munin_node_hostname }}.{{ ubicast_customer_name }}
 
-{% if groups['munin_server'] is defined %}
+{% if munin_server_ip %}
+allow ^{{ munin_server_ip | replace('.', '\.') }}$
+{% elif groups['munin_server'] is defined %}
 {% for host in groups['munin_server'] %}
 allow ^{{ hostvars[host]['ansible_facts']['default_ipv4']['address'] | replace('.','\.') }}$
 {% endfor %}

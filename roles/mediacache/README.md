@@ -1,7 +1,7 @@
 # Mediacache
 ## Description
 
-The cache group is used to configure all hosts that will server as a proxy cache of live and/or vod.
+The Nudgis cache group is used to configure all hosts that will server as a proxy cache of live and/or vod.
 
 ## Role Variables
 

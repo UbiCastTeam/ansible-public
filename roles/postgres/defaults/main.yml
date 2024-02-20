@@ -1,26 +1,6 @@
 ---
+
+# Password for the postgres admin account
 database_password: "changeit"
-database_users: []
-database_databases: []
 
-database_conf:
-  - name: main
-    content:
-
-database_host_authentification:
-  - type: local
-    method: peer
-  - type: hostssl
-    address: 127.0.0.1/32
-  - type: hostssl
-    address: ::1/128
-  - type: local
-    database: replication
-    method: peer
-  - type: hostssl
-    database: replication
-    address: 127.0.0.1/32
-  - type: hostssl
-    database: replication
-    address: ::1/128
 ...

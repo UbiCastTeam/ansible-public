@@ -1,0 +1,14 @@
+---
+
+- name: CONFIGURE DOMAIN
+  ansible.builtin.include_tasks: "configure/domain.yml"
+  when:
+    - monitor_domain is defined
+
+- name: CONFIGURE ADMIN USERS
+  ansible.builtin.include_tasks: "configure/users.yml"
+  when:
+    - monitor_user_admin_password is defined
+    - monitor_user_ubicast_password is defined
+
+...

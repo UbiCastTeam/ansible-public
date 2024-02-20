@@ -1,0 +1,21 @@
+---
+
+- name: Stats Nudgis Manager main configuration file
+  ansible.builtin.stat:
+    path: "/etc/skyreach/install.ini"
+  register: manager_config
+
+- name: Populate Nudgis Manager base configuration with example values
+  when: manager_config.stat.size == 0
+  ansible.builtin.copy:
+    src: "/etc/skyreach/install.example.ini"
+    dest: "/etc/skyreach/install.ini"
+    mode: "preserve"
+    remote_src: true
+
+- import_tasks: ../../shared/tasks/firewall_rules_files.yml  # noqa: name[missing]
+
+- name: flush handlers
+  ansible.builtin.meta: flush_handlers
+
+...

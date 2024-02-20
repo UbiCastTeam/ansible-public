@@ -1,0 +1,11 @@
+---
+
+- name: proxy
+  when:
+    - proxy_http | d()
+    - proxy_https | d()
+  ansible.builtin.include_role:
+    name: proxy
+    allow_duplicates: true
+
+...

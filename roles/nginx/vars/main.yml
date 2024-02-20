@@ -1,6 +1,16 @@
 ---
+
+# Packages required for the group. ssl-cert is used for Debian SSL snakeoil certificates
 nginx_packages:
   - nginx
   - uwsgi
   - uwsgi-plugin-python3
+  - ssl-cert
+
+# Path of the SSL certificate for nginx configuration
+nginx_ssl_certificate: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+
+# Path of the SSL key for nginx configuration
+nginx_ssl_certificate_key: "/etc/ssl/private/ssl-cert-snakeoil.key"
+
 ...

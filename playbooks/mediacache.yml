@@ -3,7 +3,6 @@
 
 - name: MEDIACACHE
   hosts: mediacache
-  tags: mediacache
   roles:
     - mediacache
   post_tasks:

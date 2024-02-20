@@ -1,0 +1,11 @@
+---
+
+- name: mailname configuration
+  notify: restart postfix
+  ansible.builtin.template:
+    backup: true
+    src: mailname.j2
+    dest: /etc/mailname
+    mode: "644"
+
+...

@@ -1,0 +1,11 @@
+---
+
+- name: postfix virtual aliases
+  notify: postmap virtual
+  ansible.builtin.template:
+    backup: true
+    src: virtual.j2
+    dest: /etc/postfix/virtual
+    mode: "644"
+
+...

@@ -1,0 +1,14 @@
+---
+
+- name: MAIN NETCAPTURE CONFIGURATION FILE
+  ansible.builtin.include_tasks: "configure/main-configure.yml"
+  when:
+    - netcapture_mm_url is defined
+    - netcapture_mm_ssl is defined
+
+- name: MIRIS API CONFIGURATION FILE
+  ansible.builtin.include_tasks: "configure/miris-configure.yml"
+  when:
+    - netcapture_miris_user_pwd is defined
+
+...

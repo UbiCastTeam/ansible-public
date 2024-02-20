@@ -1,10 +1,16 @@
 ---
 
+# Packages required for the group
 vault_packages:
   - ubicast-mediavault
 
+# Systemd email service name. The service is triggered on service backup failure
 vault_email_service_name: "status-email-admin"
+
+# Systemd email service path.
 vault_email_service_path: "/etc/systemd/system/{{ vault_email_service_name }}@.service"
+
+# Systemd email script path executed by systemd email service.
 vault_email_script_path: "/usr/local/sbin/systemd-mailer"
 
 ...

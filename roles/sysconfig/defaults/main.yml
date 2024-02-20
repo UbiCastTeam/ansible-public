@@ -1,14 +1,34 @@
 ---
 
-offline_mode: false
+# Do not configure any repository and use local repository
+offline_mode: False
 
-repos_release: "{{ ansible_distribution_release }}"
-repos_ubicast_packages_domain: "manager.example.com"
+# Prefix of the debian repositories, with the protocol (example: "http://"). Used when the apt-cacher-ng of the Nudgis Manager proxifies the debian repositories.
+repos_debian_prefix: "http://"
+
+# Value for the system locale
+init_locale: "en_GB.UTF-8"
+
+# List of NTP servers to use on the systems
+ntp_servers:
+  - 0.debian.pool.ntp.org
+  - 1.debian.pool.ntp.org
+  - 2.debian.pool.ntp.org
+  - 3.debian.pool.ntp.org
+
+# Token used in the UbiCast debian repository URL
 repos_ubicast_packages_token: "XXXX-XXXX-XXXX-XXXX-XXXX"
 
-init_locale: 'en_GB.UTF-8'
+# Domain of the UbiCast debian packages repository URL
+repos_ubicast_packages_domain: "manager.example.com"
+
+# Timezone to set on the servers (`timedatectl list-timezones` for the complete list)
 init_timezone: "Europe/Paris"
 
-ntp_servers: "0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org"
+# Domain to use for the Debian repositories
+repos_debian_packages_domain: "deb.debian.org"
+
+# Domain to use for the Debian security repositories
+repos_debian_security_packages_domain: "security.debian.org"
 
 ...

@@ -1,0 +1,14 @@
+---
+
+- name: set issue file
+  ansible.builtin.copy:
+    content: |
+      \e{lightblue} © UBICAST\e{reset}
+
+      IP Address:
+      \e{bold}\4\e{reset}
+
+    dest: /etc/issue
+    mode: "644"
+
+...

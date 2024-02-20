@@ -1,6 +1,7 @@
 ---
 
+# Packages required for the group
 nftables_packages:
-  - "nftables"
+  - nftables
 
 ...

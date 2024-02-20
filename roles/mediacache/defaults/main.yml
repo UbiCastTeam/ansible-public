@@ -1,15 +1,24 @@
 ---
-cache_domain: "cache.example.com"
-nudgis_front_domain: "nudgis.example.com"
-live_domain: "nudgis.example.com"
 
-# MediaCache data folder - for VOD
+# URL of the Nudgis Cache vhost
+cache_domain: "cache.example.com"
+
+# URL of Nudgis Front cluster
+nudgis_front_domain: "nudgis.example.com"
+
+# URL of the Nudgis Live cluster
+live_domain: "live.example.com"
+
+# Path of the folder to cache the VOD service data
 cache_vod_folder: "/var/cache/nginx/mediacache-vod"
-# MediaCache size in Gb - for VOD
+
+# Max size allowed for the VOD service data
 cache_vod_size: "1"
 
-# MediaCache data folder - for live
+# Path of the folder to cache the Live service data
 cache_live_folder: "/var/cache/nginx/mediacache-live"
-# MediaCache size in Gb - for live
+
+# Max size allowed for the Live service data
 cache_live_size: "1"
+
 ...

@@ -1,8 +1,6 @@
 ---
 
-# lxc_network_type possible value:
-#  - masquerade_bridge => independent private bridge
-#  - host_bridge => host shared network bridge
-lxc_network_type: masquerade_bridge
+# LXC network type
+lxc_network_type: "masquerade_bridge"
 
 ...
