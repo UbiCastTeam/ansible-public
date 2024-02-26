@@ -6,7 +6,7 @@ nudgis_front_system_user: "msuser"
 # Directory to store the Nudgis portals data
 nudgis_front_instances_dir: "/data"
 
-# Directory to store the Nudgis lock files. This directory should be shared between the Nudgis Fronts in HA cases. 
+# Directory to store the Nudgis lock files. This directory should be shared between the Nudgis Fronts in HA cases.
 nudgis_front_lock_dir: "/data"
 
 # Packages required for the group. rsync is used for HA only (copy of instance data)
