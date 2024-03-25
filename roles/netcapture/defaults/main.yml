@@ -1,8 +1,5 @@
 ---
 
-# Password of the deployed netcapture miris API
-netcapture_miris_user_pwd: "changeme"
-
 # URL of the mirismanager to use for packages
 netcapture_mm_url: "mirismanager.example.com"
 

@@ -7,11 +7,6 @@ The netcapture group is used to configure the server which will host UbiCast vir
 
 Available variables are listed below, along with the descriptions and the default values.
 
-`netcapture_miris_user_pwd`: Password of the deployed netcapture miris API
-```
-netcapture_miris_user_pwd: "changeme"
-```
-
 `netcapture_mm_url`: URL of the mirismanager to use for packages
 ```
 netcapture_mm_url: "mirismanager.example.com"
