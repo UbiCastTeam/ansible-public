@@ -4,8 +4,10 @@
   notify: "Postmap sasl"
   ansible.builtin.template:
     backup: true
-    src: sasl-passwords.j2
-    dest: /etc/postfix/sasl-passwords
-    mode: "644"
+    src: sasl_passwd.j2
+    dest: /etc/postfix/sasl_passwd
+    owner: "root"
+    group: "root"
+    mode: "600"
 
 ...
