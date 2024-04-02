@@ -1,0 +1,9 @@
+---
+
+# Value for the system locale
+init_locale: "en_GB.UTF-8"
+
+# Timezone to set on the servers (`timedatectl list-timezones` for the complete list)
+init_timezone: "Europe/Paris"
+
+...

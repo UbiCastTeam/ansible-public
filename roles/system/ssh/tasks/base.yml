@@ -1,0 +1,9 @@
+---
+
+- name: "BASE CONFIGURE SSH CLIENT"
+  ansible.builtin.include_tasks: "base/ssh-client.yml"
+
+- name: "BASE CONFIGURE SSH SERVER"
+  ansible.builtin.include_tasks: "base/ssh-server.yml"
+
+...

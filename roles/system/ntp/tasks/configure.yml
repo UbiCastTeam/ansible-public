@@ -1,0 +1,8 @@
+---
+
+- name: "CONFIGURE NTP"
+  ansible.builtin.include_tasks: "configure/ntp.yml"
+  when:
+    - ntp_servers is defined
+
+...

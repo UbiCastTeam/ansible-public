@@ -1,0 +1,33 @@
+---
+
+- name: "NUDGIS CACHE"
+  hosts: cache
+  roles:
+    - nudgis/cache
+  tasks:
+    - name: "Getting the IP to trust in term of securelink"
+      ansible.builtin.set_fact:
+        securelink_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+      tags: configure
+
+    - name: "Authorize Nudgis Cache on the Nudgis Front(s)"
+      notify: "Restart nginx on the nudgis fronts"
+      ansible.builtin.lineinfile:
+        path: /etc/nginx/conf.d/mediaserver-securelink.conf
+        line: "{{ '\t' }}{{ securelink_ip }} 1;"
+        insertafter: ^geo
+      delegate_to: "{{ item }}"
+      delegate_facts: true
+      loop: "{{ groups['front'] }}"
+      tags: configure
+
+  handlers:
+    - name: "Restart nginx on the nudgis fronts"
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted
+      delegate_to: "{{ item }}"
+      delegate_facts: true
+      loop: "{{ groups['front'] }}"
+
+...

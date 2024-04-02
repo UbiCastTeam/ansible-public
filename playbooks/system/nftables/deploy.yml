@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "NFTABLES"
+  hosts: ubicast
+  roles:
+    - system/nftables
+
+...

@@ -1,0 +1,18 @@
+---
+
+- name: "BASE CONFIGURE REPGMR"
+  ansible.builtin.include_tasks: "base/repmgr.yml"
+
+- name: "BASE CONFIGURE SWAPPINESS"
+  ansible.builtin.include_tasks: "base/swappiness.yml"
+
+- name: "BASE CONFIGURE REPHACHECK"
+  ansible.builtin.include_tasks: "base/rephacheck.yml"
+
+- name: "BASE CONFIGURE FIREWALL RULES"
+  ansible.builtin.import_tasks: ../../shared/tasks/firewall_rules_files.yml
+
+- name: "Flush handlers"
+  ansible.builtin.meta: flush_handlers
+
+...

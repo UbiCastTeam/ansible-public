@@ -1,0 +1,27 @@
+---
+
+- name: "Nginx remove default vhost"
+  notify: "Restart nginx"
+  loop:
+    - /etc/nginx/sites-enabled/default
+    - /etc/nginx/sites-enabled/default.conf
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+
+# deploy self-signed (snakeoil certificates)
+- name: "Nginx update ssl certificate conf"
+  notify: "Restart nginx"
+  ansible.builtin.lineinfile:
+    path: /etc/nginx/conf.d/ssl_certificate.conf
+    regexp: ssl_certificate\s+([\w/\-\_\.]+);
+    line: ssl_certificate {{ nginx_ssl_certificate }};
+
+- name: "Nginx update ssl certificate key conf"
+  notify: "Restart nginx"
+  ansible.builtin.lineinfile:
+    path: /etc/nginx/conf.d/ssl_certificate.conf
+    regexp: ssl_certificate_key\s+([\w/\-\_\.]+);
+    line: ssl_certificate_key {{ nginx_ssl_certificate_key }};
+
+...

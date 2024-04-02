@@ -1,0 +1,9 @@
+---
+
+# Domain to use for the Debian repositories
+#repos_debian_packages_domain: "deb.debian.org"
+
+# Domain to use for the Debian security repositories
+#repos_debian_security_packages_domain: "security.debian.org"
+
+...

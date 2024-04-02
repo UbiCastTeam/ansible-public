@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "NTP"
+  hosts: ubicast
+  roles:
+    - system/ntp
+
+...

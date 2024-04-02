@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "SYSTEM USER"
+  hosts: ubicast
+  roles:
+    - system/user
+
+...

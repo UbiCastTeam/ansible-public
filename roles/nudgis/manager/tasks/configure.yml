@@ -1,0 +1,32 @@
+---
+
+- name: "CONFIGURE DATABASE"
+  ansible.builtin.include_tasks: "configure/database.yml"
+  when:
+    - manager_database_domain is defined
+    - manager_database_port is defined
+    - manager_database_password is defined
+
+- name: "CONFIGURE DOMAIN"
+  ansible.builtin.include_tasks: "configure/domain.yml"
+  when:
+    - manager_domain is defined
+
+- name: "CONFIGURE ADMIN USERS"
+  ansible.builtin.include_tasks: "configure/users.yml"
+  when:
+    - manager_user_ubicast_password is defined
+    - manager_user_admin_password is defined
+
+- name: "CONFIGURE NUDGIS MANAGER EMAIL SENDER ADDRESS"
+  ansible.builtin.include_tasks: "configure/email.yml"
+  when:
+    - manager_email_from is defined
+
+- name: "CONFIGURE APT CACHER MANDATORY PROXY"
+  ansible.builtin.include_tasks: "configure/apt-cacher-proxy.yml"
+  when:
+    - proxy_http is defined
+    - proxy_http != ""
+
+...

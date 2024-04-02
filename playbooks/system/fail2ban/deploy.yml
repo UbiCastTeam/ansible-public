@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "FAIL2BAN"
+  hosts: ubicast
+  roles:
+    - system/fail2ban
+
+...

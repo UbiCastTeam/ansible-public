@@ -1,0 +1,6 @@
+---
+
+# IP of the munin server to authorize in munin_node
+#munin_server_ip: ""
+
+...

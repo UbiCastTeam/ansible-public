@@ -1,0 +1,29 @@
+---
+
+- name: "Verify root user ssh authorized key file"
+  ansible.builtin.stat:
+    path: /root/.ssh/authorized_keys
+  register: auth
+
+- name: "Fail if the root ssh authorized key is missing or empty"
+  ansible.builtin.fail:
+    msg: "Error: root user does not have any ssh key configured !\n\
+          Cannot configure PermitRootLogin to without-password"
+  when: not auth.stat.exists or auth.stat.size == 0
+
+- name: "Enable root login via ssh with key only"
+  ansible.builtin.replace:
+    dest: /etc/ssh/sshd_config
+    regexp: ^#?PermitRootLogin.*
+    replace: PermitRootLogin prohibit-password
+  notify: "Restart sshd"
+
+- name: "Remove disabled root login"
+  ansible.builtin.replace:
+    dest: /root/.ssh/authorized_keys
+    regexp: ^no-port-forwarding,(.+) ssh-
+    replace: ssh-
+    mode: "600"
+  failed_when: false
+
+...

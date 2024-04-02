@@ -1,0 +1,12 @@
+---
+
+- name: "TMPFS creation to store the live chunks"
+  notify: "Restart nginx"
+  ansible.posix.mount:
+    path: /var/tmp/nginx-rtmp
+    src: tmpfs
+    fstype: tmpfs
+    opts: defaults,size={{ live_tmpfs_size }}
+    state: mounted
+
+...

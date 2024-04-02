@@ -1,24 +1,24 @@
 #!/usr/bin/env ansible-playbook
 ---
 
-- name: GATHER ALL FACTS
+- name: "GATHER ALL FACTS"
   hosts: all
   tasks:
-    - name: ensure python3 is installed
+    - name: "Ensure python3 is installed"
       register: python_install
       changed_when: "'es_pyinstall' in python_install.stdout_lines"
       ansible.builtin.raw: command -v python3 || echo es_pyinstall && apt update && apt install -y python3-minimal python3-apt iproute2
       tags: always
 
-- name: SET PORTS TO LISTEN
+- name: "SET PORTS TO LISTEN"
   hosts: all
   gather_facts: false
   tasks:
-    - name: Set vars
+    - name: "Set vars"
       ansible.builtin.include_vars:
         file: ressources/firewall/rules.yml
 
-    - name: listen ports
+    - name: "Listen ports"
       ansible.builtin.include_tasks: ressources/firewall/listen.yml
       # loop over listen vars (named outer_item) and call firewall-listen
       loop: "{{ listen }}"
@@ -27,15 +27,15 @@
       # execute loop only when group exists and host is in listen.groupname
       when: (outer_item.groupname in groups) and (inventory_hostname in groups[outer_item.groupname])
 
-- name: TEST FIREWALL RULES
+- name: "TEST FIREWALL RULES"
   hosts: all
   gather_facts: false
   tasks:
-    - name: Set vars
+    - name: "Set vars"
       ansible.builtin.include_vars:
         file: ressources/firewall/rules.yml
 
-    - name: test rules
+    - name: "Test rules"
       ansible.builtin.include_tasks: ressources/firewall/test-rule.yml
       # loop over listen vars (named outer_item) and call firewall-listen
       loop: "{{ test }}"

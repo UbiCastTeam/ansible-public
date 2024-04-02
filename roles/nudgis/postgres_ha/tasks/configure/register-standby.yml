@@ -1,0 +1,84 @@
+---
+
+- name: "Setup standby"
+  when: inventory_hostname == groups['postgres'][1]
+  block:
+    - name: "Check if standby already joined"
+      become: true
+      become_user: postgres
+      register: repmgr_check_standby
+      community.general.postgresql_query:
+        db: repmgr
+        query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
+
+    - name: "Stop postgresql service"
+      when: repmgr_check_standby.query_result | length == 0
+      ansible.builtin.systemd:
+        name: postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}
+        state: stopped
+
+    - name: "Remove existing pgdata"
+      when: repmgr_check_standby.query_result | length == 0
+      ansible.builtin.command:
+        cmd: mv -vf {{ repmgr_database_data_dir }} {{ repmgr_database_data_dir }}.save
+        removes: "{{ repmgr_database_data_dir }}"
+
+    - name: "Clone from primary to standby"
+      become: true
+      become_user: postgres
+      changed_when: true
+      when: repmgr_check_standby.query_result | length == 0
+      ignore_errors: true
+      register: repmgr_clone_standby
+      ansible.builtin.shell:
+        cmd: |
+          repmgr \
+            --config-file={{ repmgr_conf_file }} \
+            --force \
+            --dbname={{ repmgr_database }} \
+            --host={{ repmgr_primary_node }} \
+            --port=5432 \
+            --username={{ repmgr_user }} \
+            --pgdata={{ repmgr_database_data_dir }} \
+            standby clone --fast-checkpoint
+
+    - name: "Remove pgdata backup"
+      when: repmgr_clone_standby is succeeded
+      ansible.builtin.file:
+        path: "{{ repmgr_database_data_dir }}.save"
+        state: absent
+
+    - name: "Remove failed clone pgdata"
+      when: repmgr_clone_standby is failed
+      ansible.builtin.file:
+        path: "{{ repmgr_database_data_dir }}"
+        state: absent
+
+    - name: "Restore pgdata backup"
+      when: repmgr_clone_standby is failed
+      ansible.builtin.command:
+        cmd: mv -vf {{ repmgr_database_data_dir }}.save {{ repmgr_database_data_dir }}
+        removes: "{{ repmgr_database_data_dir }}.save"
+
+    - name: "Start postgresql service"
+      ansible.builtin.systemd:
+        name: postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}
+        state: started
+
+    - name: "Standby clone failed"
+      when: repmgr_clone_standby is failed
+      ansible.builtin.fail:
+        msg: "{{ repmgr_clone_standby.stderr }}"
+
+    - name: "Register standby"
+      become: true
+      become_user: postgres
+      changed_when: true
+      when: repmgr_check_standby.query_result | length == 0
+      notify: "Restart repmgrd"
+      ansible.builtin.command:
+        cmd: repmgr --config-file={{ repmgr_conf_file }} standby register
+
+- ansible.builtin.meta: flush_handlers
+
+...

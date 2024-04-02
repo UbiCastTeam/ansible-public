@@ -1,0 +1,6 @@
+---
+
+# Do not configure any ubicast ssh public key
+offline_mode: false
+
+...

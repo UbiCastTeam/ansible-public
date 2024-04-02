@@ -1,0 +1,11 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "NUDGIS VAULT"
+  hosts: vault
+  tasks:
+    - name: "Add backup"
+      ansible.builtin.include_tasks: ressources/add_backup_task.yml
+      loop: "{{ vault_backups }}"
+
+...

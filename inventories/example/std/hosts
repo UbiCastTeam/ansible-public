@@ -6,22 +6,16 @@ std-mw1
 
 ; -- Groups --
 
-[celerity]
+[cache]
+std-misc1
+
+[front]
 std-ms1
 
 [live]
 std-ms1
 
-[mediacache]
-std-misc1
-
-[mediaserver]
-std-ms1
-
-[mediaworker]
-std-mw1
-
-[mirismanager]
+[manager]
 std-ms1
 
 [netcapture]
@@ -30,29 +24,30 @@ std-misc1
 [postgres]
 std-ms1
 
+[task_management_client]
+std-mw1
+
+[task_management_server]
+std-ms1
+
 ; -- Meta groups (do not edit) --
 
-[base:children]
-celerity
+[ubicast:children]
+front
 live
-mediacache
-mediaserver
-mediaworker
-mirismanager
-msmonitor
+cache
+manager
+netcapture
+task_management_client
+task_management_server
+monitor_server
 postgres
 
-[munin_server:children]
-mediaserver
+[monitor_server:children]
+front
 
-[msmonitor:children]
-munin_server
-
-[munin_node:children]
-base
+[monitor_client:children]
+ubicast
 
 [tester:children]
-base
-
-[firewall:children]
-base
+ubicast

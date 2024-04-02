@@ -1,0 +1,9 @@
+---
+
+- name: "Install certbot"
+  ansible.builtin.package:
+    force_apt_get: true
+    install_recommends: false
+    name: certbot
+
+...

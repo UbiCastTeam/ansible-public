@@ -1,0 +1,10 @@
+---
+
+- name: "Fill the vhost file"
+  notify: "Restart nginx"
+  ansible.builtin.replace:
+    path: /etc/nginx/sites-available/mediacache.conf
+    regexp: ^(\s+server_name)\s+.*(;)$
+    replace: \1 {{ cache_domain }}\2
+
+...

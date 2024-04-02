@@ -1,0 +1,15 @@
+---
+
+# Debian distribution short name (example: "bookworm")
+repos_release: "{{ ansible_distribution_release }}"
+
+# Packages required for the group
+sysconfig_repos_packages:
+  - python3-debian
+  - ca-certificates
+  - gnupg
+
+# Repository keyring path
+sysconfig_repos_keyrings_dir: "/usr/local/share/keyrings"
+
+...

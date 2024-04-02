@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "POSTFIX"
+  hosts: ubicast
+  roles:
+    - system/postfix
+
+...

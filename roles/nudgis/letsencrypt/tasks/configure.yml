@@ -1,0 +1,10 @@
+---
+
+- name: "CONFIGURE UBICAST-TESTER"
+  ansible.builtin.include_tasks: "configure/letsencrypt-configure.yml"
+  when:
+    - letsencrypt_domains is defined
+    - letsencrypt_domains != []
+    - letsencrypt_email is defined
+
+...

@@ -15,31 +15,21 @@ ha-mw2
 
 ; -- Groups --
 
-[celerity]
-ha-cel
+[cache]
+ha-misc1
+
+[front]
+ha-ms1
+ha-ms2
+
+[import]
+ha-misc1
 
 [live]
 ha-live1
 ha-live2
 
-[mediacache]
-ha-misc1
-
-[mediaimport]
-ha-misc1
-
-[mediaserver]
-ha-ms1
-ha-ms2
-
-[mediavault]
-ha-misc1
-
-[mediaworker]
-ha-mw1
-ha-mw2
-
-[mirismanager]
+[manager]
 ha-mm
 
 [netcapture]
@@ -50,31 +40,36 @@ ha-db1
 ha-db2
 ha-dbw
 
+[task_management_client]
+ha-mw1
+ha-mw2
+
+[task_management_server]
+ha-cel
+
+[vault]
+ha-misc1
+
 ; -- Meta groups (do not edit) --
 
-[base:children]
-celerity
+[ubicast:children]
+front
 live
-mediacache
-mediaimport
-mediaserver
-mediavault
-mediaworker
-mirismanager
-msmonitor
+cache
+manager
+netcapture
+import
+vault
+task_management_client
+task_management_server
+monitor_server
 postgres
 
-[munin_server:children]
-mediaserver
+[monitor_server:children]
+front
 
-[msmonitor:children]
-munin_server
-
-[munin_node:children]
-base
+[monitor_client:children]
+ubicast
 
 [tester:children]
-base
-
-[firewall:children]
-base
+ubicast

@@ -1,0 +1,17 @@
+---
+
+# not working with a tmpfs (mode=777, user=group=root)
+# - name: "Changing the rights on the TMPFS directory"
+#   notify: "Restart nginx"
+#   ansible.builtin.file:
+#     path: /var/tmp/nginx-rtmp
+#     owner: nginx
+#     group: root
+#     mode: "0700"
+
+- ansible.builtin.import_tasks: ../../shared/tasks/firewall_rules_files.yml
+
+- name: "Flush handlers"
+  ansible.builtin.meta: flush_handlers
+
+...

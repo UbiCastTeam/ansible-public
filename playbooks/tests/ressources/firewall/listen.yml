@@ -1,12 +1,12 @@
 ---
 
-- name: Print debug
+- name: "Print debug"
   ansible.builtin.debug:
     msg: On {{ outer_item.groupname }} server(s) put {{ outer_item.ports }} port(s) in listen mode
 
-- name: put port {{ item }} in listen mode
+- name: "Put port in listen mode - {{ item }}"  # noqa: ignore-errors
   ansible.builtin.shell: nohup timeout 300 nc -lp {{ item }} >/dev/null 2>&1 &
-  ignore_errors: true  # noqa ignore-errors
+  ignore_errors: true
   loop: "{{ outer_item.ports }}"
   changed_when: false
 

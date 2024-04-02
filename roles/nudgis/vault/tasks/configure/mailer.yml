@@ -1,0 +1,19 @@
+---
+
+- name: "Configure mailer"
+  when: vault_email_enabled
+  block:
+    - name: "Create mailer script"
+      ansible.builtin.template:
+        src: systemd-mailer-script.j2
+        dest: "{{ vault_email_script_path }}"
+        mode: "0755"
+
+    - name: "Create mailer service"
+      notify: "Systemd daemon reload"
+      ansible.builtin.template:
+        src: systemd-mailer-service.j2
+        dest: "{{ vault_email_service_path }}"
+        mode: "0644"
+
+...

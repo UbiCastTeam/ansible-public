@@ -1,8 +1,0 @@
----
-
-dependencies:
-  - role: nginx
-  - when: groups['postgres'] | length > 1
-    role: haproxy
-
-...

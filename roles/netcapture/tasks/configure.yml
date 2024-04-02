@@ -1,9 +1,0 @@
----
-
-- name: MAIN NETCAPTURE CONFIGURATION FILE
-  ansible.builtin.include_tasks: "configure/main-configure.yml"
-  when:
-    - netcapture_mm_url is defined
-    - netcapture_mm_ssl is defined
-
-...

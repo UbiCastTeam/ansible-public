@@ -1,0 +1,21 @@
+---
+
+- name: "Restart nginx"
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+
+- name: "Restart mediaserver"
+  ansible.builtin.systemd:
+    name: mediaserver
+    state: restarted
+
+- name: "Restart systemd-sysusers"
+  ansible.builtin.systemd:
+    name: systemd-sysusers
+    state: restarted
+
+- ansible.builtin.import_tasks: ../../shared/handlers/munin-node.yml
+- ansible.builtin.import_tasks: ../../shared/handlers/nftables.yml
+
+...

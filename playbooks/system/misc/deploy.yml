@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "SYSTEM MISC."
+  hosts: ubicast
+  roles:
+    - system/misc
+
+...

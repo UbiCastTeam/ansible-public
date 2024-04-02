@@ -1,68 +1,68 @@
 #!/usr/bin/env ansible-playbook
 ---
 
-- name: TEST DATA PARTITION
+- name: "TEST DATA PARTITION"
   hosts: mediaserver
   gather_facts: false
   tasks:
-    - name: verify /data partition existence
+    - name: "Verify /data partition existence"
       ansible.builtin.command: findmnt /data
       register: data_exist
       failed_when: false
       changed_when: false
 
     # /data exist
-    - name: Verify if /data exist
+    - name: "Verify if /data exist"
       when: data_exist.rc == 0
       block:
-        - name: get /data size
+        - name: "Get /data size"
           ansible.builtin.command: df -BG /data --output=size | tail -n1 | grep -o '[0-9]*'
           register: data_size
           failed_when: false
           changed_when: false
 
-        - name: print size
+        - name: "Print size"
           ansible.builtin.debug:
             msg: /data size is {{ data_size.stdout }}G
 
-        - name: create a test directory in /data
+        - name: "Create a test directory in /data"  # noqa: ignore-errors
           ansible.builtin.file:
             path: /data/test
             state: directory
             mode: "0755"
             owner: nobody
             group: nogroup
-          ignore_errors: true  # noqa ignore-errors
+          ignore_errors: true
           changed_when: false
 
-        - name: create a test file in /data
+        - name: "Create a test file in /data"  # noqa: ignore-errors
           ansible.builtin.file:
             state: touch
             path: /data/test/file
             mode: "0644"
             owner: nobody
             group: nogroup
-          ignore_errors: true  # noqa ignore-errors
+          ignore_errors: true
           become: true
           become_method: ansible.builtin.sudo
           become_user: nobody
           changed_when: false
 
     # /data missing
-    - name: Verify if /home is big enough
+    - name: "Verify if /home is big enough"
       when: data_exist.rc != 0
       block:
-        - name: get /home size
+        - name: "Get /home size"
           ansible.builtin.command: df -BG /home --output=size | tail -n1 | grep -o '[0-9]*'
           register: home_size
           failed_when: false
           changed_when: false
 
-        - name: verify size
+        - name: "Verify size"  # noqa: ignore-errors
           ansible.builtin.debug:
             msg: /home size is too short ({{ home_size.stdout }}G < 200G)
           when: home_size.stdout | int < 200
-          ignore_errors: true  # noqa ignore-errors
+          ignore_errors: true
           failed_when: true
 
 ...

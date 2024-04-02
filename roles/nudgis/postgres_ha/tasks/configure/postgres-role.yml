@@ -1,0 +1,48 @@
+---
+
+- name: "Postgresql"
+  vars:
+    database_host_authentification:
+      - type: local
+        method: peer
+      - type: hostssl
+        address: 127.0.0.1/32
+      - type: hostssl
+        address: ::1/128
+      - type: hostssl
+        address: 0.0.0.0/0
+      - type: hostssl
+        address: ::/0
+      - type: local
+        database: replication
+        method: peer
+      - type: hostssl
+        database: replication
+        address: 127.0.0.1/32
+      - type: hostssl
+        database: replication
+        address: ::1/128
+      - type: hostssl
+        database: replication
+        address: 0.0.0.0/0
+      - type: hostssl
+        database: replication
+        address: ::/0
+    database_conf:
+      - name: "Main"
+        content: |
+          listen_addresses = '*'
+      - name: "Modules"
+        content: |
+          shared_preload_libraries = 'repmgr'
+    database_users:
+      - name: "{{ repmgr_user }}"
+        password: "{{ repmgr_password }}"
+        roles: "{{ repmgr_roles }}"
+    database_databases:
+      - name: "{{ repmgr_database }}"
+        owner: "{{ repmgr_user }}"
+  ansible.builtin.include_role:
+    name: nudgis/postgres
+
+...

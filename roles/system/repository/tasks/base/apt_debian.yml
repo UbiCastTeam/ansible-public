@@ -1,0 +1,32 @@
+---
+
+- name: "Add Debian packages repository"
+  when: not offline_mode
+  notify: "Trigger apt update"
+  ansible.builtin.deb822_repository:
+    name: "debian"
+    types: "deb"
+    uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian"
+    suites:
+      - "{{ repos_release }}"
+      - "{{ repos_release }}-updates"
+    components: "main"
+
+- name: "Add Debian security repository"
+  when: not offline_mode
+  notify: "Trigger apt update"
+  ansible.builtin.deb822_repository:
+    name: "debian-security"
+    types: "deb"
+    uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian-security"
+    suites: "{{ repos_release }}-security"
+    components: "main"
+
+# The file is emptied and not removed, because unattended-upgrades recreates it, if it is absent
+- name: "Empty non-deb822 base repository file"  # noqa risky-file-permissions
+  when: not offline_mode
+  ansible.builtin.copy:
+    content: ""
+    dest: "/etc/apt/sources.list"
+
+...

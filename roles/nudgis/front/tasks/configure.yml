@@ -1,0 +1,43 @@
+---
+
+- name: "CONFIGURE DATABASE"
+  ansible.builtin.include_tasks: "configure/database.yml"
+  when:
+    - nudgis_front_database_domain is defined
+    - nudgis_front_database_port is defined
+    - nudgis_front_database_password is defined
+
+- name: "CONFIGURE INSTANCIES DIRECTORY"
+  ansible.builtin.include_tasks: "configure/data-dirs.yml"
+
+- name: "CONFIGURE MSCONTROLLER LOCKS DIRECTORY"
+  ansible.builtin.include_tasks: "configure/locks-dirs.yml"
+
+- name: "CONFIGURE NUDGIS EMAIL SENDER ADDRESS"
+  ansible.builtin.include_tasks: "configure/email.yml"
+  when:
+    - nudgis_front_email_from is defined
+
+- name: "CONFIGURE CELERITY SERVER VARIABLES"
+  ansible.builtin.include_tasks: "configure/celerity.yml"
+  when:
+    - celerity_server_domain is defined
+    - celerity_signing_key is defined
+
+- name: "CREATE FIRST INSTANCE"
+  ansible.builtin.include_tasks: "configure/instance.yml"
+  when:
+    - nudgis_front_domain is defined
+    - nudgis_front_api_key is defined
+    - nudgis_front_user_ubicast_password is defined
+    - nudgis_front_user_admin_password is defined
+    - manager_domain is defined
+
+# Should only be played in High Availibility cases
+- name: "HA CONFIGURATIONS SYNCHRONIZATION"
+  ansible.builtin.include_tasks: "configure/synchronize.yml"
+  when:
+    - "'front' in groups"
+    - groups['front'] | length > 1
+
+...

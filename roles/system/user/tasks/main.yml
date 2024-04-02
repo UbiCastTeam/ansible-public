@@ -1,0 +1,23 @@
+---
+
+- name: "BASE CONFIGURATION"
+  ansible.builtin.include_tasks:
+    file: "base.yml"
+    apply:
+      become: true
+      tags:
+        - base
+  tags:
+    - always
+
+- name: "CONFIGURE"
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+    apply:
+      become: true
+      tags:
+        - configure
+  tags:
+    - always
+
+...

@@ -1,9 +1,0 @@
----
-
-dependencies:
-  - role: sysconfig
-  - role: sysuser
-  - role: postfix
-  - role: fail2ban
-
-...

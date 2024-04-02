@@ -1,0 +1,25 @@
+---
+
+- name: "Setup witness"
+  when: inventory_hostname == groups['postgres'][2]
+  block:
+    - name: "Check if witness already joined"
+      become: true
+      become_user: postgres
+      register: repmgr_check_witness
+      community.general.postgresql_query:
+        db: repmgr
+        query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
+
+    - name: "Register witness"
+      become: true
+      become_user: postgres
+      changed_when: true
+      when: repmgr_check_witness.query_result | length == 0
+      notify: "Restart repmgrd"
+      ansible.builtin.command:
+        cmd: repmgr --config-file={{ repmgr_conf_file }} --host={{ repmgr_primary_node }} witness register
+
+- ansible.builtin.meta: flush_handlers
+
+...

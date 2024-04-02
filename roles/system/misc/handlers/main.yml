@@ -1,0 +1,14 @@
+---
+
+# - name: "Restart cron"
+#   ansible.builtin.service:
+#     name: cron
+#     state: restarted
+
+- name: "Trigger dpkg-reconfigure tzdata"  # noqa: no-changed-when
+  # https://unix.stackexchange.com/questions/451709/timedatectl-set-timezone-doesnt-update-etc-timezone
+  # timedatectl do not update the /etc/timezone file...
+  ansible.builtin.command:
+    cmd: dpkg-reconfigure --frontend noninteractive tzdata
+
+...

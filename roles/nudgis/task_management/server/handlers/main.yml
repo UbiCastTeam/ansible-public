@@ -1,0 +1,21 @@
+---
+
+- name: "Restart celerity-server"
+  ansible.builtin.service:
+    name: celerity-server
+    state: restarted
+
+- name: "Restart celerity-workers"
+  ansible.builtin.service:
+    name: celerity-workers
+    state: restarted
+
+# The celerity package drops a fail2ban conf, so we need to reload it form idempotency
+- name: "Reload fail2ban"
+  ansible.builtin.systemd:
+    name: fail2ban
+    state: reloaded
+
+- ansible.builtin.import_tasks: ../../shared/handlers/nftables.yml
+
+...

@@ -1,0 +1,11 @@
+---
+
+- name: "Set timezone"
+  # in order to execute cron task at new set timezone
+  # TODO: fix when there is no cron service
+  # notify: "Restart cron"
+  notify: "Trigger dpkg-reconfigure tzdata"
+  community.general.timezone:
+    name: "{{ init_timezone }}"
+
+...

@@ -1,0 +1,15 @@
+---
+
+- name: "Configure database"
+  ansible.builtin.replace:
+    path: /etc/skyreach/install.ini
+    regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
+    replace: '\1{{ item.name }} = {{ item.value }}'
+  loop:
+    - { name: 'DB_HOST', value: '{{ manager_database_domain }}' }
+    - { name: 'DB_PORT', value: '{{ manager_database_port }}' }
+    - { name: 'DB_ROOT_PWD', value: '{{ manager_database_password }}' }
+
+# /!\ Does not alter the already created instances /!\
+
+...

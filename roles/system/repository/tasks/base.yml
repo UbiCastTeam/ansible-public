@@ -1,0 +1,22 @@
+---
+
+- name: "BASE CONFIGURE DEBIAN APT REPOSITORIES"
+  ansible.builtin.include_tasks: "base/apt_debian.yml"
+  when:
+    - offline_mode is defined and not offline_mode
+    - repos_debian_prefix is defined
+    - repos_debian_packages_domain is defined
+    - repos_debian_security_packages_domain is defined
+
+- name: "BASE CONFIGURE UBICAST APT REPOSITORIES"
+  ansible.builtin.include_tasks: "base/apt_ubicast.yml"
+  when:
+    - offline_mode is defined and not offline_mode
+    - repos_ubicast_packages_token is defined
+    - repos_ubicast_packages_domain is defined
+
+# Flush to force `apt update` with the news repositories
+- name: "Flush handlers"
+  ansible.builtin.meta: flush_handlers
+
+...

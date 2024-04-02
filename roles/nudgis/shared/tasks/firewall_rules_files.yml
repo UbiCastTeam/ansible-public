@@ -1,0 +1,14 @@
+---
+
+- name: "Add the firewall rule(s)"
+  notify: "Reload nftables"
+  ansible.builtin.copy:
+    src: "../../shared/files/nftables/{{ item }}.nft"
+    dest: "/etc/nftables.d/"
+    owner: root
+    group: root
+    directory_mode: '700'
+    mode: '600'
+  loop: '{{ firewall_rules_files }}'
+
+...

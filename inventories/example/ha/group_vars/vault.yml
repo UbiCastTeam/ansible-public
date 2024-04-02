@@ -1,0 +1,9 @@
+---
+
+# Boolean to activate the mail notifications
+#vault_email_enabled: true
+
+# Destination address for the Nudgis Vault emails
+#vault_email_to: "noreply@example.com"
+
+...

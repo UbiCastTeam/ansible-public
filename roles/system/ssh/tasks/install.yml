@@ -1,0 +1,25 @@
+---
+
+- name: "Install ssh packages"
+  ansible.builtin.apt:
+    force_apt_get: true
+    install_recommends: false
+    name: "{{ ssh_packages }}"
+    state: present
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+- name: "Install UbiCast ssh public keys"
+  when: not offline_mode | d(false)
+  ansible.builtin.apt:
+    force_apt_get: true
+    install_recommends: false
+    update_cache: true
+    name: "{{ ssh_keys_packages }}"
+    state: present
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+...

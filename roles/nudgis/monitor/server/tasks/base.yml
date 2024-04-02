@@ -1,0 +1,18 @@
+---
+
+- name: "Stats Webmonitor main configuration file"
+  ansible.builtin.stat:
+    path: "/etc/webmonitor/install.ini"
+  register: monitor_config
+
+- name: "Populate Webmonitor base configuration with example values"
+  when: monitor_config.stat.size == 0
+  ansible.builtin.copy:
+    src: "/etc/webmonitor/install.example.ini"
+    dest: "/etc/webmonitor/install.ini"
+    mode: "preserve"
+    remote_src: true
+
+- ansible.builtin.import_tasks: ../../shared/tasks/firewall_rules_files.yml
+
+...

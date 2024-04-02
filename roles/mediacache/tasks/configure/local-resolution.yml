@@ -1,9 +1,0 @@
----
-
-- name: resolve domain name to localhost
-  ansible.builtin.lineinfile:
-    path: /etc/hosts
-    line: 127.0.1.1 {{ cache_domain }}
-    backup: true
-
-...

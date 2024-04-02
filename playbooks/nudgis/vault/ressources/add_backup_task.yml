@@ -1,0 +1,15 @@
+---
+
+- name: "Get backup information - {{ item.name }}"
+  ansible.builtin.stat:
+    path: "{{ item.dest }}/backup.marker"
+  register: backup_marker
+
+- name: "Create backup - {{ item.name }}"
+  ansible.builtin.command:
+    cmd: mediavaultctl add --backup-name "{{ item.name }}" --source-folder "{{ item.source }}" --dest-folder "{{ item.dest }}"
+    creates: "/etc/systemd/system/mediavault-backup-{{ item.name }}.service"
+  when: not backup_marker.stat.exists
+
+
+...

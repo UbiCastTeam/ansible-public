@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "SSH CLIENT AND SERVER"
+  hosts: ubicast
+  roles:
+    - system/ssh
+
+...

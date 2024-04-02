@@ -1,9 +1,0 @@
----
-
-- name: CONFIGURE MUNIN-NODE
-  ansible.builtin.include_tasks: "configure/main-configuration.yml"
-  when:
-    - ubicast_customer_name is defined
-    - munin_server_ip is defined
-
-...

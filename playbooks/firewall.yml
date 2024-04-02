@@ -1,9 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-
-- name: FIREWALL
-  hosts: firewall
-  roles:
-    - nftables
-
-...

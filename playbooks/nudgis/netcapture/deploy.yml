@@ -1,0 +1,10 @@
+---
+
+- name: "NUDGIS NETCAPTURE"
+  hosts: netcapture
+  gather_facts: false
+  roles:
+    - nudgis/lxc
+    - nudgis/netcapture
+
+...

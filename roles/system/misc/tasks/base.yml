@@ -1,0 +1,9 @@
+---
+
+- name: "BASE CONFIURE PROMPT"
+  ansible.builtin.include_tasks: "base/prompt.yml"
+
+- name: "BASE CONFIGURE LOGS"
+  ansible.builtin.include_tasks: "base/logs.yml"
+
+...

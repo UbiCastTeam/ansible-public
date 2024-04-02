@@ -1,0 +1,15 @@
+---
+
+- name: "Restart lxc"
+  ansible.builtin.systemd:
+    name: lxc
+    state: restarted
+  changed_when: true
+  notify: "Restart lxc-net"
+
+- name: "Restart lxc-net"
+  ansible.builtin.systemd:
+    name: lxc-net
+    state: restarted
+
+...

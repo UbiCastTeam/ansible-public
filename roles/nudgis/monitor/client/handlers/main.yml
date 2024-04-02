@@ -1,0 +1,6 @@
+---
+
+- ansible.builtin.import_tasks: ../../shared/handlers/munin-node.yml
+- ansible.builtin.import_tasks: ../../shared/handlers/nftables.yml
+
+...
