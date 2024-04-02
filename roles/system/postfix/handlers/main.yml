@@ -1,7 +1,7 @@
 ---
 
 - name: "Postmap sasl"
-  ansible.builtin.command: postmap hash:/etc/postfix/sasl-passwords
+  ansible.builtin.command: postmap hash:/etc/postfix/sasl_passwd
   changed_when: false
 
 - name: "Postmap generic"

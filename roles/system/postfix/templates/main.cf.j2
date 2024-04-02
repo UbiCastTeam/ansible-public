@@ -43,6 +43,6 @@ bounce_notice_recipient = bounces@{{ postfix_mailname }}
 
 # SMTP relay authentication
 smtp_sasl_auth_enable = yes
-smtp_sasl_password_maps = hash:/etc/postfix/sasl-passwords
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
 smtp_sasl_security_options = noanonymous
 {% endif %}
