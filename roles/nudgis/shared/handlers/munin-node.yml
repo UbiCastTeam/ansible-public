@@ -1,0 +1,25 @@
+---
+
+# Order here is important
+- name: "Gather the package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+  listen: "Configure and restart munin-node"
+
+- name: "Setup munin-node plugins link"  # noqa: risky-shell-pipe
+  ansible.builtin.shell:
+    munin-node-configure --shell --remove-also 2>&1 | sh -x
+  # sh -x print executed cmd to stderr
+  register: munin_plugin_linked
+  changed_when: munin_plugin_linked.stderr | length > 0
+  when: "'munin-node' in ansible_facts.packages"
+  listen: "Configure and restart munin-node"
+
+- name: "Restart munin-node service"
+  ansible.builtin.service:
+    name: munin-node
+    state: restarted
+  when: "'munin-node' in ansible_facts.packages"
+  listen: "Configure and restart munin-node"
+
+...

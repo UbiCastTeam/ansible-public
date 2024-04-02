@@ -1,0 +1,23 @@
+---
+
+- name: "Restart nginx"
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+- name: "Wait for munin cron to end"
+  ansible.builtin.wait_for:
+    path: /var/run/munin/munin-update.lock
+    state: absent
+  listen: "Restart munin-server"
+
+- name: "Restart munin-server service"
+  ansible.builtin.service:
+    name: munin
+    state: restarted
+  listen: "Restart munin-server"
+
+- ansible.builtin.import_tasks: ../../shared/handlers/munin-node.yml
+- ansible.builtin.import_tasks: ../../shared/handlers/nftables.yml
+
+...

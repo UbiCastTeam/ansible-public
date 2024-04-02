@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "MONITOR CLIENT (MUNIN NODE)"
+  hosts: monitor_client
+  roles:
+    - nudgis/monitor/client
+
+...

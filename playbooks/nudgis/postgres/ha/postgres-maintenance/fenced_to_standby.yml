@@ -1,0 +1,49 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "POSTGRESQL SWITCH CURRENT FENCED TO STANDBY"
+  hosts: postgres_fenced
+  tasks:
+    - name: "Fail if node status if not fenced"
+      ansible.builtin.fail:
+        msg: Current status {{ rephacheck['stdout'] }} must be fenced.
+      when: rephacheck['stdout'] != "fenced"
+
+    - name: "Stop postgresql"
+      ansible.builtin.systemd:
+        name: postgresql
+        state: stopped
+
+    - name: "Delete postgresql data directory"
+      ansible.builtin.file:
+        path: /var/lib/postgresql/15/main/
+        state: absent
+        force: true
+
+    - name: "Copy data from primary"
+      ansible.builtin.command: >
+        repmgr -f /etc/postgresql/15/main/repmgr.conf
+          --force --verbose
+          standby clone
+          -h {{ hostvars[groups['postgres_primary'][0]]['ansible_default_ipv4']['address'] }}
+          -d repmgr -U repmgr -c
+      become: true
+      become_user: postgres
+      register: copy_from_primary
+      # TOFIX: it would be better to check for a change in the output
+      changed_when: false
+
+    - name: "Start postgresql"
+      ansible.builtin.systemd:
+        name: postgresql
+        state: started
+      when: copy_from_primary is succeeded
+
+    - name: "Register node as standby"
+      ansible.builtin.command: repmgr -f /etc/postgresql/15/main/repmgr.conf --force --verbose standby register
+      become: true
+      become_user: postgres
+      changed_when: false
+      when: copy_from_primary is succeeded
+
+...

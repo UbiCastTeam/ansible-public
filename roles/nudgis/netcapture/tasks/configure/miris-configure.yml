@@ -1,0 +1,15 @@
+---
+
+- name: "Check if miris api config exists"
+  ansible.builtin.stat:
+    path: "{{ netcapture_conf_folder }}/api.json"
+  register: miris_config_file
+
+- name: "Create netcapture miris api config"
+  ansible.builtin.template:
+    src: miris-api.json.j2
+    dest: "{{ netcapture_conf_folder }}/api.json"
+    mode: u=rw,g=r,o=r
+  when: not miris_config_file.stat.exists
+
+...

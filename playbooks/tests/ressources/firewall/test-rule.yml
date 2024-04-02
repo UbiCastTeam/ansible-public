@@ -1,45 +1,45 @@
 ---
 
 # test rules with direct hosts destination
-- name: Test host rules
+- name: "Test host rules"
   when: outer_item.hosts_dst is defined
   block:
-    - name: Print debug
+    - name: "Print debug"
       ansible.builtin.debug:
         msg: Test rule from {{ outer_item.groupname_src }} to {{ outer_item.hosts_dst }} on {{ outer_item.ports }} port(s)
 
-    - name: Test port
+    - name: "Test port"  # noqa: ignore-errors
       ansible.builtin.command: nc -zv {{ item.0 }} {{ item.1 }}
-      ignore_errors: true  # noqa ignore-errors
+      ignore_errors: true
       loop: "{{ outer_item.hosts_dst | product(outer_item.ports) | list }}"
       when: proxy is not defined
       changed_when: false
 
-    - name: Test port with proxy
+    - name: "Test port with proxy"  # noqa: ignore-errors
       ansible.builtin.command: nc -x {{ proxy }} -X Connect -zv {{ item.0 }} {{ item.1 }}
-      ignore_errors: true  # noqa ignore-errors
+      ignore_errors: true
       loop: "{{ outer_item.hosts_dst | product(outer_item.ports) | list }}"
       when: proxy is defined
       changed_when: false
 
 # test rules with ansible group destination
-- name: Test host group rules
+- name: "Test host group rules"
   when: outer_item.groupname_dst is defined
   block:
-    - name: Print debug
+    - name: "Print debug"
       ansible.builtin.debug:
         msg: Test rule from {{ outer_item.groupname_src }} to {{ outer_item.groupname_dst }} on {{ outer_item.ports }} port(s)
 
-    - name: Test port
+    - name: "Test port"  # noqa: ignore-errors
       ansible.builtin.command: nc -zv {{ item.0 }} {{ item.1 }}
-      ignore_errors: true  # noqa ignore-errors
+      ignore_errors: true
       loop: "{{ groups[outer_item.groupname_dst] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list | product(outer_item.ports) | list }}"
       when: proxy is not defined
       changed_when: false
 
-    - name: Test port with proxy
+    - name: "Test port with proxy"  # noqa: ignore-errors
       ansible.builtin.command: nc -x {{ proxy }} -X Connect -zv {{ item.0 }} {{ item.1 }}
-      ignore_errors: true  # noqa ignore-errors
+      ignore_errors: true
       loop: "{{ groups[outer_item.groupname_dst] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list | product(outer_item.ports) | list }}"
       when: proxy is defined
       changed_when: false

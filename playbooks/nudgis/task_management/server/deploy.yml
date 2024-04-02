@@ -1,0 +1,14 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "TASK MANAGEMENT SERVER (CELERITY)"
+  hosts: task_management_server
+  roles:
+    - nudgis/task_management/server
+  post_tasks:
+    - name: "Configure proxy"
+      when: proxy_apply | d(false)
+      ansible.builtin.include_role:
+        name: system/proxy
+
+...

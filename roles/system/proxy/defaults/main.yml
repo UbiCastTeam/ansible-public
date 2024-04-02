@@ -1,0 +1,15 @@
+---
+
+# Proxy URL for HTTP calls (complete URL with protocol)
+proxy_http: ""
+
+# Proxy URL for HTTPS calls (complete URL with protocol)
+proxy_https: ""
+
+# List of non-local URL that does not use the proxy. "localhost" addresses are automatically added.
+proxy_exclude:
+  - nudgis.example.com
+  - manager.example.com
+  - monitor.example.com
+
+...

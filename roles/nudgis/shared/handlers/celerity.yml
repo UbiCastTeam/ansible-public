@@ -1,0 +1,11 @@
+---
+- name: "Restart celerity-server"
+  ansible.builtin.service:
+    name: celerity-server
+    state: restarted
+
+- name: "Restart celerity-workers"
+  ansible.builtin.service:
+    name: celerity-workers
+    state: restarted
+...

@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "LOCALISATION"
+  hosts: ubicast
+  roles:
+    - system/localisation
+
+...

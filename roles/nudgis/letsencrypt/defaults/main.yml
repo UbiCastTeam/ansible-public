@@ -1,0 +1,9 @@
+---
+
+# List the domain to configure with a let's encrypt certificate
+letsencrypt_domains: []
+
+# Email of the Let's Encrypt SSL certificates administrator(s)
+letsencrypt_email: "admin@example.com"
+
+...

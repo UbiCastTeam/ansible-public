@@ -1,6 +1,0 @@
----
-
-# Password for the postgres admin account
-database_password: "changeit"
-
-...

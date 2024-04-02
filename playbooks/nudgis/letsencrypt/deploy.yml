@@ -1,0 +1,50 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "LETS ENCRYPT"
+  # Target all the groups defined in the "vhosts" variable dicts ("group" key)
+  hosts: "{{ vhosts | map(attribute='group') }}"
+  gather_facts: false
+  vars:
+    vhosts:
+      - { "group": "front", "file": "mediaserver-msuser.conf" }
+      - { "group": "manager", "file": "skyreach.conf" }
+      - { "group": "cache", "file": "mediacache.conf" }
+      - { "group": "monitor_server", "file": "webmonitor.conf" }
+  tasks:
+    - name: "Check number of webservers for the group (HA is not supported/implemented)"
+      ansible.builtin.fail:
+        msg: "The group \"{{ item.group }}\" has more than one host which is not supported by Let's Encrypt certificate generation playbook provided by UbiCast."
+      when:
+        - item.group in groups.keys()
+        - groups[item.group] | length > 1
+      loop: "{{ vhosts }}"
+      run_once: true
+
+    - name: "Check vhosts existence"
+      ansible.builtin.stat:
+        path: "/etc/nginx/sites-enabled/{{ item }}"
+      # `map()` is mapping the `file` key value, effectively converting the `vhosts` list of dicts in a list of files (string)
+      loop: "{{ vhosts | map(attribute='file') }}"
+      register: check_file
+
+    - name: "Retrieve the domains from found vhosts files"
+      ansible.builtin.command: grep -m1 -oP '\s+server_name\s+\K[^; ]+' "{{ item }}"
+      register: grep_domain
+      changed_when: false
+      # `check_file.results` is a list of stat (and other) dicts, so we map the stat dict directly, filter by existing path and we finally map `path`
+      # That effectively allow us to loop a list of existing `path`
+      loop: "{{ check_file.results | map(attribute='stat') | selectattr('exists', 'true') | map(attribute='path') }}"
+
+    - name: "Consolidate the domains"
+      ansible.builtin.set_fact:
+        # Similar processing as above
+        domains: "{{ grep_domain.results | selectattr('stdout', 'defined') | map(attribute='stdout') }}"
+
+    - ansible.builtin.include_role:
+        name: nudgis/letsencrypt
+      vars:
+        letsencrypt_domains: "{{ domains }}"
+      when: domains != []
+
+...

@@ -1,9 +1,0 @@
----
-
-- name: CONFIGURE FAIL2BAN
-  ansible.builtin.include_tasks: "configure/f2b-configure.yml"
-  when:
-    - fail2ban_email_from is defined
-    - fail2ban_email_to is defined
-
-...

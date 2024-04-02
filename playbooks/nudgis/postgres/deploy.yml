@@ -1,0 +1,28 @@
+#!/usr/bin/env ansible-playbook
+---
+
+# Install a dedicated postgres for the manager if it is an independant host from the front
+# /!\ If no postgres host_vars are defined for this host, it will reuse the postgres group_vars (potentially the same as the front(s)) /!\
+- name: "POSTGRESQL FOR MANAGER (INDEPENDANT)"
+  hosts: manager
+  roles:
+    - role: nudgis/postgres
+      when: manager_independant
+      vars:
+        database_password: ""
+
+- name: "POSTGRESQL FOR NUDGIS"
+  hosts: postgres
+  roles:
+    - role: nudgis/postgres_ha
+      when: postgres_ha
+    - role: nudgis/postgres
+      when: not postgres_ha
+
+- name: "HAPROXY FOR POSTGRESQL IN HIGH AVALIBILITY"
+  hosts: front
+  roles:
+    - role: nudgis/haproxy
+      when: postgres_ha
+
+...

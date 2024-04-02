@@ -1,0 +1,13 @@
+---
+
+# Packages required for the group
+ssh_packages:
+  - openssh-client
+  - openssh-server
+
+# Packages required for the group
+ssh_keys_packages:
+  - ubicast-ssh-access-manager
+  - ubicast-ssh-access-support
+
+...

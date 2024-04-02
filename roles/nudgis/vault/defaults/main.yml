@@ -1,0 +1,12 @@
+---
+
+# Boolean to activate the mail notifications
+vault_email_enabled: true
+
+# From fields for email sending (as defined in RFC2822)
+vault_email_from: "{{ ansible_fqdn }} <backup@{{ ansible_fqdn }}>"
+
+# Destination address for the Nudgis Vault emails
+vault_email_to: "noreply@example.com"
+
+...

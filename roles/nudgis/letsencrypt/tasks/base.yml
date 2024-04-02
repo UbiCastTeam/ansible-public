@@ -1,0 +1,21 @@
+---
+
+- name: "Create webroot directory"
+  ansible.builtin.file:
+    path: "{{ letsencrypt_webroot }}"
+    state: directory
+    mode: "755"
+
+- name: "Create deploy hook directory"
+  ansible.builtin.file:
+    path: /etc/letsencrypt/renewal-hooks/deploy
+    state: directory
+    mode: "755"
+
+- name: "Create deploy hook script"
+  ansible.builtin.copy:
+    src: deploy-hook
+    dest: /etc/letsencrypt/renewal-hooks/deploy/nginx
+    mode: "0755"
+
+...

@@ -1,0 +1,6 @@
+---
+
+# Default Let's Encrypt web root folder for challenges publication
+letsencrypt_webroot: "/var/www/letsencrypt"
+
+...

@@ -1,0 +1,37 @@
+---
+
+- name: "Configure repmgr"
+  notify: "Restart repmgrd"
+  ansible.builtin.template:
+    src: repmgr.conf.j2
+    dest: "{{ repmgr_conf_file }}"
+    owner: postgres
+    group: postgres
+    mode: "644"
+
+- name: "Configure debian default"
+  notify: "Restart repmgrd"
+  loop:
+    - key: REPMGRD_ENABLED
+      value: "yes"
+    - key: REPMGRD_CONF
+      value: "{{ repmgr_conf_file }}"
+  ansible.builtin.replace:
+    path: /etc/default/repmgrd
+    regexp: ^#?{{ item.key }}=.*$
+    replace: "{{ item.key }}={{ item.value }}"
+
+- name: "Configure sudo"
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/postgres
+    validate: visudo -cf %s
+    mode: "440"
+    content: |
+      Defaults:postgres !requiretty
+      postgres ALL=NOPASSWD: \
+        /bin/systemctl start postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}, \
+        /bin/systemctl stop postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}, \
+        /bin/systemctl restart postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}, \
+        /bin/systemctl reload postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}
+
+...

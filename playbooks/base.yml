@@ -1,9 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-
-- name: BASE
-  hosts: base
-  roles:
-    - base
-
-...

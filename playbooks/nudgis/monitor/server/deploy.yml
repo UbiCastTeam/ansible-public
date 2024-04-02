@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "MONITOR SERVER (WEBMONITOR)"
+  hosts: monitor_server
+  roles:
+    - nudgis/monitor/server
+
+...

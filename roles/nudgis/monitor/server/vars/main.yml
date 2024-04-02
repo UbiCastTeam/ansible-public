@@ -1,0 +1,16 @@
+---
+
+# Packages required for the group
+webmonitor_packages:
+  - ubicast-webmonitor
+  - ubicast-webmonitor-runtime
+
+# Group firewall rules filename, see roles/shared/files/nftables/
+firewall_rules_files:
+  - http
+
+# Packages required for the group
+munin_server_packages:
+  - munin
+
+...

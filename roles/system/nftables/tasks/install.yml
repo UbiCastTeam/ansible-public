@@ -1,0 +1,12 @@
+---
+
+- name: "Install nftables firewall"
+  ansible.builtin.apt:
+    force_apt_get: true
+    install_recommends: false
+    name: '{{ nftables_packages }}'
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+...

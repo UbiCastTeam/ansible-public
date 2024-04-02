@@ -1,0 +1,26 @@
+---
+
+- name: "Create the Nudgis Cache live data directory"
+  ansible.builtin.file:
+    dest: "{{ cache_live_folder }}"
+    state: directory
+    owner: nginx
+    group: root
+    mode: "0700"
+  when: live_domain is defined
+
+- name: "Fill the Nudgis Cache zones file - Live folder"
+  notify: "Restart nginx"
+  ansible.builtin.replace:
+    path: /etc/mediacache/nginx-zones.conf
+    regexp: /var/cache/nginx/mediacache-live
+    replace: "{{ cache_live_folder }}"
+
+- name: "Fill the Nudgis Cache zones file - Live folder size"
+  notify: "Restart nginx"
+  ansible.builtin.replace:
+    path: /etc/mediacache/nginx-zones.conf
+    regexp: (?P<key>keys_zone=mediacache-live.*max_size=).*(?P<unit>g)
+    replace: \g<key>{{ cache_live_size }}\g<unit>
+
+...

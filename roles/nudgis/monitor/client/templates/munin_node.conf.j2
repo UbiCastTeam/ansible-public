@@ -1,0 +1,36 @@
+# Munin node configuration 
+# Deployed with ansible
+
+log_level 4
+log_file {{ munin_node_logfile }}
+pid_file {{ munin_node_pidfile }}
+
+background 1
+setsid 1
+
+user root
+group root
+
+ignore_file [\#~]$
+ignore_file DEADJOE$
+ignore_file \.bak$
+ignore_file %$
+ignore_file \.dpkg-(tmp|new|old|dist)$
+ignore_file \.rpm(save|new)$
+ignore_file \.pod$
+
+host_name {{ munin_node_hostname }}.{{ ubicast_customer_name }}
+
+{% if munin_server_ip %}
+allow ^{{ munin_server_ip | replace('.', '\.') }}$
+{% elif groups['monitor_server'] is defined %}
+{% for host in groups['monitor_server'] %}
+allow ^{{ hostvars[host]['ansible_facts']['default_ipv4']['address'] | replace('.','\.') }}$
+{% endfor %}
+{% endif %}
+allow ^127\.0\.0\.1$
+allow ^::1$
+
+host 0.0.0.0
+port 4949
+

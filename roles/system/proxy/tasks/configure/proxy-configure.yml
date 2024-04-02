@@ -1,0 +1,54 @@
+---
+
+- name: "Gather the package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: "Environment"
+  ansible.builtin.blockinfile:
+    path: /etc/environment
+    create: true
+    marker_begin: BEGIN PROXY
+    marker_end: END PROXY
+    mode: "644"
+    block: |
+      http_proxy={{ proxy_http }}
+      HTTP_PROXY={{ proxy_http }}
+      https_proxy={{ proxy_https }}
+      HTTPS_PROXY={{ proxy_https }}
+      no_proxy={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
+      NO_PROXY={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
+
+- name: "Apt"
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/proxy
+    mode: "644"
+    content: |
+      Acquire::http::Proxy "{{ proxy_http }}";
+      Acquire::https::Proxy "{{ proxy_https }}";
+
+- name: "Wget"
+  when: "'wget' in ansible_facts.packages"
+  ansible.builtin.copy:
+    dest: /etc/wgetrc
+    mode: "644"
+    content: |
+      use_proxy=yes
+      http_proxy={{ proxy_http }}
+      https_proxy={{ proxy_https }}
+      no_proxy={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
+
+- name: "Git"
+  when: "'git' in ansible_facts.packages"
+  community.general.git_config:
+    name: "{{ item.name }}"
+    scope: global
+    value: "{{ item.value }}"
+    state: present
+  loop:
+    - name: "Http.proxy"
+      value: "{{ proxy_http }}"
+    - name: "Https.proxy"
+      value: "{{ proxy_https }}"
+
+...

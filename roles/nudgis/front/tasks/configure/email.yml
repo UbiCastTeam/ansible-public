@@ -1,0 +1,19 @@
+---
+
+- name: "Configure email sender address"
+  notify:
+    - "Restart mediaserver"
+  ansible.builtin.lineinfile:
+    path: /etc/mediaserver/msconf.py
+    backup: true
+    create: true
+    owner: root
+    group: root
+    # 644 as all the instances must reach this file
+    # The instances cannot be in a common group as of now => https://redmine.ubicast.net/issues/33046
+    mode: "0644"
+    regexp: ^#? ?DEFAULT_FROM_EMAIL.*
+    line: DEFAULT_FROM_EMAIL = '{{ nudgis_front_email_from }}'
+    validate: python3 -m py_compile %s
+
+...

@@ -1,0 +1,18 @@
+---
+
+# Packages required for the group
+misc_packages:
+  - man
+  - vim
+  - sudo
+  - bash-completion
+  - lm-sensors
+  - smartmontools
+  - curl
+  - ca-certificates
+  - gnupg
+  - host
+  - ifupdown
+  - htop
+
+...

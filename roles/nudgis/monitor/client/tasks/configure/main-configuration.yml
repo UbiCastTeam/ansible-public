@@ -1,0 +1,10 @@
+---
+
+- name: "Copy munin_node configuration"
+  notify: "Configure and restart munin-node"
+  ansible.builtin.template:
+    src: munin_node.conf.j2
+    dest: /etc/munin/munin-node.conf
+    mode: "644"
+
+...

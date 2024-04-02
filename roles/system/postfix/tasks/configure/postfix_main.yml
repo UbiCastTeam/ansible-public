@@ -1,0 +1,15 @@
+---
+
+- name: "Gather hostname"
+  ansible.builtin.setup:
+    filter: ansible_hostname
+
+- name: "Postfix main config"
+  notify: "Restart postfix"
+  ansible.builtin.template:
+    backup: true
+    src: main.cf.j2
+    dest: /etc/postfix/main.cf
+    mode: "644"
+
+...

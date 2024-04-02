@@ -1,0 +1,9 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "UNATTENDED UPGRADES"
+  hosts: ubicast
+  roles:
+    - system/unattended_upgrades
+
+...

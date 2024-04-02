@@ -1,0 +1,31 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "POSTGRESQL SWITCH CURRENT STANDBY TO PRIMARY"
+  hosts: postgres_standby
+  tasks:
+    - name: "Fail if node status if not standby"
+      ansible.builtin.fail:
+        msg: Current status {{ rephacheck['stdout'] }} must be standby.
+      when: rephacheck['stdout'] != "standby"
+
+    - name: "Check if node is currently in standby"
+      ansible.builtin.command:
+        cmd: repmgr standby switchover -f /etc/postgresql/15/main/repmgr.conf --siblings-follow --dry-run
+      become: true
+      become_user: postgres
+      changed_when: false
+      register: standby_dry_run
+      when: rephacheck['stdout'] == "standby"
+
+    - name: "Switch standby node to primary"
+      ansible.builtin.command:
+        cmd: repmgr standby switchover -f /etc/postgresql/15/main/repmgr.conf --siblings-follow
+      become: true
+      become_user: postgres
+      changed_when: false
+      when:
+        - standby_dry_run is succeeded
+        - rephacheck['stdout'] == "standby"
+
+...

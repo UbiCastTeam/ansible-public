@@ -1,0 +1,10 @@
+---
+
+- name: "Ensure journald logs persistence is enabled"  # noqa: risky-file-permissions
+  ansible.builtin.file:
+    path: /var/log/journal
+    state: directory
+    # let system decide directory rights
+    # mode: "02755"
+
+...

@@ -1,53 +1,54 @@
 #!/usr/bin/env ansible-playbook
 ---
 
-- name: PYTHON
+- name: "PYTHON"
   hosts: all
   gather_facts: false
   tasks:
-    - name: ensure python3 is installed
+    - name: "Ensure python3 is installed"
       register: python_install
       changed_when: "'es_pyinstall' in python_install.stdout_lines"
       ansible.builtin.raw: command -v python3 || echo es_pyinstall && apt update && apt install -y python3-minimal python3-apt iproute2
 
-# Should be in a installation role (see #39283)
-- name: UPDATE PACKAGES
-  hosts: base
+# SYSTEM PLAYBOOKS
+# - import_playbook: system/proxy/deploy.yml
+- import_playbook: system/repository/deploy.yml
+- import_playbook: system/unattended_upgrades/deploy.yml  # need repo (for ubicast unattended)
+- import_playbook: system/misc/deploy.yml
+- import_playbook: system/user/deploy.yml  # need misc (for sudo bin)
+- import_playbook: system/ssh/deploy.yml  # need user (for ssh keys) and repo (for ubicast keys)
+- import_playbook: system/localisation/deploy.yml
+- import_playbook: system/ntp/deploy.yml
+- import_playbook: system/postfix/deploy.yml
+- import_playbook: system/fail2ban/deploy.yml
+- import_playbook: system/nftables/deploy.yml
+
+# Check inventory for deployment specificities
+- name: "PREPARE DEPLOYMENT VARS"
+  hosts: ubicast
   gather_facts: false
-  tags: install
+  tags: always
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: true
-        cache_valid_time: 86400
-      changed_when: false
+    - ansible.builtin.set_fact:
+        # See the nudgis/posgres/deploy.yml playbook for details on `postgres_ha` and `manager_independant` variables usage
+        postgres_ha: "{{ true if groups['postgres'] | d('') | length > 1 else false }}"
+        manager_independant: "{{ false if groups['manager'] | d('') | length == 0 or 'front' in hostvars[groups['manager'][0]].group_names else true }}"
 
-- import_playbook: base.yml
-
-- import_playbook: firewall.yml
-
-- import_playbook: "{{ 'postgres-ha' if groups['postgres']|d('') | length > 1 else 'postgres' }}.yml"
-
-- import_playbook: mirismanager.yml
-
-- import_playbook: celerity.yml
-
-- import_playbook: mediaworker.yml
-
-- import_playbook: mediaserver.yml
-
-- import_playbook: live/live.yml
-
-- import_playbook: mediacache/mediacache.yml
-
-- import_playbook: mediavault/deploy.yml
-
-- import_playbook: mediaimport.yml
-
-- import_playbook: netcapture/netcapture.yml
-
-- import_playbook: monitor/all.yml
-
-- import_playbook: tester.yml
+# NUDGIS PLAYBOOKS
+- import_playbook: nudgis/task_management/server/deploy.yml
+- import_playbook: nudgis/task_management/client/deploy.yml
+- import_playbook: nudgis/postgres/deploy.yml
+- import_playbook: nudgis/front/deploy.yml
+# manager should be played after the front to deduplicate the postgres installation
+- import_playbook: nudgis/manager/deploy.yml
+- import_playbook: nudgis/live/deploy.yml
+- import_playbook: nudgis/cache/deploy.yml
+- import_playbook: nudgis/vault/deploy.yml
+- import_playbook: nudgis/import/deploy.yml
+- import_playbook: nudgis/netcapture/deploy.yml
+# monitor/client should be played before the server part (facts aggregation reason)
+- import_playbook: nudgis/monitor/client/deploy.yml
+- import_playbook: nudgis/monitor/server/deploy.yml
+- import_playbook: nudgis/tester/deploy.yml
 
 ...

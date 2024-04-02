@@ -1,9 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-
-- name: Install UbiCast tester
-  hosts: tester
-  roles:
-    - tester
-
-...

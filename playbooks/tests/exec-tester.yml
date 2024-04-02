@@ -1,24 +1,13 @@
 #!/usr/bin/env ansible-playbook
 ---
 
-- name: RUN TESTER
-  hosts: all
-  tags: tester
+- hosts: tester
   gather_facts: false
-  vars:
-    tester_reset_log: false
   tasks:
-    - name: remove envsetup tester log
-      when: tester_reset_log
-      ansible.builtin.file:
-        path: /root/envsetup/tests/logs/tester_pb.log
-        state: absent
-    - name: envsetup tester
-      ansible.builtin.shell:
-        cmd: |
-          set -o pipefail
-          python3 /root/envsetup/tests/tester.py 2>&1 | tee /root/envsetup/tests/logs/tester_pb.log
-        creates: /root/envsetup/tests/logs/tester_pb.log
-        executable: /bin/bash
+    - name: "Launching the ubicast-tester"
+      ansible.builtin.command: ubicast-tester --verbose --extended
+      register: tester_result
+      failed_when: tester_result.rc != 0
+      changed_when: false
 
 ...

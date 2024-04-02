@@ -1,0 +1,8 @@
+---
+
+- name: "SETUP LIVE TMPFS PARTITION"
+  ansible.builtin.include_tasks: "configure/tmpfs.yml"
+  when:
+    - live_tmpfs_size is defined
+
+...

@@ -1,8 +1,0 @@
----
-
-dependencies:
-  - role: nginx
-  - when: "'postgres' in group_names"
-    role: postgres
-
-...

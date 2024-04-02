@@ -1,0 +1,24 @@
+---
+
+- name: "Reload systemd"
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: "Restart postgresql"
+  ansible.builtin.systemd:
+    name: postgresql@{{ repmgr_database_version }}-{{ repmgr_database_cluster }}
+    state: restarted
+
+- name: "Restart repmgrd"
+  ansible.builtin.systemd:
+    name: repmgrd
+    state: restarted
+
+- name: "Restart rephacheck"
+  ansible.builtin.systemd:
+    name: rephacheck.socket
+    state: restarted
+
+- ansible.builtin.import_tasks: ../../shared/handlers/nftables.yml
+
+...

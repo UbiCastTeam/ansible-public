@@ -1,0 +1,6 @@
+---
+
+- name: "BASE CONFIGURE UNATTENDED UPGRADES"
+  ansible.builtin.include_tasks: "base/unattended_upgrades.yml"
+
+...

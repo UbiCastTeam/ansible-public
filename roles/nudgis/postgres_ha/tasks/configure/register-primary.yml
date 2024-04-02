@@ -1,0 +1,25 @@
+---
+
+- name: "Setup primary"
+  when: inventory_hostname == groups['postgres'][0]
+  block:
+    - name: "Check if primary already joined"
+      become: true
+      become_user: postgres
+      register: repmgr_check_primary
+      community.general.postgresql_query:
+        db: repmgr
+        query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
+
+    - name: "Register primary"
+      become: true
+      become_user: postgres
+      changed_when: true
+      when: repmgr_check_primary.query_result | length == 0
+      notify: "Restart repmgrd"
+      ansible.builtin.command:
+        cmd: repmgr --config-file={{ repmgr_conf_file }} primary register
+
+- ansible.builtin.meta: flush_handlers
+
+...

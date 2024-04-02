@@ -1,0 +1,13 @@
+---
+
+- name: "CONFIGURE LOCALE"
+  ansible.builtin.include_tasks: "configure/locale.yml"
+  when:
+    - init_locale is defined
+
+- name: "CONFIGURE SYSTEM TIMEZONE"
+  ansible.builtin.include_tasks: "configure/timezone.yml"
+  when:
+    - init_timezone is defined
+
+...

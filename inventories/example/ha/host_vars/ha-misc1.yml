@@ -1,64 +1,48 @@
 ---
 
-# mediacache:
+# cache:
 #   URL of the Nudgis Cache vhost
 cache_domain: "cache.ubica.st"
 
-# mediacache:
+# cache:
 #   Path of the folder to cache the Live service data
 #cache_live_folder: "/var/cache/nginx/mediacache-live"
 
-# mediacache:
+# cache:
 #   Max size allowed for the Live service data
 #cache_live_size: "1"
 
-# mediacache:
+# cache:
 #   Path of the folder to cache the VOD service data
 #cache_vod_folder: "/var/cache/nginx/mediacache-vod"
 
-# mediacache:
+# cache:
 #   Max size allowed for the VOD service data
 #cache_vod_size: "1"
 
-# netcapture:
-#   Folder used to store the configurations
-#netcapture_conf_folder: "/etc/miris/conf"
+# lxc:
+#   LXC network type
+lxc_network_type: "masquerade_bridge"
 
 # netcapture:
-#   Folder used to store the medias
-#netcapture_media_folder: "/data/netcapture/media"
+#   Password of the deployed netcapture miris API
+netcapture_miris_user_pwd: "my-password"
 
 # netcapture:
 #   Activates the SSL verification when calling the Nudgis Manager
-#netcapture_mm_ssl: True
+#netcapture_mm_ssl: true
 
-# netcapture:
-#   Folder used to store the packages
-#netcapture_pkg_folder: "/data/netcapture/packages"
-
-# nginx:
-#   IPv4 address of the reverse-proxy or loadbalancer above the server(s)
-#nginx_real_ip_from: ""
-
-# nginx:
-#   Path of the SSL certificate for nginx configuration
-#nginx_ssl_certificate: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
-
-# nginx:
-#   Path of the SSL key for nginx configuration
-#nginx_ssl_certificate_key: "/etc/ssl/private/ssl-cert-snakeoil.key"
-
-# sysconfig:
+# ntp:
 #   List of NTP servers to use on the systems
 ntp_servers:
   - 0.debian.pool.ntp.org
   - 1.debian.pool.ntp.org
 
-# sysconfig:
+# repository:
 #   Do not configure any repository and use local repository
-# sysuser:
+# ssh:
 #   Do not configure any ubicast ssh public key
-#offline_mode: False
+#offline_mode: false
 
 # postfix:
 #   Define the specified email address for the unix root account (in /etc/aliases)
@@ -84,25 +68,25 @@ postfix_mailname: "ubica.st"
 #   Password of the SMTP SASL account
 #postfix_relay_user: ""
 
-# sysconfig:
+# repository:
 #   Prefix of the debian repositories, with the protocol (example: "http://"). Used when the apt-cacher-ng of the Nudgis Manager proxifies the debian repositories.
 #repos_debian_prefix: "http://"
 
-# sysconfig:
+# repository:
 #   Domain of the UbiCast debian packages repository URL
 repos_ubicast_packages_domain: "manager.ubica.st"
 
-# sysconfig:
+# repository:
 #   Token used in the UbiCast debian repository URL
 # tester:
 #   UbiCast repository token used to make API call to mirismanager.ubicast.net to retrieve system informations
 repos_ubicast_packages_token: "UBICAST-APT-TOKEN"
 
-# sysuser:
+# user:
 #   Password for the system user admin
 sysuser_admin_password: "my-password"
 
-# sysuser:
+# user:
 #   Password for the system user ubicast
 sysuser_ubicast_password: "my-password"
 
@@ -111,15 +95,11 @@ sysuser_ubicast_password: "my-password"
 #tester_email_from: "ubicast.tester"
 
 # tester:
-#   Name of the system in the reports
-#tester_system_name: "{{ inventory_hostname }}"
-
-# tester:
 #   List of tests to ignore when executing the ubicast-tester
 tester_tests_ignored:
   - uptime.sh
 
-# mediavault:
+# vault:
 #   From fields for email sending (as defined in RFC2822)
 #vault_email_from: "{{ ansible_fqdn }} <backup@{{ ansible_fqdn }}>"
 

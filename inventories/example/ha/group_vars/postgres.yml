@@ -1,56 +1,9 @@
 ---
 
-# PostgreSQL configuration key/values
-#database_conf:
-#  - content: ''
-#    name: main
-
-# Dictionnary of extra databases to deploy (with `name` and `owner` keys)
-#database_databases: []
-
-# PostgreSQL user/host connection file
-#database_host_authentification:
-#  - method: peer
-#    type: local
-#  - address: 127.0.0.1/32
-#    type: hostssl
-#  - address: ::1/128
-#    type: hostssl
-#  - database: replication
-#    method: peer
-#    type: local
-#  - address: 127.0.0.1/32
-#    database: replication
-#    type: hostssl
-#  - address: ::1/128
-#    database: replication
-#    type: hostssl
-
 # Password for the postgres admin account
 database_password: "my-password"
 
-# Dictionnary of extra PostgreSQL users to deploy (with `name`, `password`, `db`, `priv` and `roles` keys)
-#database_users: []
-
-# [HA only] Conninfo parameter populated in the repmgr configuration file
-#repmgr_conninfo: "host={{ ansible_default_ipv4.address }} dbname={{ repmgr_database }} user={{ repmgr_user }} connect_timeout={{ repmgr_timeout }}"
-
-# [HA only] Name of the repmgr database
-#repmgr_database: "repmgr"
-
 # [HA only] Password of the repmgr DB user
 repmgr_password: "my-password"
-
-# [HA only] Listening port for rephacheck
-#repmgr_repha_port: 8543
-
-# [HA only] List of roles for the repmgr user PostgreSQL pg_hba configuration
-#repmgr_roles: "LOGIN,REPLICATION,SUPERUSER"
-
-# [HA only] Timeout value for the repmgr connections
-#repmgr_timeout: 5
-
-# [HA only] Username of the repmgr DB user
-#repmgr_user: "repmgr"
 
 ...

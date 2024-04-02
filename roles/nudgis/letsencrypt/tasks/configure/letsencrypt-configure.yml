@@ -1,0 +1,47 @@
+---
+
+- name: "Test generate certificates"
+  register: letsencrypt_dry_run
+  ignore_errors: true
+  changed_when: false
+  ansible.builtin.command:
+    cmd: >
+      certbot certonly
+        --dry-run
+        -n --agree-tos -m "{{ letsencrypt_email }}"
+        --webroot -w "{{ letsencrypt_webroot }}"
+        --expand
+        -d "{{ letsencrypt_domains | join(',') }}"
+
+- name: "Exit in case of failure"
+  when: letsencrypt_dry_run is failed
+  ansible.builtin.fail:
+
+- when: letsencrypt_dry_run is succeeded
+  block:
+    - name: "Generate certificates"
+      notify: "Restart nginx"
+      ansible.builtin.command:
+        cmd: >
+          certbot certonly
+            -n --agree-tos -m "{{ letsencrypt_email }}"
+            --webroot -w "{{ letsencrypt_webroot }}"
+            --expand
+            -d "{{ letsencrypt_domains | join(',') }}"
+        creates: "/etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem"
+
+    - name: "Update nginx certificate configuration"
+      notify: "Restart nginx"
+      ansible.builtin.lineinfile:
+        path: /etc/nginx/conf.d/ssl_certificate.conf
+        regexp: 'ssl_certificate\s+([\w/\-\_\.]+);'
+        line: "ssl_certificate /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/fullchain.pem;"
+
+    - name: "Update nginx certificate key configuration"
+      notify: "Restart nginx"
+      ansible.builtin.lineinfile:
+        path: /etc/nginx/conf.d/ssl_certificate.conf
+        regexp: 'ssl_certificate_key\s+([\w/\-\_\.]+);'
+        line: "ssl_certificate_key /etc/letsencrypt/live/{{ letsencrypt_domains[0] }}/privkey.pem;"
+
+...

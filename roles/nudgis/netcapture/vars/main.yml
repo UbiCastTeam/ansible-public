@@ -1,0 +1,15 @@
+---
+
+# Folder used to store the packages
+netcapture_pkg_folder: "/data/netcapture/packages"
+
+# Folder used to store the configurations
+netcapture_conf_folder: "/etc/miris/conf"
+
+# Folder used to store the medias
+netcapture_media_folder: "/data/netcapture/media"
+
+# Activates the authentication for the deployed netcapture miris API
+netcapture_miris_auth: true
+
+...

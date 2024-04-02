@@ -1,0 +1,17 @@
+---
+
+- name: "CREATE ADMIN USER"
+  ansible.builtin.include_tasks: "configure/create_user.yml"
+  vars:
+    user: "admin"
+  when:
+    - sysuser_admin_password is defined
+
+- name: "CREATE UBICAST USER"
+  ansible.builtin.include_tasks: "configure/create_user.yml"
+  vars:
+    user: "ubicast"
+  when:
+    - sysuser_ubicast_password is defined
+
+...

@@ -1,0 +1,11 @@
+---
+
+- name: "BASE CONFIGURE POSTGRESQL LOGROTATE"
+  ansible.builtin.include_tasks: "base/logrotate.yml"
+
+- ansible.builtin.import_tasks: ../../shared/tasks/firewall_rules_files.yml
+
+- name: "Flush handlers"
+  ansible.builtin.meta: flush_handlers
+
+...

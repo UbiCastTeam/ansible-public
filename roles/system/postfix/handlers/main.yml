@@ -1,0 +1,24 @@
+---
+
+- name: "Postmap sasl"
+  ansible.builtin.command: postmap hash:/etc/postfix/sasl-passwords
+  changed_when: false
+
+- name: "Postmap generic"
+  ansible.builtin.command: postmap hash:/etc/postfix/generic
+  changed_when: false
+
+- name: "Postmap virtual"
+  ansible.builtin.command: postmap hash:/etc/postfix/virtual
+  changed_when: false
+
+- name: "Run newaliases"
+  ansible.builtin.command: newaliases
+  changed_when: false
+
+- name: "Restart postfix"
+  ansible.builtin.service:
+    name: postfix
+    state: restarted
+
+...
