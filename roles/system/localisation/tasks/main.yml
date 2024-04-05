@@ -4,7 +4,6 @@
   ansible.builtin.include_tasks:
     file: "install.yml"
     apply:
-      become: true
       tags:
         - install
   tags:
@@ -14,7 +13,6 @@
   ansible.builtin.include_tasks:
     file: "configure.yml"
     apply:
-      become: true
       tags:
         - configure
   tags:
