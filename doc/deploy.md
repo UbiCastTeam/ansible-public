@@ -17,6 +17,8 @@ To deploy all components, execute:
 ansible-playbook -i inventories/customer playbooks/site.yml 
 ```
 
+**Note:** if you are connecting to the hosts via a sudoer user instead of `root`, you should call `ansible-playbook` with the `--become` parameter (see `ansible-playbook` help for more informations).
+
 Additionnaly, each role is splitted into 3 tags:
 * "install" to install the application packages required
 * "base" to to the base configuration of the application

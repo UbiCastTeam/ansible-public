@@ -79,6 +79,7 @@
       args:
         executable: /bin/bash
       changed_when: false
+      become: false
       when: base_live_secret is not defined or app_secret_diff
 
     - name: "Deciding the application secret to use"
