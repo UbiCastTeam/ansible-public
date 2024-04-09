@@ -5,10 +5,5 @@
   hosts: vault
   roles:
     - nudgis/vault
-  post_tasks:
-    - name: "Configure proxy"
-      when: proxy_apply | d(false)
-      ansible.builtin.include_role:
-        name: system/proxy
 
 ...

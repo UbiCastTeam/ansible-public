@@ -4,7 +4,8 @@
   ansible.builtin.include_tasks: "configure/proxy-configure.yml"
   when:
     - proxy_http is defined
+    - proxy_http != ""
     - proxy_https is defined
-    - proxy_exclude is defined
+    - proxy_https != ""
 
 ...
