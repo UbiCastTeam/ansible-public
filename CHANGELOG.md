@@ -1,3 +1,7 @@
+# 2024-03-20
+
+Update nftables FTP rules to allow passive FTP for Nudgis Import.
+
 # 2024-03-14
 
 Update of the `letsencrypt` role and playbook to be more independant from the reste of the deployment.
