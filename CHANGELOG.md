@@ -1,3 +1,9 @@
+# 2024-04-09
+
+Remove `apt-cacher-ng` installation and configuration from the `nudgis/manager` role.
+Installation of this tool is now in a independant playbook/role. See the [playbook](playbooks/nudgis/apt_cacher) or the [role](roles/nudgis/apt_cacher) for more informations.
+`apt-cacher-ng` is used on specific case to allow servers from the infrastructure to proxy their apt repositories queries through Nudgis Manager repositories.
+
 # 2024-03-20
 
 Update nftables FTP rules to allow passive FTP for Nudgis Import.

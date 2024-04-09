@@ -2,7 +2,6 @@
 
 # Packages required for the group. Comes from ubicast-skyreach-runtime packages
 dependencies_packages:
-  - apt-cacher-ng
   - cron
   - nginx
   - postfix
@@ -15,6 +14,5 @@ manager_packages:
 # Group firewall rules filename, see roles/shared/files/nftables/
 firewall_rules_files:
   - http
-  - apt-cacher
 
 ...
