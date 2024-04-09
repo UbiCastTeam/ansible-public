@@ -1,0 +1,21 @@
+---
+
+- name: "INSTALL"
+  ansible.builtin.include_tasks:
+    file: "install.yml"
+    apply:
+      tags:
+        - install
+  tags:
+    - always
+
+- name: "BASE CONFIGURATION"
+  ansible.builtin.include_tasks:
+    file: "base.yml"
+    apply:
+      tags:
+        - base
+  tags:
+    - always
+
+...

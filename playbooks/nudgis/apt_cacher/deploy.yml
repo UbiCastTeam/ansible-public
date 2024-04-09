@@ -1,0 +1,27 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "APT CACHER"
+  hosts: manager
+  roles:
+    - nudgis/apt_cacher
+
+- name: "CONFIGURE APT CACHER IN REPOSITORIES"
+  hosts: ubicast
+  gather_facts: false
+  vars:
+    apt_cacher_server_ip: '{{ hostvars[groups["manager"][0]]["ansible_default_ipv4"]["address"] }}'
+    apt_cacher_port: '3142'
+  tasks:
+    - ansible.builtin.replace:
+        path: '/etc/apt/sources.list.d/{{ item }}'
+        # The regexp excludes repositories URL with an IP like pattern followed by the apt-cacher-ng port (for idempotency)
+        regexp: '^URIs: https?://(?![0-9\.]+:{{ apt_cacher_port }})'
+        replace: "URIs: http://{{ apt_cacher_server_ip }}:{{ apt_cacher_port }}/"
+      loop:
+        - 'debian-security.sources'
+        - 'debian.sources'
+        - 'ubicast-security.sources'
+        - 'ubicast.sources'
+
+...

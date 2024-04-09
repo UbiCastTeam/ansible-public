@@ -10,11 +10,6 @@
     name: skyreach
     state: restarted
 
-- name: "Restart apt-cacher-ng"
-  ansible.builtin.service:
-    name: apt-cacher-ng
-    state: restarted
-
 - ansible.builtin.import_tasks: ../../shared/handlers/nftables.yml
 
 ...

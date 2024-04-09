@@ -1,1 +1,1 @@
-add inet filter input tcp dport 3143 accept comment "Apt Cacher"
+add inet filter input tcp dport 3142 accept comment "Apt Cacher"
