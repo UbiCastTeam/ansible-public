@@ -1,2 +1,3 @@
-add inet filter input tcp dport 21 accept comment "FTP"
+add ct helper inet filter passive-ftp { type "ftp" protocol tcp; }
+add inet filter input tcp dport 21 ct helper set "passive-ftp" accept comment "FTP"
 add inet filter input tcp dport 22 accept comment "SFTP"
