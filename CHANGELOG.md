@@ -8,6 +8,11 @@ Installation of this tool is now in a independant playbook/role. See the [playbo
 
 Update nftables FTP rules to allow passive FTP for Nudgis Import.
 
+# 2024-03-19
+
+Update of the `proxy` role and playbook to be more independant from the reste of the deployment.
+See the [proxy playbook README](./playbooks/nudgis/proxy/README.md) for more informations.
+
 # 2024-03-14
 
 Update of the `letsencrypt` role and playbook to be more independant from the reste of the deployment.

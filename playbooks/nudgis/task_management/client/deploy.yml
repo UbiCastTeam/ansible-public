@@ -5,10 +5,5 @@
   hosts: task_management_client
   roles:
     - nudgis/task_management/client
-  post_tasks:
-    - name: "Configure proxy"
-      when: proxy_apply | d(false)
-      ansible.builtin.include_role:
-        name: system/proxy
 
 ...

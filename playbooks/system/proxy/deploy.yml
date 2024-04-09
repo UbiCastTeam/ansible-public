@@ -1,0 +1,15 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: "MANDATORY PROXY CONFIGURATION"
+  hosts: all
+  gather_facts: false
+  # The following vars are defined empty to bypass the role defaults and avoid deploying examples if omitted
+  vars:
+    proxy_http: ""
+    proxy_https: ""
+    proxy_exclude: []
+  roles:
+    - system/proxy
+
+...

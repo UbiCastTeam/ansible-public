@@ -1,10 +1,10 @@
 ---
 
-- name: "Gather the package facts"
-  ansible.builtin.package_facts:
-    manager: auto
+- name: "Consolidate the no_proxy list"
+  ansible.builtin.set_fact:
+    proxy_no: "{{ (['localhost', '127.0.0.1', '::1'] + proxy_exclude) | join(',') }}"
 
-- name: "Environment"
+- name: environment
   ansible.builtin.blockinfile:
     path: /etc/environment
     create: true
@@ -16,29 +16,50 @@
       HTTP_PROXY={{ proxy_http }}
       https_proxy={{ proxy_https }}
       HTTPS_PROXY={{ proxy_https }}
-      no_proxy={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
-      NO_PROXY={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
+      no_proxy={{ proxy_no }}
+      NO_PROXY={{ proxy_no }}
 
-- name: "Apt"
-  ansible.builtin.copy:
-    dest: /etc/apt/apt.conf.d/proxy
+- name: "Configure proxy for apt"
+  ansible.builtin.blockinfile:
+    path: /etc/apt/apt.conf.d/proxy
+    create: true
+    marker_begin: BEGIN PROXY
+    marker_end: END PROXY
     mode: "644"
     content: |
       Acquire::http::Proxy "{{ proxy_http }}";
       Acquire::https::Proxy "{{ proxy_https }}";
 
-- name: "Wget"
+- name: "Gather the package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: "Configure proxy for apt-cacher-ng"
+  when: "'apt-cacher-ng' in ansible_facts.packages"
+  notify: "Restart apt-cacher-ng"
+  ansible.builtin.blockinfile:
+    path: /etc/apt-cacher-ng/acng.conf
+    marker_begin: BEGIN PROXY
+    marker_end: END PROXY
+    mode: "644"
+    content: |
+      Proxy: {{ proxy_http }}
+
+- name: "Configure proxy for wget"
   when: "'wget' in ansible_facts.packages"
-  ansible.builtin.copy:
-    dest: /etc/wgetrc
+  ansible.builtin.blockinfile:
+    path: /etc/wgetrc
+    create: true
+    marker_begin: BEGIN PROXY
+    marker_end: END PROXY
     mode: "644"
     content: |
       use_proxy=yes
       http_proxy={{ proxy_http }}
       https_proxy={{ proxy_https }}
-      no_proxy={{ proxy_exclude | flatten | unique | reject('equalto', '') | join(',') }}
+      no_proxy={{ proxy_no }}
 
-- name: "Git"
+- name: "Configure proxy for git"
   when: "'git' in ansible_facts.packages"
   community.general.git_config:
     name: "{{ item.name }}"
@@ -46,9 +67,9 @@
     value: "{{ item.value }}"
     state: present
   loop:
-    - name: "Http.proxy"
+    - name: http.proxy
       value: "{{ proxy_http }}"
-    - name: "Https.proxy"
+    - name: https.proxy
       value: "{{ proxy_https }}"
 
 ...
