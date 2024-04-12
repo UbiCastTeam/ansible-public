@@ -33,4 +33,7 @@ nudgis_front_database_port: "5432"
 # Port to connect to PostgreSQL database with superuser rights
 nudgis_front_database_password: "changeit"
 
+# Do not configure UbiCast web accesses in the solution
+offline_mode: false
+
 ...

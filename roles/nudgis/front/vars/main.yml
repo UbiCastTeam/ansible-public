@@ -19,6 +19,10 @@ nudgis_front_packages:
   - ubicast-mediaserver
   - rsync
 
+# Packages to install only when the system is not in offline mode
+nudgis_front_online_packages:
+  - ubicast-web-access
+
 # Group firewall rules filename, see roles/shared/files/nftables/
 firewall_rules_files:
   - http

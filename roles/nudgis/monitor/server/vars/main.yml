@@ -1,9 +1,13 @@
 ---
 
 # Packages required for the group
-webmonitor_packages:
+monitor_packages:
   - ubicast-webmonitor
   - ubicast-webmonitor-runtime
+
+# Packages to install only when the system is not in offline mode
+monitor_online_packages:
+  - ubicast-web-access
 
 # Group firewall rules filename, see roles/shared/files/nftables/
 firewall_rules_files:

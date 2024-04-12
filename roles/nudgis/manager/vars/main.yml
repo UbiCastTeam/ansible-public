@@ -11,6 +11,10 @@ dependencies_packages:
 manager_packages:
   - ubicast-skyreach
 
+# Packages to install only when the system is not in offline mode
+manager_online_packages:
+  - ubicast-web-access
+
 # Group firewall rules filename, see roles/shared/files/nftables/
 firewall_rules_files:
   - http

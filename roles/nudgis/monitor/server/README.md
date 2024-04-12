@@ -34,3 +34,8 @@ ubicast_customer_name: "example"
 ```
 munin_nodes: []
 ```
+
+`offline_mode`: Do not configure UbiCast web accesses in the solution (Optional)
+```
+offline_mode: false
+```

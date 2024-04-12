@@ -21,4 +21,7 @@ manager_user_ubicast_password: "changeit"
 # Application admin user password
 manager_user_admin_password: "changeit"
 
+# Do not configure UbiCast web accesses in the solution
+offline_mode: false
+
 ...

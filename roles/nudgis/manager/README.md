@@ -43,3 +43,8 @@ manager_user_ubicast_password: "changeit"
 ```
 manager_user_admin_password: "changeit"
 ```
+
+`offline_mode`: Do not configure UbiCast web accesses in the solution (Optional)
+```
+offline_mode: false
+```
