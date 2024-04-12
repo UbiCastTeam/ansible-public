@@ -46,6 +46,16 @@ nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
 #   Defines the default deployed Nudgis portal domain (will be the URL of the portal when adding the HTTP(S) prefix)
 nudgis_front_domain: "nudgis.ubica.st"
 
+# front:
+#   Do not configure UbiCast web accesses in the solution
+# manager:
+#   Do not configure UbiCast web accesses in the solution
+# monitor_server:
+#   Do not configure UbiCast web accesses in the solution
+# ssh:
+#   Do not configure any ubicast ssh public key
+#offline_mode: false
+
 # monitor_client:
 #   Short name of the customer, with no spaces. This name is used in munin to group the graphs under the same name.
 # monitor_server:

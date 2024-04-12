@@ -25,10 +25,6 @@ cache_domain: "cache.ubica.st"
 lxc_network_type: "masquerade_bridge"
 
 # netcapture:
-#   Password of the deployed netcapture miris API
-netcapture_miris_user_pwd: "my-password"
-
-# netcapture:
 #   Activates the SSL verification when calling the Nudgis Manager
 #netcapture_mm_ssl: true
 
@@ -40,8 +36,6 @@ ntp_servers:
 
 # repository:
 #   Do not configure any repository and use local repository
-# ssh:
-#   Do not configure any ubicast ssh public key
 #offline_mode: false
 
 # postfix:

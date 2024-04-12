@@ -8,8 +8,6 @@ ntp_servers:
 
 # repository:
 #   Do not configure any repository and use local repository
-# ssh:
-#   Do not configure any ubicast ssh public key
 #offline_mode: false
 
 # postfix:

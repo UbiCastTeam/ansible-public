@@ -1,3 +1,8 @@
+# 2024-04-12
+
+Adding a new paquet installation `ubicast-web-access` when installing `nudgis/front`, `nudgis/manager` or `nudgis/monitor/server` in an online deployment.
+This package manages the magic login on the portal for UbiCast empoyees when maintenances are needed.
+
 # 2024-04-09
 
 Remove `apt-cacher-ng` installation and configuration from the `nudgis/manager` role.

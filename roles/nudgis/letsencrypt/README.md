@@ -1,9 +1,9 @@
 # Letsencrypt
 ## Description
 
-Install and configure Let's Encrypt tools to generate and maintain Let's Encrypt SSL certificates for the webdomains.
-The role is generating a multi-domains SSL certificate with the first domain in the list as the main one and others as alternative names.
-For usage instructions take a look at [the playbook](../../../playbooks/nudgis/letsencrypt).
+Install and configure Let's Encrypt tools to generate and maintain Let's Encrypt SSL certificates for the webdomains.  
+ The role is generating a multi-domains SSL certificate with the first domain in the list as the main one and others as alternative names.  
+ For usage instructions take a look at [the playbook](../../../playbooks/nudgis/letsencrypt).
 
 ## Role Variables
 
