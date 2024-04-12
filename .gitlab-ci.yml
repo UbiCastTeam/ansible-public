@@ -12,6 +12,8 @@ checkpf:
     DEPLOY_HA: $DEPLOY_HA
     DESTROY_STD: $DESTROY_STD
     DESTROY_HA: $DESTROY_HA
+    INVENTORY_VAR_REPOS_UBICAST_PACKAGES_DOMAIN: $INVENTORY_VAR_REPOS_UBICAST_PACKAGES_DOMAIN
+    INVENTORY_VAR_REPOS_UBICAST_PACKAGES_TOKEN: $INVENTORY_VAR_REPOS_UBICAST_PACKAGES_TOKEN
     LINT: $LINT
   # Register the job in a resource group to prevent having multiple running pipelines in parallel
   resource_group: deployment
