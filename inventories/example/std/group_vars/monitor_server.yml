@@ -6,9 +6,6 @@ monitor_domain: "monitor.ubica.st"
 # Password for the webmonitor admin user
 monitor_user_admin_password: "my-password"
 
-# Password for the webmonitor ubicast user
-monitor_user_ubicast_password: "my-password"
-
 # List of munin_nodes with their names and IP (each element of the list is a dictionary with a "name" and a "ip" key)
 #munin_nodes: []
 

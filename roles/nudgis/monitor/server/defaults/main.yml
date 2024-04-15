@@ -3,9 +3,6 @@
 # Defines the default domain for monitor
 monitor_domain: "monitor.example.com"
 
-# Password for the webmonitor ubicast user
-monitor_user_ubicast_password: "changeit"
-
 # Password for the webmonitor admin user
 monitor_user_admin_password: "changeit"
 
@@ -15,7 +12,7 @@ ubicast_customer_name: "example"
 # List of munin_nodes with their names and IP (each element of the list is a dictionary with a "name" and a "ip" key)
 munin_nodes: []
 
-# Do not configure UbiCast web accesses in the solution
+# In offline mode, UbiCast employees web accesses (for maintenance) are not deployed
 offline_mode: false
 
 ...

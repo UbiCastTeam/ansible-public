@@ -15,7 +15,4 @@ nudgis_front_database_port: "54321"
 # Defines the default deployed Nudgis portal "admin" user password
 nudgis_front_user_admin_password: "my-password"
 
-# Defines the default deployed Nudgis portal "ubicast" user password
-nudgis_front_user_ubicast_password: "my-password"
-
 ...
