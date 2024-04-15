@@ -1,7 +1,7 @@
 # 2024-04-12
 
-Adding a new paquet installation `ubicast-web-access` when installing `nudgis/front`, `nudgis/manager` or `nudgis/monitor/server` in an online deployment.
-This package manages the magic login on the portal for UbiCast empoyees when maintenances are needed.
+* Adding a new paquet installation `ubicast-web-access` when installing `nudgis/front`, `nudgis/manager` or `nudgis/monitor/server` in an online deployment. This package manages the magic login on the portal for UbiCast empoyees when maintenances are needed.
+* Remove the `ubicast` account manual creation for `nudgis/front`, `nudgis/manager` or `nudgis/monitor/server`. This account is now handled by the magic login through the `ubicast-web-access` package.
 
 # 2024-04-09
 

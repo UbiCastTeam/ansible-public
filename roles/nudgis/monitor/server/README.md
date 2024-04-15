@@ -15,11 +15,6 @@ Available variables are listed below, along with the descriptions and the defaul
 monitor_domain: "monitor.example.com"
 ```
 
-`monitor_user_ubicast_password`: Password for the webmonitor ubicast user (Optional)
-```
-monitor_user_ubicast_password: "changeit"
-```
-
 `monitor_user_admin_password`: Password for the webmonitor admin user (Optional)
 ```
 monitor_user_admin_password: "changeit"
@@ -35,7 +30,7 @@ ubicast_customer_name: "example"
 munin_nodes: []
 ```
 
-`offline_mode`: Do not configure UbiCast web accesses in the solution (Optional)
+`offline_mode`: In offline mode, UbiCast employees web accesses (for maintenance) are not deployed (Optional)
 ```
 offline_mode: false
 ```

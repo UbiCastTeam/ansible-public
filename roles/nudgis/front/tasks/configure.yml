@@ -29,7 +29,6 @@
   when:
     - nudgis_front_domain is defined
     - nudgis_front_api_key is defined
-    - nudgis_front_user_ubicast_password is defined
     - nudgis_front_user_admin_password is defined
     - manager_domain is defined
 

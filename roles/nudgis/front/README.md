@@ -29,11 +29,6 @@ manager_domain: "manager.example.com"
 nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
 ```
 
-`nudgis_front_user_ubicast_password`: Defines the default deployed Nudgis portal "ubicast" user password (Optional)
-```
-nudgis_front_user_ubicast_password: "changeit"
-```
-
 `nudgis_front_user_admin_password`: Defines the default deployed Nudgis portal "admin" user password (Optional)
 ```
 nudgis_front_user_admin_password: "changeit"
@@ -64,7 +59,7 @@ nudgis_front_database_port: "5432"
 nudgis_front_database_password: "changeit"
 ```
 
-`offline_mode`: Do not configure UbiCast web accesses in the solution (Optional)
+`offline_mode`: In offline mode, UbiCast employees web accesses (for maintenance) are not deployed (Optional)
 ```
 offline_mode: false
 ```

@@ -34,17 +34,12 @@ manager_database_port: "5432"
 manager_database_password: "changeit"
 ```
 
-`manager_user_ubicast_password`: Application ubicast user password
-```
-manager_user_ubicast_password: "changeit"
-```
-
 `manager_user_admin_password`: Application admin user password
 ```
 manager_user_admin_password: "changeit"
 ```
 
-`offline_mode`: Do not configure UbiCast web accesses in the solution (Optional)
+`offline_mode`: In offline mode, UbiCast employees web accesses (for maintenance) are not deployed (Optional)
 ```
 offline_mode: false
 ```

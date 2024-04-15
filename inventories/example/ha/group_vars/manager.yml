@@ -15,7 +15,4 @@ manager_database_port: "5432"
 # Application admin user password
 manager_user_admin_password: "my-password"
 
-# Application ubicast user password
-manager_user_ubicast_password: "my-password"
-
 ...

@@ -15,7 +15,6 @@
 - name: "CONFIGURE ADMIN USERS"
   ansible.builtin.include_tasks: "configure/users.yml"
   when:
-    - manager_user_ubicast_password is defined
     - manager_user_admin_password is defined
 
 - name: "CONFIGURE NUDGIS MANAGER EMAIL SENDER ADDRESS"

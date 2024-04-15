@@ -47,11 +47,11 @@ nudgis_front_api_key: "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
 nudgis_front_domain: "nudgis.ubica.st"
 
 # front:
-#   Do not configure UbiCast web accesses in the solution
+#   In offline mode, UbiCast employees web accesses (for maintenance) are not deployed
 # manager:
-#   Do not configure UbiCast web accesses in the solution
+#   In offline mode, UbiCast employees web accesses (for maintenance) are not deployed
 # monitor_server:
-#   Do not configure UbiCast web accesses in the solution
+#   In offline mode, UbiCast employees web accesses (for maintenance) are not deployed
 # ssh:
 #   Do not configure any ubicast ssh public key
 #offline_mode: false

@@ -8,7 +8,6 @@
         "id": "1_{{ nudgis_front_system_user }}",
         "domain": "{{ nudgis_front_domain }}",
         "api_key": "{{ nudgis_front_api_key }}",
-        "superuser_pwd": "{{ nudgis_front_user_ubicast_password }}",
         "admin_pwd": "{{ nudgis_front_user_admin_password }}",
         "skyreach_url": "{{ manager_domain }}"
       }'
