@@ -24,7 +24,7 @@
     path: /etc/hosts
     regexp: '^(127\.0\.0\.1.* ){{ current_domain.stdout }}( .*|$)'
     replace: '\1{{ monitor_domain }}\2'
- 
+
 - name: "Configure domain in settings_override.py"
   notify: "Reload webmonitor service"
   ansible.builtin.lineinfile:
