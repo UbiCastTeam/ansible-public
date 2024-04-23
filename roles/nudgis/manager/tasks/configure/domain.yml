@@ -1,13 +1,35 @@
 ---
 
-- name: "Configure domain"
-  ansible.builtin.replace:
-    path: /etc/skyreach/install.ini
-    regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
-    replace: '\1{{ item.name }} = {{ item.value }}'
-  loop:
-    - { name: 'DOMAIN', value: '{{ manager_domain }}' }
+- name: "Retrieve currently configured domain"
+  ansible.builtin.command:
+    cmd: grep -m1 -oP 'server_name \K[^;\s]+' /etc/nginx/sites-available/skyreach.conf
+  changed_when: false
+  register: current_domain
 
-# /!\ Does not alter the already created instances /!\
+- name: "Configure domain in nginx vhost"
+  notify: "Reload nginx"
+  ansible.builtin.replace:
+    path: /etc/nginx/sites-available/skyreach.conf
+    regexp: '(server_name.* ){{ current_domain.stdout }}(.*;)$'
+    replace: '\1{{ manager_domain }}\2'
+
+- name: "Configure domain in install.ini"
+  ansible.builtin.lineinfile:
+    path: /etc/skyreach/install.ini
+    regexp: '\s*#?\s*DOMAIN\s*=.*'
+    line: 'DOMAIN = {{ manager_domain }}'
+
+- name: "Configure domain as local in the hosts file"
+  ansible.builtin.replace:
+    path: /etc/hosts
+    regexp: '^(127\.0\.0\.1.* ){{ current_domain.stdout }}( .*|$)'
+    replace: '\1{{ manager_domain }}\2'
+
+- name: "Configure domain in settings_override.py"
+  ansible.builtin.lineinfile:
+    path: /home/skyreach/skyreach_data/private/settings_override.py
+    regexp: '^#?\s*SITE_URL\s*=.*$'
+    line: "SITE_URL = 'https://{{ manager_domain }}'"
+    backrefs: true
 
 ...

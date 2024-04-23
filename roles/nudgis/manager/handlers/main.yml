@@ -5,6 +5,11 @@
     name: nginx
     state: restarted
 
+- name: "Reload nginx"
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded
+
 - name: "Restart skyreach"
   ansible.builtin.service:
     name: skyreach
