@@ -5,6 +5,16 @@
     name: nginx
     state: restarted
 
+- name: "Reload nginx"
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded
+
+- name: "Reload webmonitor service"
+  ansible.builtin.service:
+    name: webmonitor
+    state: reloaded
+
 - name: "Wait for munin cron to end"
   ansible.builtin.wait_for:
     path: /var/run/munin/munin-update.lock
