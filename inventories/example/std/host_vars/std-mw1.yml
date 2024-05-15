@@ -48,6 +48,10 @@ repos_ubicast_packages_domain: "manager.ubica.st"
 #   UbiCast repository token used to make API call to mirismanager.ubicast.net to retrieve system informations
 repos_ubicast_packages_token: "UBICAST-APT-TOKEN"
 
+# repository:
+#   Check the UbiCast apt repository SSL certificate (if "true" the repository is trusted and there is no verification)
+#repos_ubicast_trusted: false
+
 # user:
 #   Password for the system user admin
 sysuser_admin_password: "my-password"

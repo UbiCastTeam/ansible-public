@@ -1,3 +1,8 @@
+# 2024-05-15
+
+Adding the "trusted" option for Debian and UbiCast repositories in the `system/repositories` role.
+The "trusted" option is configurable through the "repos_ubicast_trusted" and "repos_debian_trusted" new boolean variables (see role documentation and example inventories for more informations).
+
 # 2024-04-12
 
 * Adding a new paquet installation `ubicast-web-access` when installing `nudgis/front`, `nudgis/manager` or `nudgis/monitor/server` in an online deployment. This package manages the magic login on the portal for UbiCast empoyees when maintenances are needed.

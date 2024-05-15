@@ -1,7 +1,24 @@
 ---
 
 - name: "Add Debian packages repository"
-  when: not offline_mode
+  when:
+    - not offline_mode
+    - repos_debian_trusted
+  notify: "Trigger apt update"
+  ansible.builtin.deb822_repository:
+    name: "debian"
+    types: "deb"
+    uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian"
+    suites:
+      - "{{ repos_release }}"
+      - "{{ repos_release }}-updates"
+    components: "main"
+    trusted: true
+
+- name: "Add Debian packages repository"
+  when:
+    - not offline_mode
+    - not repos_debian_trusted
   notify: "Trigger apt update"
   ansible.builtin.deb822_repository:
     name: "debian"
@@ -13,7 +30,22 @@
     components: "main"
 
 - name: "Add Debian security repository"
-  when: not offline_mode
+  when:
+    - not offline_mode
+    - repos_debian_trusted
+  notify: "Trigger apt update"
+  ansible.builtin.deb822_repository:
+    name: "debian-security"
+    types: "deb"
+    uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian-security"
+    suites: "{{ repos_release }}-security"
+    components: "main"
+    trusted: true
+
+- name: "Add Debian security repository"
+  when:
+    - not offline_mode
+    - not repos_debian_trusted
   notify: "Trigger apt update"
   ansible.builtin.deb822_repository:
     name: "debian-security"
