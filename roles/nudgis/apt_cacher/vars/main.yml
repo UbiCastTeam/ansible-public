@@ -5,7 +5,7 @@ apt_cacher_packages:
   - apt-cacher-ng
 
 # Group firewall rules filename, see roles/shared/files/nftables/
-firewall_rules_files:
+apt_cacher_firewall_rules_files:
   - apt-cacher
 
 ...

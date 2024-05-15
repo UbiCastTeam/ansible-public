@@ -47,7 +47,7 @@ repmgr_packages:
   - python3-toml
 
 # [HA only] Group firewall rules filename, see roles/shared/files/nftables/
-firewall_rules_files:
+repmgr_firewall_rules_files:
   - rephacheck
 
 ...

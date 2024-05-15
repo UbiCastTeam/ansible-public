@@ -1,22 +1,18 @@
 ---
 
 - name: "Nudgis Front install"
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: "{{ nudgis_front_packages }}"
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+  ansible.builtin.import_role:
+    name: "nudgis/shared"
+    tasks_from: "apt_install.yml"
+  vars:
+    apt_packages: "{{ nudgis_front_packages }}"
 
-- name: "Nudgis Front online packages"
+- name: "Nudgis Front online packages install"
   when: not offline_mode
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: "{{ nudgis_front_online_packages }}"
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+  ansible.builtin.import_role:
+    name: "nudgis/shared"
+    tasks_from: "apt_install.yml"
+  vars:
+    apt_packages: "{{ nudgis_front_online_packages }}"
 
 ...

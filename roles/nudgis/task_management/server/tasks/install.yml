@@ -2,12 +2,10 @@
 
 - name: "Celerity server install"
   notify: "Reload fail2ban"
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: ubicast-celerity-server
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+  ansible.builtin.import_role:
+    name: "nudgis/shared"
+    tasks_from: "apt_install.yml"
+  vars:
+    apt_packages: [ "ubicast-celerity-server" ]
 
 ...

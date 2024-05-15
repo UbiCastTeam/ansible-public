@@ -52,7 +52,11 @@
 
 # FIREWALL
 
-- ansible.builtin.import_tasks: ../../shared/tasks/firewall_rules_files.yml
+- ansible.builtin.import_role:
+    name: "nudgis/shared"
+    tasks_from: "firewall_rules_files.yml"
+  vars:
+    firewall_rules_files: "{{ import_firewall_rules_files }}"
 
 - name: "Flush handlers"
   ansible.builtin.meta: flush_handlers

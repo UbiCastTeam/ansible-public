@@ -1,0 +1,15 @@
+---
+
+- name: "APT packages: {{ apt_packages | join(', ') }}"
+  ansible.builtin.apt:
+    force_apt_get: true
+    install_recommends: false
+    update_cache: "{{ apt_update_cache | d(false) }}"
+    name: "{{ apt_packages }}"
+    state: "{{ apt_packages_state | d('present') }}"
+    purge: "{{ apt_packages_purge | d(false) }}"
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+...

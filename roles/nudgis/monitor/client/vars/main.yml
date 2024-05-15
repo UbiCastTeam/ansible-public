@@ -1,7 +1,7 @@
 ---
 
 # Group firewall rules filename, see roles/shared/files/nftables/
-firewall_rules_files:
+monitor_client_firewall_rules_files:
   - munin-node
 
 # Munin node hostname of the server

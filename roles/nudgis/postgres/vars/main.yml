@@ -45,7 +45,7 @@ database_databases: []
 database_users: []
 
 # Group firewall rules filename, see roles/shared/files/nftables/
-firewall_rules_files:
+database_firewall_rules_files:
   - postgres
 
 ...

@@ -16,7 +16,7 @@ manager_online_packages:
   - ubicast-web-access
 
 # Group firewall rules filename, see roles/shared/files/nftables/
-firewall_rules_files:
+manager_firewall_rules_files:
   - http
 
 ...
