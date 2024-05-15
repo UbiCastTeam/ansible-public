@@ -10,7 +10,7 @@
   ansible.builtin.include_tasks: "base/rephacheck.yml"
 
 - name: "BASE CONFIGURE FIREWALL RULES"
-- ansible.builtin.import_role:
+  ansible.builtin.import_role:
     name: "nudgis/shared"
     tasks_from: "firewall_rules_files.yml"
   vars:
