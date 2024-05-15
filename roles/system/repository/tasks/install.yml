@@ -10,13 +10,10 @@
   until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
 
 - name: "Install repository utilities"
-  ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    name: "{{ sysconfig_repos_packages }}"
-    state: present
-  register: apt_status
-  retries: 60
-  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+  ansible.builtin.import_role:
+    name: "nudgis/shared"
+    tasks_from: "apt_install.yml"
+  vars:
+    apt_packages: "{{ sysconfig_repos_packages }}"
 
 ...

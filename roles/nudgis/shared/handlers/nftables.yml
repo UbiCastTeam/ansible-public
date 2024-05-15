@@ -1,8 +1,17 @@
 ---
 
-- name: "Reload nftables"
-  ansible.builtin.systemd:
+# Order here is important
+- name: "Gather the services facts"
+  ansible.builtin.service_facts:
+  listen: "Reload nftables"
+
+- name: "Reload nftables service"
+  ansible.builtin.service:
     name: nftables
     state: reloaded
+  when:
+    - "'nftables.service' in ansible_facts.services"
+    - "ansible_facts.services['nftables.service'].status == 'enabled'"
+  listen: "Reload nftables"
 
 ...

@@ -10,7 +10,7 @@ monitor_online_packages:
   - ubicast-web-access
 
 # Group firewall rules filename, see roles/shared/files/nftables/
-firewall_rules_files:
+monitor_server_firewall_rules_files:
   - http
 
 # Packages required for the group

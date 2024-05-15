@@ -6,7 +6,7 @@ import_packages:
   - ubicast-mediaimport
 
 # Group firewall rules filename, see roles/shared/files/nftables/
-firewall_rules_files:
+import_firewall_rules_files:
   - ftp
 
 ...

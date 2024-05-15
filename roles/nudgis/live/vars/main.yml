@@ -5,7 +5,7 @@ live_packages:
   - ubicast-live
 
 # Group firewall rules filename, see roles/shared/files/nftables/
-firewall_rules_files:
+live_firewall_rules_files:
   - http
   - rtmp
 

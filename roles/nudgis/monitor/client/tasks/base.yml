@@ -1,5 +1,9 @@
 ---
 
-- ansible.builtin.import_tasks: ../../shared/tasks/firewall_rules_files.yml
+- ansible.builtin.import_role:
+    name: "nudgis/shared"
+    tasks_from: "firewall_rules_files.yml"
+  vars:
+    firewall_rules_files: "{{ monitor_client_firewall_rules_files }}"
 
 ...
