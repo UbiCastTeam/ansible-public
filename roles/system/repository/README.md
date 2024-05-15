@@ -27,6 +27,11 @@ repos_ubicast_packages_token: "XXXX-XXXX-XXXX-XXXX-XXXX"
 repos_ubicast_packages_domain: "manager.example.com"
 ```
 
+`repos_ubicast_trusted`: Check the UbiCast apt repository SSL certificate (if "true" the repository is trusted and there is no verification)
+```
+repos_ubicast_trusted: false
+```
+
 `repos_debian_packages_domain`: Domain to use for the Debian repositories (Optional)
 ```
 repos_debian_packages_domain: "deb.debian.org"
@@ -35,4 +40,9 @@ repos_debian_packages_domain: "deb.debian.org"
 `repos_debian_security_packages_domain`: Domain to use for the Debian security repositories (Optional)
 ```
 repos_debian_security_packages_domain: "security.debian.org"
+```
+
+`repos_debian_trusted`: Check the Debian apt repository SSL certificate (if "true" the repository is trusted and there is no verification)
+```
+repos_debian_trusted: false
 ```
