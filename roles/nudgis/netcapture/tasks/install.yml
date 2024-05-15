@@ -5,6 +5,6 @@
     name: "nudgis/shared"
     tasks_from: "apt_install.yml"
   vars:
-    apt_packages: [ "ubicast-netcapture" ]
+    apt_packages: ["ubicast-netcapture"]
 
 ...
