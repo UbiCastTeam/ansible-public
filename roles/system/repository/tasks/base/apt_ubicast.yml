@@ -8,7 +8,7 @@
 
 - name: "Add UbiCast repository public key"
   ansible.builtin.get_url:
-    url: "https://{{ repos_ubicast_packages_domain }}/media/public.gpg"
+    url: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}/media/public.gpg"
     dest: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
     mode: "644"
 
@@ -18,7 +18,7 @@
   ansible.builtin.deb822_repository:
     name: "ubicast"
     types: "deb"
-    uris: "https://{{ repos_ubicast_packages_domain }}"
+    uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
     suites: "packaging/apt/{{ repos_ubicast_packages_token }}/{{ repos_release }}/"
     signed_by: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
     trusted: true
@@ -29,7 +29,7 @@
   ansible.builtin.deb822_repository:
     name: "ubicast"
     types: "deb"
-    uris: "https://{{ repos_ubicast_packages_domain }}"
+    uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
     suites: "packaging/apt/{{ repos_ubicast_packages_token }}/{{ repos_release }}/"
     signed_by: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
 
@@ -39,7 +39,7 @@
   ansible.builtin.deb822_repository:
     name: "ubicast-security"
     types: "deb"
-    uris: "https://{{ repos_ubicast_packages_domain }}"
+    uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
     suites: "packaging/apt/ubicast-security-updates/{{ repos_release }}/"
     signed_by: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
     trusted: true
@@ -50,7 +50,7 @@
   ansible.builtin.deb822_repository:
     name: "ubicast-security"
     types: "deb"
-    uris: "https://{{ repos_ubicast_packages_domain }}"
+    uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
     suites: "packaging/apt/ubicast-security-updates/{{ repos_release }}/"
     signed_by: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
 

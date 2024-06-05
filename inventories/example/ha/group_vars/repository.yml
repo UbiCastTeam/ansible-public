@@ -3,6 +3,9 @@
 # Domain to use for the Debian repositories
 #repos_debian_packages_domain: "deb.debian.org"
 
+# Prefix of the debian repositories, with the protocol (example: "http://"). Used when the apt-cacher-ng of the Nudgis Manager proxifies the debian repositories.
+#repos_debian_prefix: "http://"
+
 # Domain to use for the Debian security repositories
 #repos_debian_security_packages_domain: "security.debian.org"
 
