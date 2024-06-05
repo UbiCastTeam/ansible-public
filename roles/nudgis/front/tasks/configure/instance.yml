@@ -9,7 +9,7 @@
         "domain": "{{ nudgis_front_domain }}",
         "api_key": "{{ nudgis_front_api_key }}",
         "admin_pwd": "{{ nudgis_front_user_admin_password }}",
-        "skyreach_url": "{{ manager_domain }}"
+        "skyreach_url": "https://{{ manager_domain }}"
       }'
     creates: "/etc/nginx/sites-available/mediaserver-{{ nudgis_front_system_user }}.conf"
   throttle: 1
