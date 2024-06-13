@@ -5,6 +5,7 @@ checkpf:
   trigger:
     project: sys/ubicast-environment
     strategy: depend
+    branch: main
   # Sends the current branch to the ubicast-environment triggered pipeline as a variable
   variables:
     ANSIBLE_BRANCH: $CI_COMMIT_BRANCH
@@ -25,19 +26,23 @@ checkpf:
     # Only if push on the main branch
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"
 
-lint:
-  # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html
-  trigger:
-    project: sys/ubicast-environment
-    strategy: depend
-  # Sends the current branch to the ubicast-environment triggered pipeline as a variable
-  variables:
-    ANSIBLE_BRANCH: $CI_COMMIT_BRANCH
-    DEPLOY_STD: "false"
-    DEPLOY_HA: "false"
-  resource_group: deployment
-  rules:
-    # Only if push in a branch other than main
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main"
+# Do not work as expected, failed with error : 
+#  > Downstream pipeline can not be created, Pipeline will not run for the selected trigger.
+#  > The rules configuration prevented any jobs from being added to the pipeline.
+#lint:
+#  # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html
+#  trigger:
+#    project: sys/ubicast-environment
+#    strategy: depend
+#    branch: main
+#  # Sends the current branch to the ubicast-environment triggered pipeline as a variable
+#  variables:
+#    ANSIBLE_BRANCH: $CI_COMMIT_BRANCH
+#    DEPLOY_STD: "false"
+#    DEPLOY_HA: "false"
+#  resource_group: deployment
+#  rules:
+#    # Only if push in a branch other than main
+#    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main"
 
 ...
