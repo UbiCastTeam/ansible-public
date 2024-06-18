@@ -1,11 +1,14 @@
 ---
 
+# This task should always be executed
+#  - with install and base for OVA images
+#  - with configure for customer configuration
 - name: "INSTALL"
   ansible.builtin.include_tasks:
     file: "install.yml"
     apply:
       tags:
-        - install
+        - always
   tags:
     - always
 
@@ -14,7 +17,7 @@
     file: "base.yml"
     apply:
       tags:
-        - base
+        - always
   tags:
     - always
 
