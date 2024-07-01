@@ -11,8 +11,8 @@ includedir /etc/munin/munin-conf.d
     use_node_name yes
 
 {% endfor %}
-{% elif groups['munin_node'] is defined %}
-{% for host in groups['munin_node'] %}
+{% elif groups['monitor_client'] is defined %}
+{% for host in groups['monitor_client'] %}
 [{{ host }}.{{ ubicast_customer_name }}]
     address {{hostvars[host]['ansible_facts']['default_ipv4']['address']}}
     use_node_name yes
