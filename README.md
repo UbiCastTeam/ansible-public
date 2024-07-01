@@ -1,7 +1,3 @@
-# Test
-
-This is a test
-
 # Ansible public
 
 ## Usage
