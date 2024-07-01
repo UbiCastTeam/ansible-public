@@ -1,3 +1,7 @@
+# 2024-07-01
+
+Update ansible version from version 8.X to 10.X.
+
 # 2024-05-15
 
 Adding the "trusted" option for Debian and UbiCast repositories in the `system/repositories` role.
