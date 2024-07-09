@@ -1,11 +1,17 @@
+# 2024-07-09
+
+* Remove `admin` and `ubicast` system user shell password definition in the `system/user` role.  
+Associated variables are `sysuser_admin_password` and `sysuser_ubicast_password`.
+
 # 2024-07-01
 
-Update ansible version from version 8.X to 10.X.
+* Update ansible version from version 8.X to 10.X.
 
 # 2024-05-15
 
-Adding the "trusted" option for Debian and UbiCast repositories in the `system/repositories` role.
-The "trusted" option is configurable through the "repos_ubicast_trusted" and "repos_debian_trusted" new boolean variables (see role documentation and example inventories for more informations).
+* Adding the "trusted" option for Debian and UbiCast repositories in the `system/repositories` role.  
+The "trusted" option is configurable through the `repos_ubicast_trusted` and `repos_debian_trusted` new boolean variables.  
+See role documentation and example inventories for more informations).
 
 # 2024-04-12
 
@@ -14,22 +20,22 @@ The "trusted" option is configurable through the "repos_ubicast_trusted" and "re
 
 # 2024-04-09
 
-Remove `apt-cacher-ng` installation and configuration from the `nudgis/manager` role.
-Installation of this tool is now in a independant playbook/role. See the [playbook](playbooks/nudgis/apt_cacher) or the [role](roles/nudgis/apt_cacher) for more informations.
+* Remove `apt-cacher-ng` installation and configuration from the `nudgis/manager` role.
+Installation of this tool is now in a independant playbook/role. See the [playbook](playbooks/nudgis/apt_cacher) or the [role](roles/nudgis/apt_cacher) for more informations.  
 `apt-cacher-ng` is used on specific case to allow servers from the infrastructure to proxy their apt repositories queries through Nudgis Manager repositories.
 
 # 2024-03-20
 
-Update nftables FTP rules to allow passive FTP for Nudgis Import.
+* Update nftables FTP rules to allow passive FTP for Nudgis Import.
 
 # 2024-03-19
 
-Update of the `proxy` role and playbook to be more independant from the reste of the deployment.
+* Update of the `proxy` role and playbook to be more independant from the reste of the deployment.  
 See the [proxy playbook README](./playbooks/nudgis/proxy/README.md) for more informations.
 
 # 2024-03-14
 
-Update of the `letsencrypt` role and playbook to be more independant from the reste of the deployment.
+* Update of the `letsencrypt` role and playbook to be more independant from the reste of the deployment.  
 See the [Let's Encrypt playbook README](./playbooks/nudgis/letsencrypt/README.md) for more informations.
 
 # 2024-02-22

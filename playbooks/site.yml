@@ -16,7 +16,7 @@
 - import_playbook: system/unattended_upgrades/deploy.yml  # need repo (for ubicast unattended)
 - import_playbook: system/misc/deploy.yml
 - import_playbook: system/user/deploy.yml  # need misc (for sudo bin)
-- import_playbook: system/ssh/deploy.yml  # need user (for ssh keys) and repo (for ubicast keys)
+- import_playbook: system/ssh/deploy.yml  # need repo (for ubicast keys)
 - import_playbook: system/localisation/deploy.yml
 - import_playbook: system/ntp/deploy.yml
 - import_playbook: system/postfix/deploy.yml
@@ -38,7 +38,7 @@
 - import_playbook: nudgis/task_management/server/deploy.yml
 - import_playbook: nudgis/task_management/client/deploy.yml
 - import_playbook: nudgis/postgres/deploy.yml
-- import_playbook: nudgis/front/deploy.yml
+- import_playbook: nudgis/front/deploy.yml # need user (for ssh keys)
 # manager should be played after the front to deduplicate the postgres installation
 - import_playbook: nudgis/manager/deploy.yml
 - import_playbook: nudgis/live/deploy.yml

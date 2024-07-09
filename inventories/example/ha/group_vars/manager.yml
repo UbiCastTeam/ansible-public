@@ -3,7 +3,7 @@
 # Domain to reach PostgreSQL database
 manager_database_domain: "127.0.0.1"
 
-# Port to connect to PostgreSQL database with superuser rights
+# Password to connect to PostgreSQL database with superuser rights
 #manager_database_password: "changeit"
 
 # Port to reach PostgreSQL database

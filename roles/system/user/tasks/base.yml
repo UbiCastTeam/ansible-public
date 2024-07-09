@@ -3,9 +3,21 @@
 - name: "CONFIGURE SUDOERS"
   ansible.builtin.include_tasks: "base/sudoers.yml"
 
-- name: "SETUP ROOT DOTFILES"
-  ansible.builtin.include_tasks: "common/dotfiles.yml"
+- name: "SETUP USERS"
+  ansible.builtin.include_tasks: "base/setup_user.yml"
+  loop:
+    - admin
+    - ubicast
   vars:
-    user: "root"
+    user: "{{ item }}"
+
+- name: "CONFIGURE DOTFILES"
+  ansible.builtin.include_tasks: "base/dotfiles.yml"
+  loop:
+    - root
+    - admin
+    - ubicast
+  vars:
+    user: "{{ item }}"
 
 ...

@@ -19,7 +19,7 @@ manager_domain: "manager.example.com"
 manager_email_from: "noreply@{{ manager_domain }}"
 ```
 
-`manager_database_domain`: Domain to reach PostgreSQL database
+`manager_database_domain`: Domain to reach PostgreSQL database (Optional)
 ```
 manager_database_domain: "database.manager.example.com"
 ```
@@ -29,7 +29,7 @@ manager_database_domain: "database.manager.example.com"
 manager_database_port: "5432"
 ```
 
-`manager_database_password`: Port to connect to PostgreSQL database with superuser rights (Optional)
+`manager_database_password`: Password to connect to PostgreSQL database with superuser rights (Optional)
 ```
 manager_database_password: "changeit"
 ```

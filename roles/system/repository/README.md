@@ -17,7 +17,7 @@ offline_mode: false
 repos_ubicast_prefix: "https://"
 ```
 
-`repos_ubicast_packages_domain`: Domain of the UbiCast debian packages repository URL (Optional)
+`repos_ubicast_packages_domain`: Domain of the UbiCast debian packages repository URL
 ```
 repos_ubicast_packages_domain: "manager.example.com"
 ```
