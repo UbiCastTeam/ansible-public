@@ -56,14 +56,6 @@ repos_ubicast_packages_token: "UBICAST-APT-TOKEN"
 #   Check the UbiCast apt repository SSL certificate (if "true" the repository is trusted and there is no verification)
 #repos_ubicast_trusted: false
 
-# user:
-#   Password for the system user admin
-sysuser_admin_password: "my-password"
-
-# user:
-#   Password for the system user ubicast
-sysuser_ubicast_password: "my-password"
-
 # tester:
 #   Sender of the email report
 #tester_email_from: "ubicast.tester"

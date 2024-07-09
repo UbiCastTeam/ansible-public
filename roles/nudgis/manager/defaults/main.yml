@@ -12,7 +12,7 @@ manager_database_domain: "database.manager.example.com"
 # Port to reach PostgreSQL database
 manager_database_port: "5432"
 
-# Port to connect to PostgreSQL database with superuser rights
+# Password to connect to PostgreSQL database with superuser rights
 manager_database_password: "changeit"
 
 # Application admin user password

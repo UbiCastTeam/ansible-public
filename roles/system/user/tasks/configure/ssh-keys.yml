@@ -1,0 +1,11 @@
+---
+
+# Keys pair generation have to be done at the configure step
+- name: "Generate ssh keys pair - {{ user }}"
+  ansible.builtin.user:
+    name: "{{ user }}"
+    generate_ssh_key: true
+    ssh_key_type: ed25519
+    ssh_key_file: .ssh/id_ed25519
+
+...

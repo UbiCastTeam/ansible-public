@@ -1,0 +1,18 @@
+---
+
+- name: "Create user group - {{ user }}"
+  ansible.builtin.group:
+    name: "{{ user }}"
+    state: present
+
+- name: "Create user - {{ user }}"
+  ansible.builtin.user:
+    name: "{{ user }}"
+    group: "{{ user }}"
+    shell: /bin/bash
+    append: true
+    groups:
+      - sudo
+    state: present
+
+...
