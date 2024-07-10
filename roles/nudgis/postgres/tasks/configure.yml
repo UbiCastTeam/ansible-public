@@ -17,6 +17,9 @@
 - name: "CREATE POSTGRESQL DATABASES"
   ansible.builtin.include_tasks: "configure/databases.yml"
 
+- name: "RESTRICT POSTGRESQSL CONFIGURATION RIGHTS"
+  ansible.builtin.include_tasks: "configure/configuration-rights.yml"
+
 # Flush to restart postgresql in time for HA deployment
 - name: "Flush handlers"
   ansible.builtin.meta: flush_handlers

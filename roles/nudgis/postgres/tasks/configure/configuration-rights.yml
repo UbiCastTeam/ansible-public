@@ -1,0 +1,24 @@
+---
+
+# See RM#39445
+
+- name: "Find all postgresql *.conf files"
+  ansible.builtin.find:
+    paths: "{{ database_conf_dir }}"
+    patterns: "*.conf"
+  register: postgresql_conf_files
+
+- name: "Restrict postgresql *.conf files rights"
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: '600'
+  loop: "{{ postgresql_conf_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: "Restrict postgresql directory rights"
+  ansible.builtin.file:
+    path: "{{ database_conf_dir }}"
+    mode: '700'
+
+...

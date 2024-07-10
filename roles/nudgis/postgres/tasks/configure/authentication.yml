@@ -7,7 +7,7 @@
     dest: "{{ database_conf_dir }}/pg_hba.conf"
     owner: postgres
     group: postgres
-    mode: "0640"
+    mode: "0600"
     backup: true
 
 ...

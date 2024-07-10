@@ -17,7 +17,7 @@
     dest: /etc/postgresql/{{ repmgr_database_version }}/{{ repmgr_database_cluster }}/rephacheck.conf
     owner: postgres
     group: postgres
-    mode: "0644"
+    mode: "0600"
 
 - name: "Configure rephacheck socket"
   notify:
