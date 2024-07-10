@@ -7,7 +7,7 @@
     dest: "{{ repmgr_conf_file }}"
     owner: postgres
     group: postgres
-    mode: "644"
+    mode: "600"
 
 - name: "Configure debian default"
   notify: "Restart repmgrd"

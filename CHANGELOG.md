@@ -2,6 +2,7 @@
 
 * Remove `admin` and `ubicast` system user shell password definition in the `system/user` role.  
 Associated variables are `sysuser_admin_password` and `sysuser_ubicast_password`.
+* Restrict PostgreSQL configuration files and directory rights.
 
 # 2024-07-01
 
