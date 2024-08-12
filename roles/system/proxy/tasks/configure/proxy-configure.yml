@@ -72,4 +72,12 @@
     - name: https.proxy
       value: "{{ proxy_https }}"
 
+- name: "Configure proxy for interactive shells"
+  ansible.builtin.copy:
+    src: "set_proxy.sh"
+    dest: "/etc/profile.d/set_proxy.sh"
+    owner: root
+    group: root
+    mode: '644'
+
 ...
