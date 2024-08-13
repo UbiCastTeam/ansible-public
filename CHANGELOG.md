@@ -1,3 +1,8 @@
+# 2024-08-12
+
+* Add HAProxy stats page listening on localhost on frontend servers for HA deployment
+* Update HAProxy maxconn value for HA deployment
+
 # 2024-07-09
 
 * Remove `admin` and `ubicast` system user shell password definition in the `system/user` role.  

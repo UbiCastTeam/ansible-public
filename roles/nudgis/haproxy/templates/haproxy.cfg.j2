@@ -7,6 +7,7 @@ global
   user haproxy
   group haproxy
   daemon
+  maxconn 2000
 
 defaults
   log global
@@ -23,12 +24,19 @@ defaults
   option clitcpka
   option srvtcpka
 
+frontend stats
+  mode http
+  bind 127.0.0.1:8404
+  stats enable
+  stats uri /stats
+  stats refresh 10s
+
 listen pgsql-primary
   bind 127.0.0.1:54321
   default-server inter 2s fall 3 rise 2 on-marked-down shutdown-sessions
   option tcp-check
   tcp-check expect string primary
-  maxconn 500
-  server {{ groups['postgres'][0] }} {{ hostvars[groups['postgres'][0]]['ansible_default_ipv4']['address'] }}:5432 maxconn 500 check port 8543
-  server {{ groups['postgres'][1] }} {{ hostvars[groups['postgres'][1]]['ansible_default_ipv4']['address'] }}:5432 maxconn 500 check port 8543 backup
+  maxconn 1000
+  server {{ groups['postgres'][0] }} {{ hostvars[groups['postgres'][0]]['ansible_default_ipv4']['address'] }}:5432 maxconn 1000 check port 8543
+  server {{ groups['postgres'][1] }} {{ hostvars[groups['postgres'][1]]['ansible_default_ipv4']['address'] }}:5432 maxconn 1000 check port 8543 backup
 
