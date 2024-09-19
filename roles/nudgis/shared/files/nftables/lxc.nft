@@ -1,0 +1,13 @@
+# Used only for DHCP, otherwhise not necessary
+# Override inet > forward chain to policy ACCEPT
+table inet filter {
+    chain forward {
+        type filter hook forward priority 0; policy accept;
+   }
+}
+# - for masquerade bridge
+add inet filter input iifname "lxcbr0" udp dport { 53, 67 } accept
+add inet filter input iifname "lxcbr0" tcp dport { 53, 67 } accept
+# - for host bridge
+add inet filter input iifname "vmbr0" udp dport { 53, 67 } accept
+add inet filter input iifname "vmbr0" tcp dport { 53, 67 } accept

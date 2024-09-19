@@ -1,15 +1,18 @@
 ---
 
-- name: "Host bridge configuration"
+# Deploy bridge configuration, it can be :
+# - Host bridge (which disable the default LXC lxcbr0 bridge)
+# - Masquerade bridge (named br0)
+- name: "Container bridge network configuration"
+  notify: "Restart lxc-net"
+  ansible.builtin.copy:
+    src: lxc-net.{{ lxc_network_type }}
+    dest: /etc/default/lxc-net
+    mode: "644"
+
+- name: "Host bridge information"
   when: lxc_network_type == 'host_bridge'
   block:
-    - name: "Masquerade bridge configuration disabling"
-      notify: "Restart lxc-net"
-      ansible.builtin.copy:
-        src: lxc-net.host_bridge
-        dest: /etc/default/lxc-net
-        mode: "644"
-
     - name: "Ask confirmation"
       ansible.builtin.pause:
         prompt: |
@@ -18,7 +21,7 @@
           Host bridge configuration must be done manually, and named: br0
           Documentation (section host device as bridge): https://wiki.debian.org/LXC/SimpleBridge
           Continue (yes/no)
-          -------------------------------------------------------------------------------------------
+          ------------------------------------------------------------------------------------------
       register: confirm_continue
       no_log: true
 
@@ -27,17 +30,15 @@
         msg: 'Installation aborted'
       when: not ((confirm_continue.user_input | bool) or (confirm_continue.user_input | length == 0))
 
-- name: "Masquerade bridge configuration"
-  when: lxc_network_type == 'masquerade_bridge'
-  block:
-    - name: "Container network configuration"
-      notify: "Restart lxc-net"
-      ansible.builtin.copy:
-        src: lxc-net.masquerade_bridge
-        dest: /etc/default/lxc-net
-        mode: "644"
+# Should be a notify to restart lxc-net and nftables here
+# but this is not possible with import_role
+- ansible.builtin.import_role:
+    name: "nudgis/shared"
+    tasks_from: "firewall_rules_files.yml"
+  vars:
+    firewall_rules_files: "{{ lxc_firewall_rules_files }}"
 
-- name: "Default container configuration"
+- name: "Create default container configuration"
   notify: "Restart lxc"
   ansible.builtin.template:
     src: lxc-default.j2

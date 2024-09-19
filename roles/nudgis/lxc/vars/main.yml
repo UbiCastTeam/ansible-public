@@ -1,0 +1,13 @@
+---
+
+# Packages required for the group
+lxc_packages:
+  - lxc
+  - lxcfs
+  - bridge-utils
+
+# Group firewall rules filename, see roles/shared/files/nftables/
+lxc_firewall_rules_files:
+  - lxc
+
+...
