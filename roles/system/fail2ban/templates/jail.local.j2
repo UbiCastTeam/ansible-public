@@ -6,3 +6,7 @@ maxretry = {{ fail2ban_maxretry }}
 destemail = {{ fail2ban_email_to }}
 sender = {{ fail2ban_email_from }}
 action = %({{ fail2ban_action }})s
+
+# nftables configuration
+banaction = nftables-multiport
+banaction_allports = nftables-allports
