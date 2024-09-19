@@ -1,7 +1,12 @@
+# 2024-09-19
+
+* Default nftables forward chain policy set to accept for netcapture hosts.
+* Change default fail2ban backend to nftables.
+
 # 2024-08-12
 
-* Add HAProxy stats page listening on localhost on frontend servers for HA deployment
-* Update HAProxy maxconn value for HA deployment
+* Add HAProxy stats page listening on localhost on frontend servers for HA deployment.
+* Update HAProxy maxconn value for HA deployment.
 
 # 2024-07-09
 
