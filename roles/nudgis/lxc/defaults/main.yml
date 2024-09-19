@@ -1,6 +1,6 @@
 ---
 
-# LXC network type
+# LXC network type, can be `masquerade_bridge` or `host_bridge`
 lxc_network_type: "masquerade_bridge"
 
 ...

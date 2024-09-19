@@ -5,9 +5,6 @@
     name: "nudgis/shared"
     tasks_from: "apt_install.yml"
   vars:
-    apt_packages:
-      - lxc
-      - lxcfs
-      - bridge-utils
+    apt_packages: "{{ lxc_packages }}"
 
 ...

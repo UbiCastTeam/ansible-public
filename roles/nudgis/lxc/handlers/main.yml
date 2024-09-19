@@ -12,4 +12,6 @@
     name: lxc-net
     state: restarted
 
+- ansible.builtin.import_tasks: ../../shared/handlers/nftables.yml
+
 ...
