@@ -1,5 +1,13 @@
 ---
 
+- name: 'Disable default cron email'
+  ansible.builtin.lineinfile:
+    path: /etc/cron.d/munin-node
+    regexp: '^MAILTO=root$'
+    line: '#MAILTO=root'
+    state: present
+    backrefs: yes
+
 - ansible.builtin.import_role:
     name: "nudgis/shared"
     tasks_from: "firewall_rules_files.yml"
