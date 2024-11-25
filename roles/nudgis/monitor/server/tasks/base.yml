@@ -19,7 +19,7 @@
     regexp: '^MAILTO=root$'
     line: '#MAILTO=root'
     state: present
-    backrefs: yes
+    backrefs: true
 
 - ansible.builtin.import_role:
     name: "nudgis/shared"
