@@ -29,12 +29,29 @@
         database: replication
         address: ::/0
     database_conf:
-      - name: "Main"
+      - name: "main"
         content: |
           listen_addresses = '*'
-      - name: "Modules"
+      - name: "modules"
         content: |
           shared_preload_libraries = 'repmgr'
+      - name: "connection-timeouts"
+        content: |
+          # Tune connection management
+          # See RM#40075
+          # Maximum idle time for a session before it's terminated; 0 to disable
+          idle_session_timeout = 0
+          # Maximum idle time within a transaction before termination to prevent resource locks
+          idle_in_transaction_session_timeout = 5min
+          # Maximum execution time for a single query before it's canceled; 0 to disable
+          statement_timeout = 0
+          # Interval to check if client socket is closed during query execution to abort early if needed
+          client_connection_check_interval = 1min
+          # Enable PostgreSQL specific TCP KeepAlive
+          # total time = 10 min + 10 * 1 min = 20 min
+          tcp_keepalives_idle = 10min
+          tcp_keepalives_interval = 1min
+          tcp_keepalives_count = 1
     database_users:
       - name: "{{ repmgr_user }}"
         password: "{{ repmgr_password }}"

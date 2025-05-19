@@ -19,20 +19,27 @@ defaults
   option tcplog
   balance leastconn
   retries 2
-  # Enable TCP KeepAlive
-  option tcpka
-  option clitcpka
-  option srvtcpka
-  # Set connection timeout
-  timeout connect 5s
-  timeout check 15s
+  # Enable connection timeout
   # See RM#40075
   # Set timeout on established connections without data transfer
   # Warning: TCP KeepAlive maintain established connecions but does not transfer data
-  #          Treatments taking more than 30m with no data transfer have no chance of success
-  timeout client 30m
-  timeout server 30m
-  timeout tunnel 30m
+  #          Treatments taking more than <timeout> with no data transfer will be closed by HAProxy
+  timeout client 24h
+  timeout server 24h
+  timeout connect 5s
+  timeout check 15s
+  # Enable TCP KeepAlive
+  option clitcpka
+  option srvtcpka
+  # Client KeepAlive
+  # total time = 10 min + 10 * 1 min = 20 min
+  clitcpka-idle 600s
+  clitcpka-intvl 60s
+  clitcpka-cnt   10
+  # Server KeepAlive
+  srvtcpka-idle 600s
+  srvtcpka-intvl 60s
+  srvtcpka-cnt   10
 
 # See RM#39952
 # Enable status page for supervision purpose
