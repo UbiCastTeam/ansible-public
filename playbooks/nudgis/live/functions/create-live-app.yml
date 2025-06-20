@@ -31,26 +31,33 @@
   gather_facts: false
   tags: live
   tasks:
-    - name: "Check the existence of the live configuration"
+
+    - name: "Check the existence of mssettings"
       ansible.builtin.stat:
-        path: /home/{{ live_app_name }}/msinstance/conf/lives.json
-      register: ms_conf_live
+        path: /home/{{ live_app_name }}/msinstance/conf/mssettings.py
+      register: ms_settings
 
-    - name: "Retrieve the live configuration"
-      ansible.builtin.slurp:
-        src: /home/{{ live_app_name }}/msinstance/conf/lives.json
-      register: ms_live_config
-      when: ms_conf_live.stat.exists
+    - name: "Extract live secret from mssettings"
+      ansible.builtin.command: >
+        grep -Po "^LIVE_RTMP_APP\s*=\s*'\K[^']+"
+        /home/{{ live_app_name }}/msinstance/conf/mssettings.py
+      register: live_secret_result
+      changed_when: false
+      failed_when: false
+      when: ms_settings.stat.exists
 
-    - name: "Extracting the application secret"
+    - name: "Declare live secret"
       ansible.builtin.set_fact:
-        live_secret: "{{ (ms_live_config.content | b64decode | from_json).RTMP_APP }}"
-      when: ms_conf_live.stat.exists
+        live_secret: "{{ live_secret_result.stdout }}"
+      when:
+        - ms_settings.stat.exists
+        - live_secret_result.stdout != ''
 
-    - name: "Declaring the application secret"
+    - name: "Fallback to empty live secret"
       ansible.builtin.set_fact:
         live_secret: ""
-      when: not ms_conf_live.stat.exists
+      when:
+        - not ms_settings.stat.exists or live_secret_result.stdout == ''
 
 - name: "Computing the application secret - {{ live_app_name }}"
   hosts: localhost
@@ -97,7 +104,7 @@
       changed_when: false
       failed_when: false
 
-    - name: "Gather the package facts"
+    - name: "Update package facts"
       ansible.builtin.package_facts:
         manager: auto
 
@@ -161,60 +168,38 @@
   gather_facts: false
   tags: live
   tasks:
-    - name: "Getting the current lives configuration"
-      ansible.builtin.slurp:
-        src: /home/{{ live_app_name }}/msinstance/conf/lives.json
-      register: lives_config
-      when: ms_conf_live.stat.exists
 
-    # The "W10K" string is decoded to an empty json file => "[]"
-    - name: "Store the lives configuration in a variable"
-      ansible.builtin.set_fact:
-        lives_config: "{{ lives_config.content | default('W10K') | b64decode | from_json }}"
+    - name: "Check the existence of msconf"
+      ansible.builtin.stat:
+        path: /etc/mediaserver/msconf.py
+      register: ms_conf
 
-    - name: "Set the live application secret in lives configuration"
-      vars:
-        rtmp_app_line:
-          RTMP_APP: "{{ hostvars['localhost'].live_app_secret }}"
-      ansible.builtin.set_fact:
-        lives_config: "{{ lives_config | combine(rtmp_app_line) }}"
+    - name: "Configure (or update) global live configurations into msconf"
+      ansible.builtin.lineinfile:
+        path: /etc/mediaserver/msconf.py
+        regexp: '^#?\s*{{ item.name }}\s*=.*$'
+        line: "{{ item.name }} = '{{ item.value }}'"
+        create: true
+      loop:
+        - { name: 'LIVE_RTMP_PLAYBACK_URL', value: '{{ rtmp_hls_url }}' }
+        - { name: 'LIVE_RTMP_PUBLISH_URL', value: '{{ rtmp_pub_url }}' }
+      when: ms_conf.stat.exists
 
-    - name: "Set the RTMP_NAME in lives configuration"
-      vars:
-        rtmp_name_line:
-          RTMP_NAME: "{{ live_app_name }}"
-      ansible.builtin.set_fact:
-        lives_config: "{{ lives_config | combine(rtmp_name_line) }}"
+    - name: "Check the existence of mssettings"
+      ansible.builtin.stat:
+        path: /home/{{ live_app_name }}/msinstance/conf/mssettings.py
+      register: ms_settings
 
-    - name: "Set the RTMP_HLS_PLAYBACK_URL in lives configuration"
-      vars:
-        rtmp_hls_line:
-          RTMP_HLS_PLAYBACK_URL: "{{ rtmp_hls_url }}"
-      ansible.builtin.set_fact:
-        lives_config: "{{ lives_config | combine(rtmp_hls_line) }}"
-
-    - name: "Set the RTMP_PLAYBACK_URL in lives configuration"
-      vars:
-        rtmp_playback_line:
-          RTMP_PLAYBACK_URL:
-      ansible.builtin.set_fact:
-        lives_config: "{{ lives_config | combine(rtmp_playback_line) }}"
-
-    - name: "Set the RTMP_PUBLISH_URL in lives configuration"
-      vars:
-        rtmp_publish_line:
-          RTMP_PUBLISH_URL: "{{ rtmp_pub_url }}"
-      ansible.builtin.set_fact:
-        lives_config: "{{ lives_config | combine(rtmp_publish_line) }}"
-
-    - name: "Update Nudgis Front lives configuration"
-      notify: "Restart mediaserver"
-      ansible.builtin.copy:
-        content: "{{ lives_config | to_nice_json }}"
-        dest: /home/{{ live_app_name }}/msinstance/conf/lives.json
-        owner: "{{ live_app_name }}"
-        group: "{{ live_app_name }}"
-        mode: "0600"
+    - name: "Configure (or update) instance live configuration into mssettings"
+      ansible.builtin.lineinfile:
+        path: /home/{{ live_app_name }}/msinstance/conf/mssettings.py
+        regexp: '^#?\s*{{ item.name }}\s*=.*$'
+        line: "{{ item.name }} = '{{ item.value }}'"
+        create: true
+      loop:
+        - { name: 'LIVE_RTMP_APP', value: "{{ hostvars['localhost'].live_app_secret }}" }
+        - { name: 'LIVE_PORTAL_NAME', value: '{{ live_app_name }}' }
+      when: ms_settings.stat.exists
 
   handlers:
     - name: "Restart mediaserver"
