@@ -1,3 +1,7 @@
+# 2024-07-08
+
+* Remove email configuration.
+
 # 2024-09-19
 
 * Default nftables forward chain policy set to accept for netcapture hosts.
