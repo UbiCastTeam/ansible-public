@@ -1,6 +1,7 @@
 # 2024-07-08
 
 * Remove email configuration.
+* Update ansible version from version 10.X to 11.X.
 
 # 2024-09-19
 
