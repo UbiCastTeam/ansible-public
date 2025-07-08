@@ -4,29 +4,13 @@
   notify: "Restart sshd"
   ansible.builtin.replace:
     dest: /etc/ssh/sshd_config
-    regexp: ^PasswordAuthentication no
-    replace: "#PasswordAuthentication yes"
-
-# mediaimport service failed without any account configured
-- name: "Disable mediaimport service"
-  ansible.builtin.systemd:
-    name: mediaimport
-    enabled: false
+    regexp: '^PasswordAuthentication no'
+    replace: '#PasswordAuthentication yes'
 
 - name: "Enable mediaimport-cleanup timer"
   ansible.builtin.systemd:
     name: mediaimport-cleanup.timer
     enabled: true
-
-- name: "Configure mediaimport admin emails"
-  when:
-    - import_email_to | d(false)
-  notify: "Restart mediaimport"
-  ansible.builtin.template:
-    src: mediaimport.json.j2
-    dest: /etc/mediaimport/mediaimport.json
-    backup: true
-    mode: "0600"
 
 # FAIL2BAN
 
