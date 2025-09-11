@@ -10,7 +10,7 @@
   ansible.builtin.file:
     path: "{{ netcapture_conf_folder }}"
     group: video
-    mode: u=rwX,g=rwX,o=r
+    mode: u=rwX,g=rwX,o=rx
     state: directory
 
 - name: "Netcapture media dir"
