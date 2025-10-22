@@ -2,10 +2,10 @@
 
 - name: "APT packages: {{ apt_packages | join(', ') }}"
   ansible.builtin.apt:
-    force_apt_get: true
-    install_recommends: false
-    update_cache: "{{ apt_update_cache | d(false) }}"
     name: "{{ apt_packages }}"
+    force_apt_get: true
+    update_cache: "{{ apt_update_cache | d(false) }}"
+    install_recommends: "{{ apt_packages_install_recommends | d(false) }}"
     state: "{{ apt_packages_state | d('present') }}"
     purge: "{{ apt_packages_purge | d(false) }}"
   register: apt_status

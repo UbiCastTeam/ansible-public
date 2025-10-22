@@ -6,5 +6,6 @@
     tasks_from: "apt_install.yml"
   vars:
     apt_packages: "{{ tester_packages }}"
+    apt_packages_install_recommends: true
 
 ...
