@@ -11,7 +11,7 @@ global
   stats timeout 30s
   # See RM#39942
   # Global maximum connections authorized (processed + pending) 
-  maxconn 2000
+  maxconn 3000
 
 defaults
   log global
@@ -53,9 +53,11 @@ frontend stats
 # Database HA load-balancing
 listen pgsql-primary
   bind 127.0.0.1:54321
-  # See RM#39942
+  # See RM#39942 and RM#41408
   # Maximum connections allowed, surplus will be put on hold
-  maxconn 1000
+  # To estimate the maximum number of sessions per frontend:
+  # ~40 * <instance-count> / <frontend-count>
+  maxconn 2000
 
   # Database server availability test
   # Database server have to be primary to receive traffic
