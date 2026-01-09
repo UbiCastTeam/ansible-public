@@ -6,10 +6,11 @@
 - name: "SETUP USERS"
   ansible.builtin.include_tasks: "base/setup_user.yml"
   loop:
-    - admin
-    - ubicast
+    - { name: "ubicast", id: 1000 }
+    - { name: "admin", id: 1001 }
   vars:
-    user: "{{ item }}"
+    user_name: "{{ item.name }}"
+    user_id: "{{ item.id }}"
 
 - name: "CONFIGURE DOTFILES"
   ansible.builtin.include_tasks: "base/dotfiles.yml"

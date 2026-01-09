@@ -2,28 +2,20 @@
 
 - name: "Create netcapture config"
   ansible.builtin.template:
-    src: netcapture.json.j2
-    dest: /etc/miris/netcapture.json
-    mode: u=rw,g=r,o=r
+    src: "netcapture.json.j2"
+    dest: "/etc/miris/netcapture.json"
+    mode: "u=rw,g=r,o=r"
 
-- name: "Netcapture config dir"
+- name: "Netcapture directories setup"
   ansible.builtin.file:
-    path: "{{ netcapture_conf_folder }}"
-    group: video
-    mode: u=rwX,g=rwX,o=rx
+    path: "{{ item.path }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "u=rwX,g=rwX,o=rx"
     state: directory
-
-- name: "Netcapture media dir"
-  ansible.builtin.file:
-    path: "{{ netcapture_media_folder }}"
-    group: video
-    mode: u=rwX,g=rwX,o=rx
-    state: directory
-
-- name: "Netcapture package dir"
-  ansible.builtin.file:
-    path: "{{ netcapture_pkg_folder }}"
-    mode: u=rwX,g=rwX,o=rx
-    state: directory
+    recurse: yes
+  loop:
+    - { path: "{{ netcapture_conf_folder }}", group: "video" }
+    - { path: "{{ netcapture_media_folder }}", group: "video" }
+    - { path: "{{ netcapture_pkg_folder }}" }
 
 ...
