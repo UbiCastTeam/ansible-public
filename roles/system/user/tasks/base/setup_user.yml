@@ -2,13 +2,15 @@
 
 - name: "Create user group - {{ user }}"
   ansible.builtin.group:
-    name: "{{ user }}"
+    name: "{{ user_name }}"
+    gid: "{{ user_id }}"
     state: present
 
 - name: "Create user - {{ user }}"
   ansible.builtin.user:
-    name: "{{ user }}"
-    group: "{{ user }}"
+    name: "{{ user_name }}"
+    group: "{{ user_name }}"
+    uid: "{{ user_id }}"
     shell: /bin/bash
     append: true
     groups:
