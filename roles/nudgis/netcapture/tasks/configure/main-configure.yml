@@ -10,9 +10,8 @@
   ansible.builtin.file:
     path: "{{ item.path }}"
     group: "{{ item.group | default(omit) }}"
-    mode: "u=rwX,g=rwX,o=rx"
-    state: directory
-    recurse: yes
+    mode: "u=rwX,g=rwX,o=rX"
+    recurse: true
   loop:
     - { path: "{{ netcapture_conf_folder }}", group: "video" }
     - { path: "{{ netcapture_media_folder }}", group: "video" }
