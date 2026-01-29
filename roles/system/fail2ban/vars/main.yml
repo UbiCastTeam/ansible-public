@@ -15,6 +15,6 @@ fail2ban_maxretry: "5"
 fail2ban_bantime: "10m"
 
 # Define the default action to do when a ban occurs ("action_mwl" to send whois and logs via email or "action_" for default)
-fail2ban_action: "action_mwl"
+fail2ban_action: "action_"
 
 ...
