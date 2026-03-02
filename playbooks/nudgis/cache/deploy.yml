@@ -28,7 +28,7 @@
       ansible.builtin.debug:
         msg: "WARNING: No Nudgis Front server found in the 'front' group. Skipping configuration."
       when: >
-        groups['front'] is not defined or 
+        groups['front'] is not defined or
         groups['front'] | length == 0
       run_once: true
       tags: configure
