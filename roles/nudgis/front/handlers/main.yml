@@ -7,7 +7,7 @@
 
 - name: "Restart mediaserver"
   ansible.builtin.systemd:
-    name: mediaserver
+    name: ubicast-mediaserver
     state: restarted
 
 - name: "Restart systemd-sysusers"

@@ -2,7 +2,7 @@
 
 - name: "Stats Webmonitor main configuration file"
   ansible.builtin.stat:
-    path: "/etc/webmonitor/install.ini"
+    path: "/etc/ubicast-webmonitor/install.ini"
   register: monitor_config
 
 - name: "Populate Webmonitor base configuration with example values"
@@ -10,8 +10,8 @@
     - monitor_config['stat'] is defined
     - not monitor_config['stat']['exists']
   ansible.builtin.copy:
-    src: "/etc/webmonitor/install.example.ini"
-    dest: "/etc/webmonitor/install.ini"
+    src: "/etc/ubicast-webmonitor/install.example.ini"
+    dest: "/etc/ubicast-webmonitor/install.ini"
     mode: "preserve"
     remote_src: true
 

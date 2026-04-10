@@ -13,7 +13,7 @@
     - name: "Authorize Nudgis Cache on the Nudgis Front(s)"
       notify: "Restart nginx on the nudgis fronts"
       ansible.builtin.lineinfile:
-        path: /etc/nginx/conf.d/mediaserver-securelink.conf
+        path: /etc/nginx/conf.d/ubicast-mediaserver-securelink.conf
         line: "{{ '\t' }}{{ securelink_ip }} 1;"  # noqa jinja[spacing]
         insertafter: ^geo
       delegate_to: "{{ item }}"

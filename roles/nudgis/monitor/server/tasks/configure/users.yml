@@ -2,7 +2,7 @@
 
 - name: "Configure application users"
   ansible.builtin.replace:
-    path: /etc/webmonitor/install.ini
+    path: /etc/ubicast-webmonitor/install.ini
     regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
     replace: '\1{{ item.name }} = {{ item.value }}'
   loop:

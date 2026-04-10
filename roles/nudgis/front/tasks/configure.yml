@@ -1,17 +1,18 @@
 ---
 
+# Should only be played in High Availibility cases
+- name: "CHECK SHARED DIRECTORY"
+  ansible.builtin.include_tasks: "configure/check-shared-directory.yml"
+  when:
+    - "'front' in groups"
+    - groups['front'] | length > 1
+
 - name: "CONFIGURE DATABASE"
   ansible.builtin.include_tasks: "configure/database.yml"
   when:
     - nudgis_front_database_domain is defined
     - nudgis_front_database_port is defined
     - nudgis_front_database_password is defined
-
-- name: "CONFIGURE INSTANCIES DIRECTORY"
-  ansible.builtin.include_tasks: "configure/data-dirs.yml"
-
-- name: "CONFIGURE MSCONTROLLER LOCKS DIRECTORY"
-  ansible.builtin.include_tasks: "configure/locks-dirs.yml"
 
 - name: "CONFIGURE NUDGIS EMAIL SENDER ADDRESS"
   ansible.builtin.include_tasks: "configure/email.yml"

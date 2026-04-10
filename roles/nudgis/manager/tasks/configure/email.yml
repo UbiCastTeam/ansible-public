@@ -1,9 +1,9 @@
 ---
 
 - name: "Configure email sender address"
-  notify: "Restart skyreach"
+  notify: "Restart ubicast-skyreach"
   ansible.builtin.lineinfile:
-    path: /home/skyreach/skyreach_data/private/settings_override.py
+    path: /var/lib/ubicast-skyreach/private/settings_override.py
     regexp: ^#? ?DEFAULT_FROM_EMAIL.*
     line: DEFAULT_FROM_EMAIL = '{{ manager_email_from }}'
     backup: true

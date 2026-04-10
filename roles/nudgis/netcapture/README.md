@@ -9,7 +9,7 @@ Available variables are listed below, along with the descriptions and the defaul
 
 `netcapture_mm_url`: URL of the mirismanager to use for packages
 ```
-netcapture_mm_url: "mirismanager.example.com"
+netcapture_mm_url: "https://manager.example.com"
 ```
 
 `netcapture_mm_ssl`: Activates the SSL verification when calling the Nudgis Manager (Optional)

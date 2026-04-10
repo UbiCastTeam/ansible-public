@@ -2,12 +2,12 @@
 
 - name: "Restart celerity-server"
   ansible.builtin.service:
-    name: celerity-server
+    name: ubicast-celerity-server
     state: restarted
 
 - name: "Restart celerity-workers"
   ansible.builtin.service:
-    name: celerity-workers
+    name: ubicast-celerity-workers
     state: restarted
 
 # The celerity package drops a fail2ban conf, so we need to reload it form idempotency

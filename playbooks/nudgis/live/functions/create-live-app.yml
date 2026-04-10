@@ -28,13 +28,13 @@
   tasks:
     - name: "Check the existence of mssettings"
       ansible.builtin.stat:
-        path: "/home/{{ live_app_name }}/msinstance/conf/mssettings.py"
+        path: "/var/lib/ubicast-mediaserver/portals/{{ live_app_name }}/private/mssettings.py"
       register: ms_settings
 
     - name: "Extract live secret from mssettings"
       ansible.builtin.command: >
         grep -Po "^LIVE_RTMP_APP\s*=\s*'\K[^']+"
-        /home/{{ live_app_name }}/msinstance/conf/mssettings.py
+        /var/lib/ubicast-mediaserver/portals/{{ live_app_name }}/private/mssettings.py
       register: live_secret_result
       changed_when: false
       failed_when: false
@@ -108,14 +108,15 @@
         mode: "0700"
       notify: "Reload nginx"
 
-    - name: "Create the nginx RTMP web directory symlink"
-      ansible.builtin.file:
-        src: "/var/tmp/nginx-rtmp/{{ live_app_name }}"
-        dest: "/var/www/{{ live_app_name }}/streaming-rtmp"
-        state: link
-        force: true
-      when: deploy_case | default('standard') == "standard"
-      notify: "Reload nginx"
+# Not needed anymore
+#    - name: "Create the nginx RTMP web directory symlink"
+#      ansible.builtin.file:
+#        src: "/var/tmp/nginx-rtmp/{{ live_app_name }}"
+#        dest: "/var/lib/ubicast-mediaserver/portals/{{ live_app_name }}/streaming-rtmp"
+#        state: link
+#        force: true
+#      when: deploy_case | default('standard') == "standard"
+#      notify: "Reload nginx"
 
   handlers:
     - name: "Reload nginx"
@@ -152,12 +153,12 @@
   tasks:
     - name: "Check the existence of msconf"
       ansible.builtin.stat:
-        path: /etc/mediaserver/msconf.py
+        path: /var/lib/ubicast-mediaserver/common/msconf.py
       register: ms_conf
 
     - name: "Configure global live configurations into msconf"
       ansible.builtin.lineinfile:
-        path: /etc/mediaserver/msconf.py
+        path: /var/lib/ubicast-mediaserver/common/msconf.py
         regexp: '^#?\s*{{ item.name }}\s*=.*$'
         line: "{{ item.name }} = '{{ item.value }}'"
         create: true
@@ -169,12 +170,12 @@
 
     - name: "Check the existence of mssettings"
       ansible.builtin.stat:
-        path: "/home/{{ live_app_name }}/msinstance/conf/mssettings.py"
+        path: "/var/lib/ubicast-mediaserver/portals/{{ live_app_name }}/private/mssettings.py"
       register: ms_settings
 
     - name: "Configure instance live configuration into mssettings"
       ansible.builtin.lineinfile:
-        path: "/home/{{ live_app_name }}/msinstance/conf/mssettings.py"
+        path: "/var/lib/ubicast-mediaserver/portals/{{ live_app_name }}/private/mssettings.py"
         regexp: '^#?\s*{{ item.name }}\s*=.*$'
         line: "{{ item.name }} = '{{ item.value }}'"
         create: true
@@ -187,7 +188,7 @@
   handlers:
     - name: "Restart mediaserver"
       ansible.builtin.systemd:
-        name: mediaserver
+        name: ubicast-mediaserver
         state: restarted
 
 ...

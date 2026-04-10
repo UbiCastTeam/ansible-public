@@ -1,7 +1,7 @@
 ---
 
 # URL of the mirismanager to use for packages
-netcapture_mm_url: "mirismanager.example.com"
+netcapture_mm_url: "https://manager.example.com"
 
 # Activates the SSL verification when calling the Nudgis Manager
 netcapture_mm_ssl: true

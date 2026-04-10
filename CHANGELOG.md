@@ -1,10 +1,79 @@
+# 2026-03-31
+
+* Use new package path (following FHS).
+* Update commands to follow `ubicast-` logic.
+
+Below is a summary of the key changes operated across our applications.  
+While these updates apply to all UbiCast solutions, the details for the following three products are provided below:
+* Mediaserver / Nudgis Frontend
+* Celerity / Task management (server & client)
+* Skyreach / Manager
+
+
+#### Mediaserver / Nudgis Frontend
+
+**System paths**
+
+| Item | Old Value | New Value |
+| :--- | :--- | :--- |
+| Configuration directory | `/etc/mediaserver` | `/etc/ubicast-mediaserver` |
+| Portal directory | `/home/<USER>/msisntance` | `/var/lib/ubicast-mediaserver/portals/<USER>` |
+| Log directory | `/var/log/mediaserver` | `/var/log/ubicast-mediaserver` |
+| Systemd services | `mediaserver*` | `ubicast-mediaserver*` |
+| Unix User | `msuser` | `ubicast-mediaserver-portal` |
+
+**Portal data directories**
+
+| Item | Old Value | New Value |
+| :--- | :--- | :--- |
+| Config folder | `conf` | `private` |
+| Media directories | `media/*` | `.` |
+
+**Binaries and CLI**
+
+See Nudgis administrator manual
+
+#### Celerity / Task management (server & client)
+
+**System paths**
+
+| Item | Old Value | New Value |
+| :--- | :--- | :--- |
+| Configuration directory | `/etc/celerity` | `/etc/ubicast-celerity` |
+| Data directory | `/home/celerity/celerity-server` | `/var/lib/ubicast-celerity-server` |
+| Log directory | `/var/log/celerity/*` | `/var/log/ubicast-celerity-*` 
+| Worker status | `/home/celerity/celerity-workers/worker_*_status.json` | `/run/ubicast-celerity-workers/worker_*_status.json` |
+| Systemd services | `celerity-*` | `ubicast-celerity-*` |
+| Unix User | `celerity` | `ubicast-celerity` |
+
+**Binaries and CLI******
+
+See Nudgis administrator manual
+
+#### Skyreach / Manager
+
+**System paths**
+
+| Item | Old Value | New Value |
+| :--- | :--- | :--- |
+| Configuration directory | `/etc/skyreach` | `/etc/ubicast-skyreach` |
+| Nginx site config | `/etc/nginx/sites-available/skyreach.conf` | `/etc/nginx/sites-available/ubicast-skyreach.conf` |
+| Data directory | `/home/skyreach/skyreach_data` | `/var/lib/ubicast-skyreach` |
+| Log directory | `/var/log/skyreach` | `/var/log/ubicast-skyreach` |
+| Systemd services | `skyreach*` | `ubicast-skyreach*` |
+| Unix User | `skyreach` | `ubicast-skyreach` |
+
+**Binaries and CLI**
+
+See Nudgis administrator manual
+
 # 2025-08-21
 
 * Support Debian 13.
 * Update ansible version from version 11.X to 13.X.
 * Add basic filtering configuration for `nftables`.
 * Remove `passlib` dependency.
-* Fix all deprecation warnings.
+* Fix deprecation warnings.
 
 # 2025-07-08
 

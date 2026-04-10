@@ -2,7 +2,7 @@
 
 - name: "Configure (or update) msconf with celerity server info"
   ansible.builtin.lineinfile:
-    path: /etc/mediaserver/msconf.py
+    path: /var/lib/ubicast-mediaserver/common/msconf.py
     regexp: '^#?\s*{{ item.name }}\s*=.*$'
     line: "{{ item.name }} = '{{ item.value }}'"
     create: true

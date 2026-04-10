@@ -8,7 +8,7 @@
 
 - name: "Verify Nudgis Front main configuration file presence"
   ansible.builtin.stat:
-    path: "/etc/mediaserver/install.ini"
+    path: "/etc/ubicast-mediaserver/install.ini"
   register: nudgis_config
 
 - name: "Populate Nudgis Front base configuration with example values"
@@ -16,8 +16,8 @@
     - nudgis_config['stat'] is defined
     - not nudgis_config['stat']['exists']
   ansible.builtin.copy:
-    src: "/etc/mediaserver/install.example.ini"
-    dest: "/etc/mediaserver/install.ini"
+    src: "/etc/ubicast-mediaserver/install.example.ini"
+    dest: "/etc/ubicast-mediaserver/install.ini"
     mode: "preserve"
     remote_src: true
 

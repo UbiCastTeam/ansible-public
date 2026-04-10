@@ -24,20 +24,20 @@ live_domain: "live.example.com"
 
 `cache_vod_folder`: Path of the folder to cache the VOD service data (Optional)
 ```
-cache_vod_folder: "/var/cache/nginx/mediacache-vod"
+cache_vod_folder: "/var/cache/nginx/ubicast-mediacache-vod"
 ```
 
-`cache_vod_size`: Max size allowed for the VOD service data (Optional)
+`cache_vod_size`: Max size allowed for the VOD service data (in GB) (Optional)
 ```
 cache_vod_size: "1"
 ```
 
 `cache_live_folder`: Path of the folder to cache the Live service data (Optional)
 ```
-cache_live_folder: "/var/cache/nginx/mediacache-live"
+cache_live_folder: "/var/cache/nginx/ubicast-mediacache-live"
 ```
 
-`cache_live_size`: Max size allowed for the Live service data (Optional)
+`cache_live_size`: Max size allowed for the Live service data (in GB) (Optional)
 ```
 cache_live_size: "1"
 ```

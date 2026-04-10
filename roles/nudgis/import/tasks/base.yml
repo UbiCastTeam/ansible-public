@@ -9,7 +9,7 @@
 
 - name: "Enable mediaimport-cleanup timer"
   ansible.builtin.systemd:
-    name: mediaimport-cleanup.timer
+    name: ubicast-mediaimport-cleanup.timer
     enabled: true
 
 # FAIL2BAN

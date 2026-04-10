@@ -2,7 +2,7 @@
 
 - name: "Restart celerity-workers"
   ansible.builtin.service:
-    name: celerity-workers
+    name: ubicast-celerity-workers
     state: restarted
 
 ...
