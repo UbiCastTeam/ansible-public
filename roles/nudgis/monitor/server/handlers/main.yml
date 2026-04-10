@@ -12,7 +12,7 @@
 
 - name: "Reload webmonitor service"
   ansible.builtin.service:
-    name: webmonitor
+    name: ubicast-webmonitor
     state: reloaded
 
 - name: "Wait for munin cron to end"

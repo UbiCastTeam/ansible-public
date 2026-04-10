@@ -14,7 +14,7 @@ vault_email_enabled: true
 
 `vault_email_from`: From fields for email sending (as defined in RFC2822) (Optional)
 ```
-vault_email_from: "{{ ansible_fqdn }} <backup@{{ ansible_fqdn }}>"
+vault_email_from: "{{ ansible_facts['fqdn'] }} <backup@{{ ansible_facts['fqdn'] }}>"
 ```
 
 `vault_email_to`: Destination address for the Nudgis Vault emails (Optional)

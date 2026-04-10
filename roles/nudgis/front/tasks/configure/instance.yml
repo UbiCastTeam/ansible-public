@@ -4,14 +4,13 @@
   notify: "Configure and restart munin-node"
   ansible.builtin.command:
     cmd: >
-      mscontroller.py add -u "{{ nudgis_front_system_user }}" -t '{
-        "id": "1_{{ nudgis_front_system_user }}",
-        "domain": "{{ nudgis_front_domain }}",
-        "api_key": "{{ nudgis_front_api_key }}",
-        "admin_pwd": "{{ nudgis_front_user_admin_password }}",
-        "skyreach_url": "https://{{ manager_domain }}"
-      }'
-    creates: "/etc/nginx/sites-available/mediaserver-{{ nudgis_front_system_user }}.conf"
+      ubicast-mediaserver-ctl -u "{{ nudgis_front_system_user }}" -- add
+        "id=1_{{ nudgis_front_system_user }}"
+        "domain={{ nudgis_front_domain }}"
+        "api_key={{ nudgis_front_api_key }}"
+        "admin_pwd={{ nudgis_front_user_admin_password }}"
+        "skyreach_url=https://{{ manager_domain }}"
+    creates: "/etc/nginx/sites-available/ubicast-mediaserver_{{ nudgis_front_system_user }}.conf"
   throttle: 1
 
 ...

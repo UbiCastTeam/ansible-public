@@ -1,6 +1,6 @@
 ---
 
-# URL of the default Nudgis "msuser" portal used to populate the /etc/celerity/config.py file
+# URL of the default Nudgis portal used to populate the celerity configuration file
 nudgis_front_domain: "nudgis.example.com"
 
 # Nudgis API key, used to communicate with the nudgis portal

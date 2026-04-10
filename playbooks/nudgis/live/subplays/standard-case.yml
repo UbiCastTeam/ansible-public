@@ -2,7 +2,7 @@
 
 - import_playbook: ../functions/create-live-app.yml
   vars:
-    live_app_name: 'msuser'
+    live_app_name: 'ubicast-mediaserver-portal'
     rtmp_hls_url: 'https://%(domain)s/streaming-rtmp/%(stream)s.m3u8'
     rtmp_pub_url: 'rtmp://%(domain)s/%(app)s/%(stream)s'
     deploy_case: 'standard'

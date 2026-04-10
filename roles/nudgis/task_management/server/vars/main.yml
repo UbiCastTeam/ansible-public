@@ -1,7 +1,7 @@
 ---
 
 # Nudgis system username for the application portal, used as a JSON key in celerity config for nudgis API usage (see also nudgis_front_api_key) **shared with mediaserver and mediaworker roles**
-nudgis_front_system_user: "msuser"
+nudgis_front_system_user: "ubicast-mediaserver-portal"
 
 # Group firewall rules filename, see roles/shared/files/nftables/
 celerity_firewall_rules_files:

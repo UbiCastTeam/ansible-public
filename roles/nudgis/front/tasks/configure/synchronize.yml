@@ -19,15 +19,15 @@
   tags: always
 
 - name: "Synchronize configuration between servers"  # noqa: command-instead-of-module
-  # Cannot use the ansible synchronization module, cause there is no way to set a destination IP intead of the destination ansible hostname
+  # Cannot use the ansible synchronization module
+  # Because there is no way to set a destination IP intead of the destination ansible hostname
   delegate_to: "{{ groups['front'][0] }}"
   when:
     - inventory_hostname != groups['front'][0]
   loop:
-    - /etc/mediaserver
+    - /etc/ubicast-mediaserver
     - /etc/nginx
     - /etc/sysusers.d
-    - /var/www
   ansible.builtin.command: |
     rsync \
       -avh \

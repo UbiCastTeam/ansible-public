@@ -1,13 +1,13 @@
 ---
 
 # Defines the default deployed Nudgis portal short name (and linked unix user) **shared with celerity and mediaworker roles**
-nudgis_front_system_user: "msuser"
+nudgis_front_system_user: "ubicast-mediaserver-portal"
 
-# Directory to store the Nudgis portals data
+# Directory to store the Nudgis portals data (configuration, media, etc.)
 nudgis_front_instances_dir: "/data"
 
 # Directory to store the Nudgis lock files. This directory should be shared between the Nudgis Fronts in HA cases.
-nudgis_front_lock_dir: "/data"
+nudgis_front_lock_dir: "/var/lib/ubicast-mediaserver/locks"
 
 # Packages required for the group. rsync is used for HA only (copy of instance data)
 nudgis_front_packages:

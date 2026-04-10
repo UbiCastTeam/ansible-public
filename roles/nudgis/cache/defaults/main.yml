@@ -10,15 +10,15 @@ nudgis_front_domain: "nudgis.example.com"
 live_domain: "live.example.com"
 
 # Path of the folder to cache the VOD service data
-cache_vod_folder: "/var/cache/nginx/mediacache-vod"
+cache_vod_folder: "/var/cache/nginx/ubicast-mediacache-vod"
 
-# Max size allowed for the VOD service data
+# Max size allowed for the VOD service data (in GB)
 cache_vod_size: "1"
 
 # Path of the folder to cache the Live service data
-cache_live_folder: "/var/cache/nginx/mediacache-live"
+cache_live_folder: "/var/cache/nginx/ubicast-mediacache-live"
 
-# Max size allowed for the Live service data
+# Max size allowed for the Live service data (in GB)
 cache_live_size: "1"
 
 ...

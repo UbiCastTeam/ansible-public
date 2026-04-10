@@ -9,7 +9,7 @@ The task_management_client group is used to configure the hosts treat the transc
 
 Available variables are listed below, along with the descriptions and the default values.
 
-`nudgis_front_domain`: URL of the default Nudgis "msuser" portal used to populate the /etc/celerity/config.py file
+`nudgis_front_domain`: URL of the default Nudgis portal used to populate the celerity configuration file
 ```
 nudgis_front_domain: "nudgis.example.com"
 ```

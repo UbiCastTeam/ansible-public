@@ -21,7 +21,7 @@
 
 - name: "Restart mediaimport"
   ansible.builtin.systemd:
-    name: mediaimport
+    name: ubicast-mediaimport
     state: restarted
 
 - name: "Restart fail2ban"

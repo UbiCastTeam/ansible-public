@@ -4,7 +4,7 @@
   notify:
     - "Restart mediaserver"
   ansible.builtin.lineinfile:
-    path: /etc/mediaserver/msconf.py
+    path: /var/lib/ubicast-mediaserver/common/msconf.py
     backup: true
     create: true
     owner: root

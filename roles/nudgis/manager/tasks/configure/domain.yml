@@ -2,20 +2,20 @@
 
 - name: "Retrieve currently configured domain"
   ansible.builtin.command:
-    cmd: grep -m1 -oP 'server_name \K[^;\s]+' /etc/nginx/sites-available/skyreach.conf
+    cmd: grep -m1 -oP 'server_name \K[^;\s]+' /etc/nginx/sites-available/ubicast-skyreach.conf
   changed_when: false
   register: current_domain
 
 - name: "Configure domain in nginx vhost"
   notify: "Reload nginx"
   ansible.builtin.replace:
-    path: /etc/nginx/sites-available/skyreach.conf
+    path: /etc/nginx/sites-available/ubicast-skyreach.conf
     regexp: '(server_name.* ){{ current_domain["stdout"] }}(.*;)$'
     replace: '\1{{ manager_domain }}\2'
 
 - name: "Configure domain in install.ini"
   ansible.builtin.lineinfile:
-    path: /etc/skyreach/install.ini
+    path: /etc/ubicast-skyreach/install.ini
     regexp: '\s*#?\s*DOMAIN\s*=.*'
     line: 'DOMAIN = {{ manager_domain }}'
 
@@ -27,7 +27,7 @@
 
 - name: "Configure domain in settings_override.py"
   ansible.builtin.lineinfile:
-    path: /home/skyreach/skyreach_data/private/settings_override.py
+    path: /var/lib/ubicast-skyreach/private/settings_override.py
     regexp: '^#?\s*SITE_URL\s*=.*$'
     line: "SITE_URL = 'https://{{ manager_domain }}'"
     backrefs: true

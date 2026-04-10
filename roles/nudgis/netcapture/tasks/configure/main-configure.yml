@@ -3,7 +3,7 @@
 - name: "Create netcapture config"
   ansible.builtin.template:
     src: "netcapture.json.j2"
-    dest: "/etc/miris/netcapture.json"
+    dest: "/etc/ubicast-netcapture/config.json"
     mode: "u=rw,g=r,o=r"
 
 - name: "Netcapture directories setup"

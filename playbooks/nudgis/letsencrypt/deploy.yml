@@ -7,10 +7,10 @@
   gather_facts: false
   vars:
     vhosts:
-      - { "group": "front", "file": "mediaserver-msuser.conf" }
-      - { "group": "manager", "file": "skyreach.conf" }
-      - { "group": "cache", "file": "mediacache.conf" }
-      - { "group": "monitor_server", "file": "webmonitor.conf" }
+      - { "group": "front", "file": "ubicast-mediaserver_ubicast-mediaserver-portal.conf" }
+      - { "group": "manager", "file": "ubicast-skyreach.conf" }
+      - { "group": "cache", "file": "ubicast-mediacache.conf" }
+      - { "group": "monitor_server", "file": "ubicast-webmonitor.conf" }
   tasks:
     - name: "Check number of webservers for the group (HA is not supported/implemented)"
       ansible.builtin.fail:

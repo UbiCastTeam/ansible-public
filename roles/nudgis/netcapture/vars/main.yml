@@ -1,12 +1,12 @@
 ---
 
 # Folder used to store the packages
-netcapture_pkg_folder: "/data/netcapture/packages"
+netcapture_pkg_folder: "/var/lib/ubicast-netcapture/images"
 
 # Folder used to store the configurations
-netcapture_conf_folder: "/etc/miris/conf"
+netcapture_conf_folder: "/etc/ubicast-netcapture/instances"
 
 # Folder used to store the medias
-netcapture_media_folder: "/data/netcapture/media"
+netcapture_media_folder: "/var/lib/ubicast-netcapture/instances/recordings"
 
 ...
