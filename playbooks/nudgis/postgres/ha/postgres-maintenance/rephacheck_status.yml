@@ -11,7 +11,7 @@
 
     - name: "Show status for each node"
       ansible.builtin.debug:
-        msg: Current node {{ ansible_hostname }} status {{ rephacheck['stdout'] }}
+        msg: Current node {{ ansible_facts['hostname'] }} status {{ rephacheck['stdout'] }}
       when: rephacheck['stdout'] | length > 0
 
 ...

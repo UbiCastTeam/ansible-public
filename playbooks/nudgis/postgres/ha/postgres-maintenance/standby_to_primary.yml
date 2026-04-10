@@ -11,7 +11,7 @@
 
     - name: "Check if node is currently in standby"
       ansible.builtin.command:
-        cmd: repmgr standby switchover -f /etc/postgresql/15/main/repmgr.conf --siblings-follow --dry-run
+        cmd: repmgr standby switchover -f /etc/postgresql/17/main/repmgr.conf --siblings-follow --dry-run
       become: true
       become_user: postgres
       changed_when: false
@@ -20,7 +20,7 @@
 
     - name: "Switch standby node to primary"
       ansible.builtin.command:
-        cmd: repmgr standby switchover -f /etc/postgresql/15/main/repmgr.conf --siblings-follow
+        cmd: repmgr standby switchover -f /etc/postgresql/17/main/repmgr.conf --siblings-follow
       become: true
       become_user: postgres
       changed_when: false

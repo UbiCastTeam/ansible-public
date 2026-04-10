@@ -23,7 +23,7 @@ fi
 sendmail -t <<ERRMAIL
 To: ${to}
 From: {{ vault_email_from }}
-Subject: ({{ ansible_fqdn }}) ${service} status
+Subject: ({{ ansible_facts['fqdn'] }}) ${service} status
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=UTF-8
 

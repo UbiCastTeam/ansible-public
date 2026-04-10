@@ -10,6 +10,8 @@
     src: "miris-api.json.j2"
     dest: "{{ netcapture_conf_folder }}/api.json"
     mode: "u=rw,g=r,o=r"
-  when: not miris_config_file.stat.exists
+  when:
+    - miris_config_file['stat'] is defined
+    - not miris_config_file['stat']['exists']
 
 ...

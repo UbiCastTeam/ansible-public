@@ -6,7 +6,9 @@
   register: manager_config
 
 - name: "Populate Nudgis Manager base configuration with example values"
-  when: manager_config.stat.size == 0
+  when:
+    - manager_config['stat'] is defined
+    - not manager_config['stat']['exists']
   ansible.builtin.copy:
     src: "/etc/skyreach/install.example.ini"
     dest: "/etc/skyreach/install.ini"

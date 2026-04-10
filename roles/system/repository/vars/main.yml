@@ -1,7 +1,7 @@
 ---
 
 # Debian distribution short name (example: "bookworm")
-repos_release: "{{ ansible_distribution_release }}"
+repos_release: "{{ ansible_facts['distribution_release'] }}"
 
 # Packages required for the group
 sysconfig_repos_packages:

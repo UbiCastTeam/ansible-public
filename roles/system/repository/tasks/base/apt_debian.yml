@@ -1,64 +1,40 @@
 ---
 
-- name: "Add Debian packages repository"
-  when:
-    - not offline_mode
-    - repos_debian_trusted
+# This file is only included when offline_mode is set to false
+
+- name: "Configure Debian repositories"
   notify: "Trigger apt update"
   ansible.builtin.deb822_repository:
-    name: "debian"
-    types: "deb"
-    uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian"
-    suites:
-      - "{{ repos_release }}"
-      - "{{ repos_release }}-updates"
-    components: "main"
-    trusted: true
+    name: "{{ item.name }}"
+    types: [deb, deb-src]
+    uris: "{{ item.uris }}"
+    suites: "{{ item.suites }}"
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+    # Only add trusted and signed_by when signature verification is configured as required
+    trusted: "{{ repos_debian_trusted | ternary(true, omit) }}"
+    signed_by: "{{ repos_debian_trusted | ternary(omit, '/usr/share/keyrings/debian-archive-keyring.gpg') }}"
+  loop:
+    - name: "debian"
+      # Default is "mirror+file:///etc/apt/mirrors/debian.list"
+      uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian"
+      suites:
+        - "{{ repos_release }}"
+        - "{{ repos_release }}-updates"
+        - "{{ repos_release }}-backports"
+    - name: "debian-security"
+      # Default is "mirror+file:///etc/apt/mirrors/debian-security.list"
+      uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian-security"
+      suites:
+        - "{{ repos_release }}-security"
 
-- name: "Add Debian packages repository"
-  when:
-    - not offline_mode
-    - not repos_debian_trusted
-  notify: "Trigger apt update"
-  ansible.builtin.deb822_repository:
-    name: "debian"
-    types: "deb"
-    uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian"
-    suites:
-      - "{{ repos_release }}"
-      - "{{ repos_release }}-updates"
-    components: "main"
-
-- name: "Add Debian security repository"
-  when:
-    - not offline_mode
-    - repos_debian_trusted
-  notify: "Trigger apt update"
-  ansible.builtin.deb822_repository:
-    name: "debian-security"
-    types: "deb"
-    uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian-security"
-    suites: "{{ repos_release }}-security"
-    components: "main"
-    trusted: true
-
-- name: "Add Debian security repository"
-  when:
-    - not offline_mode
-    - not repos_debian_trusted
-  notify: "Trigger apt update"
-  ansible.builtin.deb822_repository:
-    name: "debian-security"
-    types: "deb"
-    uris: "{{ repos_debian_prefix }}{{ repos_debian_packages_domain }}/debian-security"
-    suites: "{{ repos_release }}-security"
-    components: "main"
-
-# The file is emptied and not removed, because unattended-upgrades recreates it, if it is absent
+# The file is emptied and not removed because unattended-upgrades recreates when missing
 - name: "Empty non-deb822 base repository file"  # noqa risky-file-permissions
-  when: not offline_mode
   ansible.builtin.copy:
-    content: ""
+    content: "# See /etc/apt/sources.list.d/debian.sources"
     dest: "/etc/apt/sources.list"
 
 ...

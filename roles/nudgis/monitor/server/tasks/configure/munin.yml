@@ -22,6 +22,8 @@
   ansible.builtin.command:
     cmd: /bin/rm -r /var/cache/munin/www/localdomain
     removes: /var/cache/munin/www/localdomain
-  when: localdomain_dir.stat.exists
+  when:
+    - localdomain_dir['stat'] is defined
+    - localdomain_dir['stat']['exists']
 
 ...

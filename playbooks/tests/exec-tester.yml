@@ -7,7 +7,7 @@
     - name: "Launching the ubicast-tester"
       ansible.builtin.command: ubicast-tester --verbose --extended
       register: tester_result
-      failed_when: tester_result.rc != 0
+      failed_when: tester_result['rc'] != 0
       changed_when: false
 
 ...

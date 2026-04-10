@@ -1,1 +1,17 @@
-add inet filter input tcp dport 6200 accept comment "Celerity Server"
+# Celerity firewall rule definition
+table inet filter {
+    # Allowed clients
+    set celerity_clients {
+        type ipv4_addr
+        flags interval
+        elements = {
+            # front and worker servers for vod generation
+            # monitor servers to retrieve monitoring info
+            0.0.0.0/0,        # all
+        }
+    }
+    # Firewall rule
+    chain input {
+        ip saddr @celerity_clients tcp dport 6200 accept comment "Celerity Server"
+    }
+}

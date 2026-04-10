@@ -1,7 +1,7 @@
 ---
 
 # [HA only] Conninfo parameter populated in the repmgr configuration file
-repmgr_conninfo: "host={{ ansible_default_ipv4.address }} dbname={{ repmgr_database }} user={{ repmgr_user }} connect_timeout={{ repmgr_timeout }}"
+repmgr_conninfo: "host={{ ansible_facts['default_ipv4']['address'] }} dbname={{ repmgr_database }} user={{ repmgr_user }} connect_timeout={{ repmgr_timeout }}"
 
 # [HA only] Name of the repmgr database
 repmgr_database: "repmgr"
@@ -19,16 +19,16 @@ repmgr_timeout: 5
 repmgr_user: "repmgr"
 
 # [HA only] IP address of the cluster primary node
-repmgr_primary_node: "{{ hostvars[groups['postgres'][0]]['ansible_default_ipv4']['address'] }}"
+repmgr_primary_node: "{{ hostvars[groups['postgres'][0]]['ansible_facts']['default_ipv4']['address'] }}"
 
 # [HA only] Cluster node index (0, 1, ...)
 repmgr_node_id: "{{ (groups['postgres'].index(inventory_hostname)) + 1 | int }}"
 
 # [HA only] Cluster node name
-repmgr_node_name: "{{ ansible_hostname }}"
+repmgr_node_name: "{{ ansible_facts['hostname'] }}"
 
 # [HA only] PostgreSQL database version
-repmgr_database_version: "{{ database_version | default('15') }}"
+repmgr_database_version: "{{ database_version | default('17') }}"
 
 # [HA only] PostgreSQL database cluster name
 repmgr_database_cluster: "{{ database_cluster | default('main') }}"

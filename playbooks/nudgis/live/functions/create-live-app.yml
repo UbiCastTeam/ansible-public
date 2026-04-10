@@ -1,40 +1,34 @@
 ---
 
-- name: "Checking the live(s) server(s) live configuration state"
+- name: "CHECK LIVE SERVERS LIVE CONFIGURATION STATE"
   hosts: live
   gather_facts: false
   tags: live
   tasks:
     - name: "Check the existence of the live configuration"
       ansible.builtin.stat:
-        path: /etc/nginx/rtmp.d/{{ live_app_name }}.conf
+        path: "/etc/nginx/rtmp.d/{{ live_app_name }}.conf"
       register: live_conf_live
 
     - name: "Getting the live configuration content"
-      ansible.builtin.shell: grep -oP '^application \K[A-Za-z0-9]+' /etc/nginx/rtmp.d/{{ live_app_name }}.conf
-      when: live_conf_live.stat.exists
+      ansible.builtin.shell: "grep -oP '^application \\K[A-Za-z0-9]+' /etc/nginx/rtmp.d/{{ live_app_name }}.conf"
+      when: live_conf_live['stat']['exists'] | default(false)
       register: live_conf_secret
       changed_when: false
 
-    - name: "Extracting the application secret"
+    - name: "Declare application secret (with fallback)"
       ansible.builtin.set_fact:
-        live_secret: "{{ live_conf_secret.stdout }}"
-      when: live_conf_live.stat.exists
+        live_secret: "{{ live_conf_secret['stdout'] | default('') }}"
 
-    - name: "Declaring the application secret"
-      ansible.builtin.set_fact:
-        live_secret: ""
-      when: not live_conf_live.stat.exists
 
-- name: "Checking the MediaServer(s) live configuration state"
+- name: "CHECK FRONTEND SERVERS LIVE CONFIGURATION STATE"
   hosts: front
   gather_facts: false
   tags: live
   tasks:
-
     - name: "Check the existence of mssettings"
       ansible.builtin.stat:
-        path: /home/{{ live_app_name }}/msinstance/conf/mssettings.py
+        path: "/home/{{ live_app_name }}/msinstance/conf/mssettings.py"
       register: ms_settings
 
     - name: "Extract live secret from mssettings"
@@ -44,96 +38,84 @@
       register: live_secret_result
       changed_when: false
       failed_when: false
-      when: ms_settings.stat.exists
+      when: ms_settings['stat']['exists'] | default(false)
 
-    - name: "Declare live secret"
+    - name: "Declare live secret (with fallback)"
       ansible.builtin.set_fact:
-        live_secret: "{{ live_secret_result.stdout }}"
-      when:
-        - ms_settings.stat.exists
-        - live_secret_result.stdout != ''
+        live_secret: "{{ live_secret_result['stdout'] | default('') }}"
 
-    - name: "Fallback to empty live secret"
-      ansible.builtin.set_fact:
-        live_secret: ""
-      when:
-        - not ms_settings.stat.exists or live_secret_result.stdout == ''
 
-- name: "Computing the application secret - {{ live_app_name }}"
+- name: "COMPUTE THE APPLICATION SECRET"
   hosts: localhost
   gather_facts: false
   tags: live
   tasks:
     - name: "Retrieving the first live host configured app secret as reference"
       ansible.builtin.set_fact:
-        base_live_secret: "{{ hostvars[groups['live'][0]].live_secret }}"
+        base_live_secret: "{{ hostvars[groups['live'][0]]['live_secret'] | default('') }}"
         app_secret_diff: false
-      when: hostvars[groups['live'][0]].live_secret | length > 0
 
-    - name: "Comparing the app secrets from MS an live servers with the reference"
+    - name: "Comparing the app secrets from fontend and live servers"
       ansible.builtin.set_fact:
         app_secret_diff: true
-      when: base_live_secret is defined and hostvars[item].live_secret != base_live_secret
-      with_items:
-        - "{{ groups['live'] }}"
-        - "{{ groups['front'] }}"
+      when:
+        - base_live_secret != ''
+        - hostvars[item]['live_secret'] | default('') != base_live_secret
+      loop: "{{ groups['live'] + groups['front'] }}"
 
-    - name: "Generating an application secret on localhost with /dev/urandom"
+    - name: "Generating an application secret on localhost"
       ansible.builtin.shell: >
-        set -o pipefail && \
+        set -o pipefail &&
         head /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 30 | head -n 1
-      register: secret
+      register: generated_secret
       args:
         executable: /bin/bash
       changed_when: false
-      become: false
-      when: base_live_secret is not defined or app_secret_diff
+      when: (base_live_secret == '') or app_secret_diff
 
     - name: "Deciding the application secret to use"
       ansible.builtin.set_fact:
-        live_app_secret: "{{ secret.stdout | d(base_live_secret) }}"
+        live_app_secret: "{{ generated_secret['stdout'] | default(base_live_secret) }}"
 
-- name: "Live server(s) - live application configuration - {{ live_app_name }}"
+
+- name: "LIVE SERVERS LIVE CONFIGURATION"
   hosts: live
   gather_facts: false
   tags: live
   tasks:
     - name: "Check the existence of the RTMP app"
-      ansible.builtin.command: ubicast-livectl checkuid {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
+      ansible.builtin.command:
+        cmd: "ubicast-livectl checkuid {{ live_app_name }} {{ hostvars['localhost']['live_app_secret'] }}"
       register: app_status
       changed_when: false
       failed_when: false
 
-    - name: "Update package facts"
-      ansible.builtin.package_facts:
-        manager: auto
-
     - name: "(Re)create the RTMP app configuration"
+      ansible.builtin.command:
+        cmd: "ubicast-livectl add {{ live_app_name }} {{ hostvars['localhost']['live_app_secret'] }}"
+        creates: "/etc/nginx/rtmp.d/{{ live_app_name }}.conf"
+      when: app_status['rc'] == 1
       notify:
         - "Reload nginx"
         - "Configure and restart munin-node"
-      ansible.builtin.command:
-        cmd: ubicast-livectl add {{ live_app_name }} {{ hostvars['localhost'].live_app_secret }}
-        creates: /etc/nginx/rtmp.d/{{ live_app_name }}.conf
-      when: app_status.rc == 1
 
     - name: "Prepare the nginx RTMP temporary directory"
-      notify: "Reload nginx"
       ansible.builtin.file:
-        path: /var/tmp/nginx-rtmp/{{ live_app_name }}
+        path: "/var/tmp/nginx-rtmp/{{ live_app_name }}"
         owner: nginx
         group: root
         state: directory
         mode: "0700"
+      notify: "Reload nginx"
 
     - name: "Create the nginx RTMP web directory symlink"
-      notify: "Reload nginx"
       ansible.builtin.file:
-        src: /var/tmp/nginx-rtmp/{{ live_app_name }}
-        dest: /var/www/{{ live_app_name }}/streaming-rtmp
+        src: "/var/tmp/nginx-rtmp/{{ live_app_name }}"
+        dest: "/var/www/{{ live_app_name }}/streaming-rtmp"
         state: link
         force: true
-      when: deploy_case == "standard"
+      when: deploy_case | default('standard') == "standard"
+      notify: "Reload nginx"
 
   handlers:
     - name: "Reload nginx"
@@ -147,34 +129,33 @@
         manager: auto
       listen: "Configure and restart munin-node"
 
-    - name: "Setup munin-node plugins link"  # noqa: risky-shell-pipe
+    - name: "Setup munin-node plugins link"
       ansible.builtin.shell:
-        munin-node-configure --shell --remove-also 2>&1 | sh -x
-      # sh -x print executed cmd to stderr
+        cmd: "munin-node-configure --shell --remove-also 2>&1 | sh -x"
       register: munin_plugin_linked
-      changed_when: munin_plugin_linked.stderr | length > 0
-      when: "'munin-node' in ansible_facts.packages"
+      changed_when: munin_plugin_linked['stderr'] | length > 0
+      when: "'munin-node' in ansible_facts['packages']"
       listen: "Configure and restart munin-node"
 
     - name: "Restart munin-node service"
       ansible.builtin.service:
         name: munin-node
         state: restarted
-      when: "'munin-node' in ansible_facts.packages"
+      when: "'munin-node' in ansible_facts['packages']"
       listen: "Configure and restart munin-node"
 
-- name: "MediaServer(s) - live application configuration - {{ live_app_name }}"
+
+- name: "FRONTEND SERVERS LIVE CONFIGURATION"
   hosts: front
   gather_facts: false
   tags: live
   tasks:
-
     - name: "Check the existence of msconf"
       ansible.builtin.stat:
         path: /etc/mediaserver/msconf.py
       register: ms_conf
 
-    - name: "Configure (or update) global live configurations into msconf"
+    - name: "Configure global live configurations into msconf"
       ansible.builtin.lineinfile:
         path: /etc/mediaserver/msconf.py
         regexp: '^#?\s*{{ item.name }}\s*=.*$'
@@ -183,23 +164,25 @@
       loop:
         - { name: 'LIVE_RTMP_PLAYBACK_URL', value: '{{ rtmp_hls_url }}' }
         - { name: 'LIVE_RTMP_PUBLISH_URL', value: '{{ rtmp_pub_url }}' }
-      when: ms_conf.stat.exists
+      when: ms_conf['stat']['exists'] | default(false)
+      notify: "Restart mediaserver"
 
     - name: "Check the existence of mssettings"
       ansible.builtin.stat:
-        path: /home/{{ live_app_name }}/msinstance/conf/mssettings.py
+        path: "/home/{{ live_app_name }}/msinstance/conf/mssettings.py"
       register: ms_settings
 
-    - name: "Configure (or update) instance live configuration into mssettings"
+    - name: "Configure instance live configuration into mssettings"
       ansible.builtin.lineinfile:
-        path: /home/{{ live_app_name }}/msinstance/conf/mssettings.py
+        path: "/home/{{ live_app_name }}/msinstance/conf/mssettings.py"
         regexp: '^#?\s*{{ item.name }}\s*=.*$'
         line: "{{ item.name }} = '{{ item.value }}'"
         create: true
       loop:
-        - { name: 'LIVE_RTMP_APP', value: "{{ hostvars['localhost'].live_app_secret }}" }
-        - { name: 'LIVE_PORTAL_NAME', value: '{{ live_app_name }}' }
-      when: ms_settings.stat.exists
+        - { name: 'LIVE_RTMP_APP', value: "{{ hostvars['localhost']['live_app_secret'] }}" }
+        - { name: 'LIVE_PORTAL_NAME', value: "{{ live_app_name }}" }
+      when: ms_settings['stat']['exists'] | default(false)
+      notify: "Restart mediaserver"
 
   handlers:
     - name: "Restart mediaserver"

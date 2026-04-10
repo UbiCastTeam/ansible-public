@@ -6,10 +6,12 @@
   register: auth
 
 - name: "Fail if the root ssh authorized key is missing or empty"
+  when:
+    - auth['stat'] is defined
+    - not auth['stat']['exists'] or auth['stat']['size'] == 0
   ansible.builtin.fail:
     msg: "Error: root user does not have any ssh key configured !\n\
           Cannot configure PermitRootLogin to without-password"
-  when: not auth.stat.exists or auth.stat.size == 0
 
 - name: "Enable root login via ssh with key only"
   ansible.builtin.replace:

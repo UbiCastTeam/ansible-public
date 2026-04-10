@@ -1,1 +1,16 @@
-add inet filter input tcp dport 1935 accept comment "RTMP"
+# RTMP firewall rule definition
+table inet filter {
+    # Allowed clients
+    set rtmp_clients {
+        type ipv4_addr
+        flags interval
+        elements = {
+            # mirisbox, camera, ... for live stream
+            0.0.0.0/0,        # all
+        }
+    }
+    # Firewall rule
+    chain input {
+        ip saddr @rtmp_clients tcp dport 1935 accept comment "RTMP"
+    }
+}

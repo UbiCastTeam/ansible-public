@@ -29,7 +29,7 @@
         'url=https://{{ nudgis_front_domain }}'
         'api_key={{ nudgis_front_api_key }}'
   register: celerity_add_portal
-  changed_when: celerity_add_portal.stdout != 'The configuration file is already up to date.'
+  changed_when: celerity_add_portal['stdout'] != 'The configuration file is already up to date.'
 
 - name: "Ensure celerity-server is running"
   ansible.builtin.service:

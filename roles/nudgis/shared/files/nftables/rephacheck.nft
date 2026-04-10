@@ -1,1 +1,17 @@
-add inet filter input tcp dport 8543 accept comment "rephacheck"
+# Rephacheck firewall rule definition
+table inet filter {
+    # Allowed clients
+    set rephacheck_clients {
+        type ipv4_addr
+        flags interval
+        elements = {
+            # DB servers for replication
+            # front servers for load-balancing
+            0.0.0.0/0,        # all
+        }
+    }
+    # Firewall rule
+    chain input {
+        ip saddr @rephacheck_clients tcp dport 8543 accept comment "rephacheck"
+    }
+}

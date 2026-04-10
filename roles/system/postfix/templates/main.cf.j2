@@ -12,7 +12,7 @@ append_dot_mydomain = no
 # TLS parameters
 smtpd_tls_cert_file = /etc/ssl/certs/ssl-cert-snakeoil.pem
 smtpd_tls_key_file = /etc/ssl/private/ssl-cert-snakeoil.key
-smtpd_use_tls = yes
+smtpd_tls_security_level = may
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated reject_unauth_destination
 smtpd_tls_session_cache_database = btree:${queue_directory}/smtpd_scache
 smtp_tls_session_cache_database = btree:${queue_directory}/smtp_scache
@@ -26,7 +26,7 @@ alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 virtual_maps = hash:/etc/postfix/virtual
 myorigin = /etc/mailname
-mydestination = {{ postfix_mailname }}, {{ ansible_hostname }}, localdomain, localhost.localdomain, localhost
+mydestination = {{ postfix_mailname }}, {{ ansible_facts['hostname'] }}, localdomain, localhost.localdomain, localhost
 relayhost = {{ postfix_relay_host }}
 mynetworks = 127.0.0.0/8
 mailbox_size_limit = 0

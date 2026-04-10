@@ -9,7 +9,8 @@
   ansible.builtin.command:
     cmd: mediavaultctl add --backup-name "{{ item.name }}" --source-folder "{{ item.source }}" --dest-folder "{{ item.dest }}"
     creates: "/etc/systemd/system/mediavault-backup-{{ item.name }}.service"
-  when: not backup_marker.stat.exists
-
+  when:
+    - backup_marker['stat'] is defined
+    - not backup_marker['stat']['exists']
 
 ...

@@ -2,7 +2,7 @@
 
 - name: "Gather hostname"
   ansible.builtin.setup:
-    filter: ansible_hostname
+    filter: ansible_facts['hostname']
 
 - name: "Postfix generic"
   notify: "Postmap generic"
