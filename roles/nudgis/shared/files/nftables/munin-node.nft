@@ -1,1 +1,16 @@
-add inet filter input tcp dport 4949 accept comment "Munin node"
+# Munin node firewall rule definition
+table inet filter {
+    # Allowed clients
+    set munin_node_clients {
+        type ipv4_addr
+        flags interval
+        elements = {
+            # munin server for monitoring
+            0.0.0.0/0,        # all
+        }
+    }
+    # Firewall rule
+    chain input {
+        ip saddr @munin_node_clients tcp dport 4949 accept comment "Munin node"
+    }
+}

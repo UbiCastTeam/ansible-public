@@ -6,7 +6,7 @@
 #   IP or domain on which the celerity server service can be joined
 # task_management_server:
 #   IP or domain on which the celerity server service can be joined
-celerity_server_domain: "{{ hostvars[groups['task_management_server'][0]]['ansible_default_ipv4']['address'] }}"
+celerity_server_domain: "{{ hostvars[groups['task_management_server'][0]]['ansible_facts']['default_ipv4']['address'] }}"
 
 # front:
 #   Key used to encrypt communications to and from celerity server

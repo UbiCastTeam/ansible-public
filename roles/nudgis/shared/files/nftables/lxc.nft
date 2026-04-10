@@ -1,3 +1,4 @@
+# Netcapture firewall rule definition
 # Used only for DHCP, otherwhise not necessary
 # Override inet > forward chain to policy ACCEPT
 table inet filter {

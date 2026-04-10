@@ -1,3 +1,20 @@
+# Define ftp helper
 add ct helper inet filter passive-ftp { type "ftp" protocol tcp; }
-add inet filter input tcp dport 21 ct helper set "passive-ftp" accept comment "FTP"
-add inet filter input tcp dport 22 accept comment "SFTP"
+
+# Nudgis import node firewall rule definition
+table inet filter {
+    # Allowed clients
+    set import_clients {
+        type ipv4_addr
+        flags interval
+        elements = {
+            # nudgis import clients (extenal devices: extron, etc.) for media upload
+            0.0.0.0/0,        # all
+        }
+    }
+    # Firewall rule
+    chain input {
+        ip saddr @import_clients tcp dport 22 accept comment "SFTP"
+        ip saddr @import_clients tcp dport 21 ct helper set "passive-ftp" accept comment "FTP"
+    }
+}

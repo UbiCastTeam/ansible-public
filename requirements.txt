@@ -1,4 +1,3 @@
-passlib  # deprecation of crypt module
-ansible>=11.0,<12.0
+ansible>=13.0,<14.0
 netaddr
 pyyaml

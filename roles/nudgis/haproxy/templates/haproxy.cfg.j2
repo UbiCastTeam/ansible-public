@@ -22,7 +22,7 @@ defaults
   # Enable connection timeout
   # See RM#40075
   # Set timeout on established connections without data transfer
-  # Warning: TCP KeepAlive maintain established connecions but does not transfer data
+  # Warning: TCP KeepAlive maintains established connections but does not transfer data
   #          Treatments taking more than <timeout> with no data transfer will be closed by HAProxy
   timeout client 24h
   timeout server 24h
@@ -68,6 +68,6 @@ listen pgsql-primary
 
   # Set failover and backend servers
   default-server inter 2s fall 3 rise 2 on-marked-down shutdown-sessions
-  server {{ groups['postgres'][0] }} {{ hostvars[groups['postgres'][0]]['ansible_default_ipv4']['address'] }}:5432 maxconn 2000 check
-  server {{ groups['postgres'][1] }} {{ hostvars[groups['postgres'][1]]['ansible_default_ipv4']['address'] }}:5432 maxconn 2000 check backup
+  server {{ groups['postgres'][0] }} {{ hostvars[groups['postgres'][0]]['ansible_facts']['default_ipv4']['address'] }}:5432 maxconn 2000 check
+  server {{ groups['postgres'][1] }} {{ hostvars[groups['postgres'][1]]['ansible_facts']['default_ipv4']['address'] }}:5432 maxconn 2000 check backup
 

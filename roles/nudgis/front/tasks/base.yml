@@ -6,13 +6,15 @@
     enabled: true
     state: started
 
-- name: "Stats Nudgis Front main configuration file"
+- name: "Verify Nudgis Front main configuration file presence"
   ansible.builtin.stat:
     path: "/etc/mediaserver/install.ini"
   register: nudgis_config
 
 - name: "Populate Nudgis Front base configuration with example values"
-  when: nudgis_config.stat.size == 0
+  when:
+    - nudgis_config['stat'] is defined
+    - not nudgis_config['stat']['exists']
   ansible.builtin.copy:
     src: "/etc/mediaserver/install.example.ini"
     dest: "/etc/mediaserver/install.ini"

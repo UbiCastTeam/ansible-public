@@ -1,5 +1,5 @@
 root@localhost {{ postfix_email_from }}
 root@{{ postfix_mailname }} {{ postfix_email_from }}
-root@{{ ansible_hostname }} {{ postfix_email_from }}
+root@{{ ansible_facts['hostname'] }} {{ postfix_email_from }}
 @{{ postfix_mailname }} {{ postfix_email_from }}
-@{{ ansible_hostname }} {{ postfix_email_from }}
+@{{ ansible_facts['hostname'] }} {{ postfix_email_from }}

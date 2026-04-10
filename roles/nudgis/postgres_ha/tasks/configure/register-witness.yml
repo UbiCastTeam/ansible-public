@@ -8,7 +8,7 @@
       become_user: postgres
       register: repmgr_check_witness
       community.general.postgresql_query:
-        db: repmgr
+        login_db: repmgr
         query: SELECT 1 FROM pg_tables WHERE tablename='nodes'
 
     - name: "Register witness"

@@ -1,3 +1,11 @@
+# 2025-08-21
+
+* Support Debian 13.
+* Update ansible version from version 11.X to 13.X.
+* Add basic filtering configuration for `nftables`.
+* Remove `passlib` dependency.
+* Fix all deprecation warnings.
+
 # 2025-07-08
 
 * Remove nudgis import email configuration.

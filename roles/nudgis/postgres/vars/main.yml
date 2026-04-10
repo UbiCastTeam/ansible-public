@@ -7,7 +7,7 @@ database_packages:
   - python3-psycopg2
 
 # PostgreSQL database version
-database_version: "15"
+database_version: "17"
 
 # PostgreSQL database cluster name
 database_cluster: "main"

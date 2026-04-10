@@ -10,7 +10,7 @@
   notify: "Reload nginx"
   ansible.builtin.replace:
     path: /etc/nginx/sites-available/webmonitor.conf
-    regexp: '(server_name.* ){{ current_domain.stdout }}(.*;)$'
+    regexp: '(server_name.* ){{ current_domain["stdout"] }}(.*;)$'
     replace: '\1{{ monitor_domain }}\2'
 
 - name: "Configure domain in install.ini"
@@ -22,7 +22,7 @@
 - name: "Configure domain as local in the hosts file"
   ansible.builtin.replace:
     path: /etc/hosts
-    regexp: '^(127\.0\.0\.1.* ){{ current_domain.stdout }}( .*|$)'
+    regexp: '^(127\.0\.0\.1.* ){{ current_domain["stdout"] }}( .*|$)'
     replace: '\1{{ monitor_domain }}\2'
 
 - name: "Configure domain in settings_override.py"

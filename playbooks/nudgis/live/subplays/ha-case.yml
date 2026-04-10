@@ -34,8 +34,8 @@
 - import_playbook: ../functions/create-live-app.yml
   vars:
     live_app_name: 'msuser'
-    rtmp_hls_url: "https://{{ hostvars[groups['live'][0]].live_domain }}/streaming-rtmp/%(name)s/%(stream)s.m3u8"
-    rtmp_pub_url: "rtmp://{{ hostvars[groups['live'][0]].live_domain }}/%(app)s/%(stream)s"
+    rtmp_hls_url: "https://{{ hostvars[groups['live'][0]]['live_domain'] }}/streaming-rtmp/%(name)s/%(stream)s.m3u8"
+    rtmp_pub_url: "rtmp://{{ hostvars[groups['live'][0]]['live_domain'] }}/%(app)s/%(stream)s"
     deploy_case: 'ha'
 
 - hosts: front
@@ -51,6 +51,8 @@
       ansible.builtin.command:
         cmd: /bin/rm -r /etc/nginx/rtmp.d
         removes: /etc/nginx/rtmp.d
-      when: rtmp_conf_dir.stat.exists
+      when:
+        - rtmp_conf_dir['stat'] is defined
+        - rtmp_conf_dir['stat']['exists']
 
 ...

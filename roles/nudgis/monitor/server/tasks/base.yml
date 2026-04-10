@@ -6,7 +6,9 @@
   register: monitor_config
 
 - name: "Populate Webmonitor base configuration with example values"
-  when: monitor_config.stat.size == 0
+  when:
+    - monitor_config['stat'] is defined
+    - not monitor_config['stat']['exists']
   ansible.builtin.copy:
     src: "/etc/webmonitor/install.example.ini"
     dest: "/etc/webmonitor/install.ini"

@@ -6,7 +6,7 @@
     path: /var/tmp/nginx-rtmp
     src: tmpfs
     fstype: tmpfs
-    opts: defaults,size={{ live_tmpfs_size }}
+    opts: "defaults,size={{ live_tmpfs_size }}"
     state: mounted
 
 ...

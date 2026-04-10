@@ -20,7 +20,7 @@
 
 - name: "Synchronize configuration between servers"  # noqa: command-instead-of-module
   # Cannot use the ansible synchronization module, cause there is no way to set a destination IP intead of the destination ansible hostname
-
+  delegate_to: "{{ groups['front'][0] }}"
   when:
     - inventory_hostname != groups['front'][0]
   loop:
@@ -31,15 +31,14 @@
   ansible.builtin.command: |
     rsync \
       -avh \
-      -e "ssh -o StrictHostKeyChecking=no" \
       --delete \
+      -e "ssh -o StrictHostKeyChecking=no" \
       "{{ item }}/" \
-      "root@{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:{{ item }}/"
+      "root@{{ ansible_facts['default_ipv4']['address'] }}:{{ item }}/"
   notify:
     - "Restart systemd-sysusers"
     - "Restart nginx"
     - "Restart mediaserver"
-  delegate_to: "{{ groups['front'][0] }}"
   changed_when: false
   tags: fronts-synchronize
 

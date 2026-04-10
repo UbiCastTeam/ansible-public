@@ -2,7 +2,9 @@
 
 - name: "Configure custom settings"
   notify: "Restart postgresql"
-  when: item.content | d(false)
+  when:
+    - item.content is defined
+    - item.content | length > 0
   ansible.builtin.copy:
     dest: "{{ database_conf_dir }}/conf.d/{{ item.name }}.conf"
     owner: postgres

@@ -1,6 +1,6 @@
 ---
 
-- name: "Prepare the directory - {{ sysconfig_repos_keyrings_dir }}"
+- name: "Prepare directory: {{ sysconfig_repos_keyrings_dir }}"
   ansible.builtin.file:
     path: "{{ sysconfig_repos_keyrings_dir }}"
     state: directory
@@ -8,50 +8,30 @@
 
 - name: "Add UbiCast repository public key"
   ansible.builtin.get_url:
-    url: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}/media/public.gpg"
+    url: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}/media/public-apt.gpg"
     dest: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
     mode: "644"
 
-- name: "Add UbiCast solutions repository"
+- name: "Configure Ubicast repositories"
   notify: "Trigger apt update"
-  when: repos_ubicast_trusted
+  vars:
+    repos_ubicast_key: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
   ansible.builtin.deb822_repository:
-    name: "ubicast"
-    types: "deb"
-    uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
-    suites: "packaging/apt/{{ repos_ubicast_packages_token }}/{{ repos_release }}/"
-    signed_by: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
-    trusted: true
-
-- name: "Add UbiCast solutions repository"
-  notify: "Trigger apt update"
-  when: not repos_ubicast_trusted
-  ansible.builtin.deb822_repository:
-    name: "ubicast"
-    types: "deb"
-    uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
-    suites: "packaging/apt/{{ repos_ubicast_packages_token }}/{{ repos_release }}/"
-    signed_by: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
-
-- name: "Add UbiCast security repository"
-  notify: "Trigger apt update"
-  when: repos_ubicast_trusted
-  ansible.builtin.deb822_repository:
-    name: "ubicast-security"
-    types: "deb"
-    uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
-    suites: "packaging/apt/ubicast-security-updates/{{ repos_release }}/"
-    signed_by: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
-    trusted: true
-
-- name: "Add UbiCast security repository"
-  notify: "Trigger apt update"
-  when: not repos_ubicast_trusted
-  ansible.builtin.deb822_repository:
-    name: "ubicast-security"
-    types: "deb"
-    uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
-    suites: "packaging/apt/ubicast-security-updates/{{ repos_release }}/"
-    signed_by: "{{ sysconfig_repos_keyrings_dir }}/{{ repos_ubicast_packages_domain }}.asc"
+    name: "{{ item.name }}"
+    types: deb
+    uris: "{{ item.uris }}"
+    suites: "{{ item.suites }}"
+    # Only add trusted and signed_by when signature verification is configured as required
+    trusted: "{{ repos_ubicast_trusted | ternary(true, omit) }}"
+    signed_by: "{{ repos_ubicast_trusted | ternary(omit, repos_ubicast_key) }}"
+  loop:
+    - name: "ubicast"
+      uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
+      suites:
+        - "packaging/apt/{{ repos_ubicast_packages_token }}/{{ repos_release }}/"
+    - name: "ubicast-security"
+      uris: "{{ repos_ubicast_prefix }}{{ repos_ubicast_packages_domain }}"
+      suites:
+        - "packaging/apt/ubicast-security-updates/{{ repos_release }}/"
 
 ...

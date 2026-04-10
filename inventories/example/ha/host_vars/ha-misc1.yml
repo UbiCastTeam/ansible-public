@@ -9,7 +9,7 @@ cache_domain: "cache.ubica.st"
 #cache_live_folder: "/var/cache/nginx/mediacache-live"
 
 # cache:
-#   Max size allowed for the Live service data
+#   Max size allowed for the Live service data (in GB)
 #cache_live_size: "1"
 
 # cache:
@@ -17,11 +17,11 @@ cache_domain: "cache.ubica.st"
 #cache_vod_folder: "/var/cache/nginx/mediacache-vod"
 
 # cache:
-#   Max size allowed for the VOD service data
+#   Max size allowed for the VOD service data (in GB)
 #cache_vod_size: "1"
 
 # lxc:
-#   LXC network type
+#   LXC network type, can be `masquerade_bridge` or `host_bridge`
 lxc_network_type: "masquerade_bridge"
 
 # netcapture:
