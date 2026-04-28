@@ -1,8 +1,9 @@
 ---
 
-- name: "Update apt cache"
+- name: "Clean apt cache"
   ansible.builtin.apt:
-    update_cache: true
+    # Clean is required due to modification time of /var/cache/apt possibly in the future (inherited from base image).
+    clean: true
   changed_when: false
   register: apt_status
   retries: 60
@@ -13,6 +14,7 @@
     name: "nudgis/shared"
     tasks_from: "apt_install.yml"
   vars:
+    apt_update_cache: true
     apt_packages: "{{ sysconfig_repos_packages }}"
 
 ...
