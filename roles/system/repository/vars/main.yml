@@ -7,7 +7,7 @@ repos_release: "{{ ansible_facts['distribution_release'] }}"
 sysconfig_repos_packages:
   - python3-debian
   - ca-certificates
-  - gnupg
+  - gnupg2
 
 # Repository keyring path
 sysconfig_repos_keyrings_dir: "/usr/local/share/keyrings"

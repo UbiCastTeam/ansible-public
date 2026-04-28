@@ -10,7 +10,7 @@ misc_packages:
   - smartmontools
   - curl
   - ca-certificates
-  - gnupg
+  - gnupg2
   - host
   - ifupdown
   - htop
