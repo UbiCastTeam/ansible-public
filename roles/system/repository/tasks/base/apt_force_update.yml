@@ -1,0 +1,15 @@
+---
+
+- name: "Force apt update"
+  ansible.builtin.apt:
+    # Using a negative cache valid time (1 day),
+    # because apt plugin has no other way to force update
+    # if /var/lib/apt/lists has a modification time in the future
+    # (which can happen when spawning a new VM with time not properly synced yet).
+    cache_valid_time: -86400
+    update_cache: true
+  register: apt_status
+  retries: 60
+  until: apt_status is success or ('Failed to lock apt for exclusive operation' not in apt_status.msg and '/var/lib/dpkg/lock' not in apt_status.msg)
+
+...

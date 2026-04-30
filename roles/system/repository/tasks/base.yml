@@ -15,7 +15,7 @@
     - repos_ubicast_packages_token is defined
     - repos_ubicast_packages_domain is defined
 
-# Flush to force `apt update` with the news repositories
+# Flush to force `apt update` with the new repositories
 - name: "Flush handlers"
   ansible.builtin.meta: flush_handlers
 
