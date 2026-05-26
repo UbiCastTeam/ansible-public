@@ -1,13 +1,14 @@
 ---
 
-- name: "Configure application users"
-  ansible.builtin.replace:
-    path: /etc/ubicast-skyreach/install.ini
-    regexp: '^(\s*)#?\s*{{ item.name }}\s*=.*$'
-    replace: '\1{{ item.name }} = {{ item.value }}'
-  loop:
-    - { name: 'ADMIN_PWD', value: '{{ manager_user_admin_password }}' }
+# At installation, admin user is created with an empty or random password
+# See RM#40081 for details
 
-# /!\ Does not alter the already created instances /!\
+- name: "Update admin password"
+  ansible.builtin.command:
+    cmd: >
+      ubicast-skyreach-ctl user update
+        --target "username=admin"
+        --password "{{ manager_user_admin_password }}"
+    changed_when: false
 
 ...
