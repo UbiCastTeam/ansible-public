@@ -3,7 +3,7 @@
 # At installation, admin user is created with an empty or random password
 # See RM#40081 for details
 
-- name: "Update admin password"
+- name: "Update admin password"  # noqa inline-env-var
   ansible.builtin.command:
     cmd: >
       ubicast-skyreach-ctl user update
