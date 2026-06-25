@@ -9,6 +9,6 @@
       ubicast-skyreach-ctl user update
         --target "username=admin"
         --password "{{ manager_user_admin_password }}"
-    changed_when: false
+  changed_when: false
 
 ...

@@ -9,6 +9,6 @@
       ubicast-webmonitor-ctl user update
         --target "username=admin"
         --password "{{ monitor_user_admin_password }}"
-    changed_when: false
+  changed_when: false
 
 ...
