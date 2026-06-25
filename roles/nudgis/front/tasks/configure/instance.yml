@@ -4,7 +4,7 @@
   notify: "Configure and restart munin-node"
   ansible.builtin.command:
     cmd: >
-      ubicast-mediaserver-ctl -u "{{ nudgis_front_system_user }}" -- add
+      ubicast-mediaserver-ctl -p "{{ nudgis_front_system_user }}" -- add
         "id=1_{{ nudgis_front_system_user }}"
         "domain={{ nudgis_front_domain }}"
         "api_key={{ nudgis_front_api_key }}"
