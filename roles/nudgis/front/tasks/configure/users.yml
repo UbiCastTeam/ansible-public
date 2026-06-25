@@ -1,0 +1,11 @@
+---
+
+- name: "Update admin password"  # noqa inline-env-var
+  ansible.builtin.command:
+    cmd: >
+      ubicast-mediaserver-ctl -p "{{ nudgis_front_system_user }}" -- user update
+        --target "username=admin"
+        --password "{{ nudgis_front_user_admin_password }}"
+  changed_when: false
+
+...

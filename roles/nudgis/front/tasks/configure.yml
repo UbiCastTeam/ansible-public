@@ -33,6 +33,11 @@
     - nudgis_front_user_admin_password is defined
     - manager_domain is defined
 
+- name: "CONFIGURE ADMIN USERS"
+  ansible.builtin.include_tasks: "configure/users.yml"
+  when:
+    - nudgis_front_user_admin_password is defined
+
 # Should only be played in High Availibility cases
 - name: "HA CONFIGURATIONS SYNCHRONIZATION"
   ansible.builtin.include_tasks: "configure/synchronize.yml"
