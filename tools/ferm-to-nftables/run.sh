@@ -100,6 +100,11 @@ ferm_restore_notes(){
     fi
 }
 
+ferm_is_chain_policy_accept(){
+    # Chain OUTPUT (policy ACCEPT)
+    iptables -L "${1^^}" -n 2>/dev/null | head -n1 | grep -qi 'policy ACCEPT'
+}
+
 enable_service(){
     echo "[+] Enable & start ${1}..."
     systemctl enable "${1}"
@@ -290,11 +295,20 @@ else
 fi
 
 echo '[+] Verify ferm configuration...'
-for dir in /etc/ferm/{output,forward}.d/; do
+for chain in {output,forward}; do
+    dir="/etc/ferm/${chain}.d/"
     if [ -d "${dir}" ] && [ "$(ls -A "${dir}")" ]; then
-        echo -e "Directory ${dir} ${_red}not empty${_reset} and ${_yellow}not migrated automatically${_reset}:"
+        echo -e "Directory ${dir} ${_yellow}not empty${_reset}:"
         find "${dir}" -mindepth 1 | sed 's|^|- |'
-        manual_intervention
+        if ferm_is_chain_policy_accept "${chain}"; then
+            echo -e "Chain ${chain} default policy is ${_green}ACCEPT${_reset}"
+            echo "Rules are unused..."
+            mv -v "${dir%/}" "${dir%/}.bak"
+        else
+            echo -e "Chain ${chain} default policy is ${_yellow}not ACCEPT${_reset}"
+            echo -e "Rules are ${_red}not migrated automatically${_reset}"
+            manual_intervention
+        fi
     fi
 done
 
