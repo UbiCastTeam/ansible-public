@@ -12,7 +12,7 @@ ssh-keygen -t ed25519
 
 Copy the public key to the root account of all involved hosts:
 
-```
+```sh
 ssh-copy-id -i ~/.ssh/id_ed25519.pub root@<SERVER-X>
 ```
 
@@ -20,26 +20,26 @@ You can also add the content of `~/.ssh/id_ed25519.pub` to `~/.ssh/authorized_ke
 
 ## Inventory
 
-Move to ansible directory
+Move to the ansible-public directory:
 
-```
-cd ./ansible
+```sh
+cd /root/ansible-public
 ```
 
-Make a copy of the `example` inventory and eventually customize it with the customer informations.
+Make a copy of the `example` inventory:
 
 ```sh
 # for standard deployment
 cp -r inventories/example/std inventories/my-inventory
 
-# for HA deployement
+# for HA deployment
 cp -r inventories/example/ha inventories/my-inventory
 ```
 
 ### Hosts and Groups
 
 Edit `inventories/my-inventory/hosts` to match your infrastructure.  
-Move, copy and/or delete variables files according to your `hosts` file.
+Move, copy and/or delete variable files according to your `hosts` file.
 
 ### Variables
 
@@ -51,16 +51,16 @@ If you want to set/override a variable for:
 | a group | `inventories/my-inventory/group_vars/<group>.yml` |
 | a host  | `inventories/my-inventory/host_vars/<host>.yml`   |
 
-All variables needed are defined in ansible roles `README.md` files (for instance for [nudgis frontend role](../roles/mediaserver/README.md))
+The available variables are documented in the `README.md` file of each role (for instance the [nudgis front role](../roles/nudgis/front/README.md)).
 
 ### Verify
 
 Make sure Ansible can connect to all the hosts:
 
 ```sh
-ansible -i inventories/customer -m ping all
+ansible -i inventories/my-inventory -m ping all
 
-mymediaserver | SUCCESS => {
+<SERVER-X> | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
