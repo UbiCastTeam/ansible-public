@@ -1,9 +1,34 @@
+# Configuration variables comes from:
+#   /usr/libexec/lxc/lxc-net
+#
+# Global configuration
+#
+
 USE_LXC_BRIDGE="true"
 LXC_BRIDGE="lxcbr0"
+#LXC_BRIDGE_MAC="10:66:6a:00:00:00"   # Bridge MAC address
+LXC_USE_NFT="true"
+
+LXC_DOMAIN="netcapture"               # Local DNS domain
+#LXC_DHCP_CONFILE=/etc/lxc/dhcp.conf  # Additional dnsmasq configuration file
+
+#
+# IPv4 configuration
+#
+
 LXC_ADDR="10.0.200.1"
 LXC_NETWORK="10.0.200.0/24"
 LXC_NETMASK="255.255.255.0"
-LXC_DOMAIN="netcapture"
 LXC_DHCP_RANGE="10.0.200.10,10.0.200.250"
 LXC_DHCP_MAX="240"
-#LXC_DHCP_CONFILE=/etc/lxc/dhcp.conf
+LXC_DHCP_PING="true"
+
+#
+# IPv6 configuration
+#
+
+LXC_IPV6_ENABLE="false"
+#LXC_IPV6_ADDR="fc42:5009:ba4b:5ab0::1"
+#LXC_IPV6_MASK="64"
+#LXC_IPV6_NETWORK="fc42:5009:ba4b:5ab0::/64"
+#LXC_IPV6_NAT="false"
